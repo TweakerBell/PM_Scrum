@@ -1,46 +1,114 @@
-<div id ="index-wrapper">
+<div id ="dashboard-wrapper">
+  <h1>Projekt: <%= @dashboard.project.title %></h1>
 
   <div class="container-fluid">
+
     <div class="row">
 
-      <% @projects.each do |f| %>
+      <%  @dashboard.boards.each do |board| %>
+        <div class="col-sm-3" style="margin-top: 2em">
+          <div class="panel panel-default">
+            <div class="panel-heading"><%= board.title %></div>
 
-          <div class="col-sm-3" style="margin-top: 2em">
-            <div class="well well-lg" style="background-color: burlywood">
-              <%= f.name %>
+            <div class="panel-body" style="min-height: 8em"  id="droppable<%= board.id %>" data-board-id="<%=board.id%>">
+
+              <% board.cards.each do |f| %>
+                <div class="well well" style="background-color: burlywood" id="draggable<%= f.id %>" data-card-id="<%=f.id%>">
+                  <div class="dropdown">
+                    <button class="glyphicon glyphicon-cog" style="float:right" data-toggle="dropdown"></button>
+                        <ul class="dropdown-menu">
+                          <li style="margin: 0.5em 0.5em 0.5em 0.5em">
+                            <%= form_tag("/rename", method: "post", class: "form-group") do %>
+                                <%= hidden_field_tag 'card_id', f.id %>
+                                <%= hidden_field_tag 'dashboard_id', @dashboard.id %>
+                                <%= text_field_tag(:title, "Neuer Name", class:"form-control") %>
+                                <br>
+                                <%= submit_tag("Umbenennen", class:"btn btn-success") %>
+                            <% end %>
+                          </li>
+                        </ul>
+                  </div>
+                  <br>
+                  <%= f.title %>
+                </div>
+              <% end %>
             </div>
-          </div>
 
-      <% end %>
+            <% if board.title == "Project Backlog" %>
+              <div class="panel-footer">
+                <div data-toggle="modal" data-target="#new-card-modal"> Neue Aufgabe anlegen... </div>
+              </div>
+            </div>
 
-      <div class="col-sm-3" style="margin-top: 2em">
+          <% else %>
 
-        <div class="well well-lg" data-toggle="popover" title="Neues Projekt anlegen" data-trigger="click"
-             data-content='
-                <%= form_tag("/new_project", method: "post", class: "project_form") do %>
-                  <%= label_tag(:title, "Titel:") %>
-                  <%= text_field_tag(:title) %>
-                  <%= submit_tag("Anlegen") %>
-                <% end %>'
-             data-placement="bottom">Neues Projekt...
+            <div class="panel-footer">
+              <div>
+
+                <%= link_to("Zum Sprint", controller: "sprint", action: "index", id: @dashboard.id) %>
+
+              </div>
+            </div>
+
+          <% end %>
+
+            <div class="modal fade" id="new-card-modal" role="dialog">
+              <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Neue Aufgabe anlegen</h4>
+                  </div>
+                  <div class="modal-body">
+                    <%= form_tag("/new_card", method: "post") do %>
+                        <%= hidden_field_tag 'board_id', board.id %>
+                        <%= label_tag(:title, "Beschreibung:") %>
+                        <%= text_field_tag(:title) %>
+                        <br><br><br>
+                        <%= submit_tag("Anlegen", class:"btn btn-success", id: "confirm-button") %>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
         </div>
+    <% end %>
 
+    </div>
+    <div class="col-sm-6" style="margin-top: 2em">
+      <div class="well well" style="background-color: burlywood">
+        Hier kommen dann Graph shizzle und Statistiken
       </div>
     </div>
   </div>
-
 </div>
 
 <script>
-  $(document).ready(function(){
-    $('[data-toggle="popover"]').popover({ html : true });
+
+  $('#confirm-button').click(function() {
+    $('#new-card-modal').modal('toggle');
   });
 
-  $(document).ready(function(){
-    $('.project_form').submit(function( event ) {
-      alert('ha');
-      $('[data-toggle="popover"]').popover('hide');
-      event.preventDefault();
+  $(document).ready( function() {
+    $( "[id^=draggable]" ).draggable({ revert: "invalid", helper: "clone", zIndex: 100 });
+
+    $( "[id^=droppable]" ).droppable({
+      classes: {
+        "ui-droppable-active": "ui-state-active",
+        "ui-droppable-hover": "ui-state-hover"
+      },
+      drop: function( event, ui ) {
+        var cardId = ui.draggable.attr("data-card-id");
+        var boardId = $(this).attr("data-board-id");
+        $.ajax({
+          url: '/change_board/'+cardId+'/'+boardId,
+          success: function(data, textStatus, xhr) {
+
+          }
+        });
+        $(this).append(ui.draggable);
+      }
     });
-  });
+  } );
+
 </script>

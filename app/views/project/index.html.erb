@@ -1,0 +1,51 @@
+<div id ="index-wrapper">
+
+  <div class="container-fluid">
+    <div class="row">
+
+      <% @projects.each do |f| %>
+
+          <div class="col-sm-3" style="margin-top: 2em">
+            <div class="well well-lg" style="background-color: burlywood">
+              <%= link_to f.title, controller: "dashboard", action: "index", id: f.id %>
+            </div>
+          </div>
+
+      <% end %>
+
+      <div class="col-sm-3" style="margin-top: 2em">
+
+        <div class="well well-lg" data-toggle="modal" data-target="#new-project-modal">Neues Projekt...</div>
+
+        <div class="modal fade" id="new-project-modal" role="dialog">
+          <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Neues Projekt anlegen</h4>
+              </div>
+              <div class="modal-body">
+                <%= form_tag("/new_project", method: "post", class: "project_form") do %>
+                    <%= label_tag(:title, "Titel:") %>
+                    <%= text_field_tag(:title) %>
+                    <br><br><br>
+                    <%= submit_tag("Anlegen", class:"btn btn-success", id: "confirm-button") %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+  $('#confirm-button').click(function() {
+    $('#new-project-modal').modal('toggle');
+  });
+
+</script>

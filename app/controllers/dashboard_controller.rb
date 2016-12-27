@@ -1,10 +1,11 @@
 class DashboardController < ApplicationController
 
   def index
-    @projects = Project.all
+    @dashboard = Dashboard.find_by(project_id: params[:id])
   end
 
-  def new_project
-    Project.create(name: params[:title])
+  def change_board
+    card = Card.find(params[:cardId])
+    card.update(board_id: params[:boardId])
   end
 end

@@ -1,0 +1,2 @@
+class SprintCard < ApplicationRecord
+end

@@ -1,0 +1,41 @@
+<%= link_to 'Zurück', :back, style:'float:right;color:red'%>
+<%  @sprint.sprint_boards.each do |board| %>
+    <div class="col-sm-2" style="margin-top: 2em">
+      <div class="panel panel-default">
+        <div class="panel-heading"><%= board.title %></div>
+
+        <div class="panel-body" id="droppable<%= board.id %>" data-board-id="<%=board.id%>" style="min-height: 8em">
+
+          <% board.sprint_cards.each do |f| %>
+              <div class="well well" style="background-color: burlywood" id="draggable<%= f.id %>" data-card-id="<%=f.id%>">
+                <%= f.title %>
+              </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+<% end %>
+
+<script>
+  $(document).ready( function() {
+    $( "[id^=draggable]" ).draggable({ revert: "invalid", helper: "clone", zIndex: 100 });
+
+    $( "[id^=droppable]" ).droppable({
+      classes: {
+        "ui-droppable-active": "ui-state-active",
+        "ui-droppable-hover": "ui-state-hover"
+      },
+      drop: function( event, ui ) {
+        var cardId = ui.draggable.attr("data-card-id");
+        var boardId = $(this).attr("data-board-id");
+        $.ajax({
+          url: '/change_sprint_board/'+cardId+'/'+boardId,
+          success: function(data, textStatus, xhr) {
+
+          }
+        });
+        $(this).append(ui.draggable);
+      }
+    });
+  } );
+</script>

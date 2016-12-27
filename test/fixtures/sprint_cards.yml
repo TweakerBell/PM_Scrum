@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  last_sprint_board_id: 1
+  last_user_id: 1
+  user_id: 1
+  priority: 1
+  position: 1
+  sprint_board_id: 1
+  visible: false
+  change_request: MyString
+
+two:
+  title: MyString
+  last_sprint_board_id: 1
+  last_user_id: 1
+  user_id: 1
+  priority: 1
+  position: 1
+  sprint_board_id: 1
+  visible: false
+  change_request: MyString

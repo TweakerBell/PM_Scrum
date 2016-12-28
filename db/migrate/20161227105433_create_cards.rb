@@ -5,6 +5,7 @@ class CreateCards < ActiveRecord::Migration[5.0]
       t.integer :last_board_id
       t.integer :last_user_id
       t.integer :board_id
+      t.string :color
 
       t.timestamps
     end

@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 20161227192447) do
     t.integer  "last_board_id"
     t.integer  "last_user_id"
     t.integer  "board_id"
+    t.string   "color"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
   end
@@ -57,6 +58,11 @@ ActiveRecord::Schema.define(version: 20161227192447) do
     t.integer  "sprint_board_id"
     t.boolean  "visible"
     t.string   "change_request"
+    t.string   "color"
+    t.string   "label"
+    t.integer  "work_to_do"
+    t.integer  "work_done"
+    t.boolean  "released"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
   end

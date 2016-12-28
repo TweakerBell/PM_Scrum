@@ -1,0 +1,2 @@
+module SprintCardHelper
+end

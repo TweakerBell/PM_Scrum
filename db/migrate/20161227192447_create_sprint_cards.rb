@@ -10,6 +10,11 @@ class CreateSprintCards < ActiveRecord::Migration[5.0]
       t.integer :sprint_board_id
       t.boolean :visible
       t.string :change_request
+      t.string :color
+      t.string :label
+      t.integer :work_to_do
+      t.integer :work_done
+      t.boolean :released
 
       t.timestamps
     end

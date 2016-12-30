@@ -6,6 +6,8 @@ class CreateCards < ActiveRecord::Migration[5.0]
       t.integer :last_user_id
       t.integer :board_id
       t.string :color
+      t.integer :matching_sprint_card_id
+      t.string :html_id
 
       t.timestamps
     end

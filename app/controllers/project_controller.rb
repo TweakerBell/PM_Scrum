@@ -10,6 +10,7 @@ class ProjectController < ApplicationController
     project.build_dashboard
     project.dashboard.boards.build(title: "Project Backlog")
     project.dashboard.boards.build(title: "Sprint Backlog")
+    project.dashboard.boards.build(title: "Fertig")
     project.dashboard.build_sprint
     project.dashboard.sprint.sprint_boards.build(title: "Sprint Backlog")
     project.dashboard.sprint.sprint_boards.build(title: "Dev")
@@ -19,6 +20,10 @@ class ProjectController < ApplicationController
     project.save
   end
 
+  def get_projects
+    projects = Project.all
+    render json: projects
+  end
 
 
 end

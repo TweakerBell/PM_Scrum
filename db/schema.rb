@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161227192447) do
+ActiveRecord::Schema.define(version: 20161228180853) do
 
   create_table "boards", force: :cascade do |t|
     t.string   "title"
@@ -25,14 +25,25 @@ ActiveRecord::Schema.define(version: 20161227192447) do
     t.integer  "last_user_id"
     t.integer  "board_id"
     t.string   "color"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.integer  "matching_sprint_card_id"
+    t.string   "html_id"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
   create_table "dashboards", force: :cascade do |t|
     t.integer  "project_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "estimated_works", force: :cascade do |t|
+    t.integer  "sprint_card_id"
+    t.integer  "user_id"
+    t.string   "user_name"
+    t.integer  "estimated_days"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
   create_table "projects", force: :cascade do |t|
@@ -63,6 +74,8 @@ ActiveRecord::Schema.define(version: 20161227192447) do
     t.integer  "work_to_do"
     t.integer  "work_done"
     t.boolean  "released"
+    t.integer  "matching_card_id"
+    t.string   "html_id"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
   end

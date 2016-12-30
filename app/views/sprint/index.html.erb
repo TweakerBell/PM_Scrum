@@ -1,14 +1,21 @@
 <%= link_to 'Zurück', :back, style:'float:right;color:red'%>
 <%  @sprint.sprint_boards.each do |board| %>
     <div class="col-sm-2" style="margin-top: 2em">
-      <div class="panel panel-default">
+      <div class="panel panel-default shadow2">
         <div class="panel-heading"><%= board.title %></div>
 
-        <div class="panel-body" id="droppable<%= board.id %>" data-board-id="<%=board.id%>" style="min-height: 8em">
+        <div class="panel-body" id="droppable" data-board-id="<%=board.id%>" style="min-height: 8em">
 
           <% board.sprint_cards.each do |f| %>
-              <div class="well well" style="background-color: <%= f.color %>" id="draggable<%= f.id %>" data-card-id="<%=f.id%>"
-                   data-toggle="modal" data-target="#sprintCardModal<%= f.id %>">
+              <% if board.title == "Fertig" %>
+
+                  <div class="well well shadow" style="background-color: <%= f.color %>" data-card-id="<%=f.id%>">
+                    <%= f.title %>
+                  </div>
+
+              <% else %>
+              <div class="well well shadow" style="background-color: <%= f.color %>" id="<%= f.html_id %>" data-card-id="<%=f.id%>"
+                   data-toggle="modal" data-target="#sprintCardModal<%= f.id %>" onclick="checkEstimations('<%= board.title %>',<%= f.id %>)">
                 <%= f.title %>
               </div>
 
@@ -25,7 +32,7 @@
                       <form id="change-form-sprint-<%= f.id %>" data-card-id="<%= f.id %>">
                         <div class="form-group">
                           <label for="title<%= f.id %>">Beschreibung:</label>
-                          <input type="text" class="form-control" id="title<%= f.id %>" placeholder="Neuer Titel">
+                          <input type="text" class="form-control" id="title<%= f.id %>" value="<%= f.title %>">
                         </div>
                         <label for="color">Farbe wählen:</label>
                         <label class="radio-inline">
@@ -49,6 +56,20 @@
                               <input type="radio" name="color" value="lightsalmon"><%= image_tag('lightsalmon.PNG') %>
                           <% end %>
                         </label>
+                          <% if board.title == "Sprint Backlog" %>
+                            <hr>
+                            <p>
+                              <label for="slider<%= f.id %>">Aufwandsschätzung</label>
+                              <input id="slider<%= f.id %>" type="range" min="1" max="40" step="1" value="1"
+                                     onmousemove="printValue('slider'+<%= f.id %>,'rangeValue'+<%= f.id %>)" />
+                            </p>
+                            <div class="form-group form-inline">
+                              <label for="rangeValue<%= f.id %>">Geschätzte Tage: </label>
+                              <input id="rangeValue<%= f.id %>" type="text" size="2" style="text-align: center">
+                            </div>
+                            <div id="estimations<%= f.id %>"></div>
+
+                          <% end %>
                         <p>
                           <button type="submit" class="btn btn-default">Fertig</button>
                         </p>
@@ -59,7 +80,7 @@
 
                 </div>
               </div>
-
+            <% end %>
           <% end %>
         </div>
       </div>
@@ -74,11 +95,12 @@
     var cardId = form.attr("data-card-id");
     var color = form.find('input[type=radio]:checked').val();
     var title = form.find("input[id^=title]").val();
+    var aufwand = form.find('#slider'+cardId).val();
     $('#sprintCardModal'+cardId).modal('hide');
     $.ajax({
       type: "POST",
       url: '/update_sprint_card/'+cardId,
-      data: { title: title, color: color },
+      data: { title: title, color: color, aufwand: aufwand, user_id: 3, user_name: "Horst" },
       success: function(data, textStatus, xhr) {
         var well = $('#draggable'+cardId);
         well.css("background-color", color);
@@ -89,7 +111,7 @@
   });
 
   $(document).ready( function() {
-    $( "[id^=draggable]" ).draggable({ revert: "invalid", helper: "clone", zIndex: 100 });
+    $( "#draggable" ).draggable({ revert: "invalid", helper: "clone", zIndex: 100 });
 
     $( "[id^=droppable]" ).droppable({
       classes: {
@@ -97,16 +119,74 @@
         "ui-droppable-hover": "ui-state-hover"
       },
       drop: function( event, ui ) {
+
         var cardId = ui.draggable.attr("data-card-id");
         var boardId = $(this).attr("data-board-id");
-        $.ajax({
-          url: '/change_sprint_board/'+cardId+'/'+boardId,
-          success: function(data, textStatus, xhr) {
+        var header = $(this).parent().children('.panel-heading');
 
-          }
-        });
-        $(this).append(ui.draggable);
+        if(header.text().toString() == "Fertig") {
+
+          $(this).append(ui.draggable);
+          $(ui.helper).remove();
+
+          $.ajax({
+            url: '/sprint_card_done/'+cardId+'/'+boardId,
+            success: function(data, textStatus, xhr) {
+            }
+          });
+          $(ui.draggable).disable();
+
+        } else {
+
+          $(this).append(ui.draggable);
+          $.ajax({
+            url: '/change_sprint_board/'+cardId+'/'+boardId,
+            success: function(data, textStatus, xhr) {
+            }
+          });
+        }
       }
     });
   } );
+
+  function printValue(sliderID, textboxId) {
+    var x = document.getElementById(textboxId);
+    var y = document.getElementById(sliderID);
+    x.value = y.value;
+  };
+
+  function checkEstimations(boardTitle, sprintCardId) {
+    if(boardTitle == "Sprint Backlog") {
+      $.ajax({
+        type: "GET",
+        url: '/check_estimations/'+sprintCardId,
+        success: function(data) {
+
+          var content = '<div class="container-fluid" id="aufwand"> <h2>Geschätzter Aufwand</h2> <table class="table"><thead>' +
+              '<tr><th>User</th><th>Aufwand</th><th>Datum</th></tr></thead><tbody>';
+
+          for (var x = 0; x < data.length; x++) {
+            var date = new Date(data[x].updated_at);
+            var tag = date.getDate();
+            var monat = date.getMonth();
+            monat += 1;
+            var jahr = date.getFullYear();
+            var stunde = date.getHours();
+            var minute = date.getMinutes();
+            minute = (minute < 10) ? ("0" + minute) : minute ;
+            var sekunden = date.getSeconds();
+            sekunden = (sekunden < 10) ? ("0" + sekunden) : sekunden ;
+
+            var datum = "Am: " +tag+ "." +monat+ "." +jahr+ " Um: " +stunde+ ":" +minute+ ":" +sekunden;
+
+            content += '<tr><td>'+data[x].user_name+'</td><td>'+data[x].estimated_days+' Tage</td><td>'+datum+'</td></tr>';
+          }
+          content += "</tbody></table></div>";
+          $('#aufwand').remove();
+          $(content).appendTo("#estimations"+sprintCardId);
+        }
+      });
+    }
+  };
+
 </script>

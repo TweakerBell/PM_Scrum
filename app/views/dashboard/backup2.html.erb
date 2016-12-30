@@ -70,40 +70,6 @@
 
     </div>
   </div>
-
-  <div class="modal fade" id="cardModal" role="dialog">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Karte anpassen</h4>
-        </div>
-        <div class="modal-body">
-          <form id="change-form" data-card-id="">
-            <div class="form-group">
-              <label for="title">Beschreibung:</label>
-              <input type="text" class="form-control" id="title" value="">
-            </div>
-            <label for="color">Farbe wählen:</label>
-            <label class="radio-inline">
-                <input type="radio" name="color" value="lightblue" id="lightblue"><%= image_tag('lightblue.PNG') %>
-            </label>
-            <label class="radio-inline">
-                <input type="radio" name="color" value="lightcoral" id="lightcoral"><%= image_tag('lightcoral.PNG') %>
-            </label>
-            <label class="radio-inline">
-                <input type="radio" name="color" value="lightsalmon" id="lightsalmon"><%= image_tag('lightsalmon.PNG') %>
-            </label>
-            <p>
-              <button type="submit" class="btn btn-default">Fertig</button>
-            </p>
-
-          </form>
-        </div>
-      </div>
-
-    </div>
-  </div>
 </div>
 
 
@@ -119,26 +85,6 @@
     }
   });
 
-  $("#change-form").submit( function (e) {
-    e.preventDefault();
-    var form = $(this);
-    var cardId = form.attr("data-card-id");
-    var boardId = form.attr("data-board-id");
-    var color = form.find('input[type=radio]:checked').val();
-    var title = form.find("input[id^=title]").val();
-    $('#cardModal').modal('hide');
-    $.ajax({
-      type: "POST",
-      url: '/update_card/'+cardId,
-      data: { title: title, color: color },
-      success: function(data, textStatus, xhr) {
-        var well = $('#draggable'+cardId);
-        well.css("background-color", color);
-        well.text(title);
-      }
-    });
-  });
-
   $('#new-card-form').submit( function (e) {
     e.preventDefault();
     var boardId = $('#board-id').val();
@@ -148,20 +94,12 @@
     $.ajax({
       type: "POST",
       url: '/new_card',
-      data: { title: title, board_id: boardId, html_id: "draggable" },
+      data: { title: title, board_id: boardId },
       success: function(data, textStatus, xhr) {
-        removeCards(boardId);
         getCards(boardId);
       }
     });
   });
-
-  function updateModal(cardId, color, title) {
-    var form = $('#change-form');
-    form.attr("data-card-id", cardId);
-    form.find('#'+color).prop('checked', true)
-    form.find('#title').prop('value', title);
-  }
 
   function getCards(boardId) {
 
@@ -175,14 +113,36 @@
             var content = "";
 
             if (data[x].title == "Fertig") {
-              content += '<div class="well well shadow" style="background-color:' + data[x].color + '" data-card-id="' +
-                  data[x].id + '" data-board-id="' + boardId + '">' + data[x].title + '</div>';
+              content += '<div class="well well shadow" style="background-color:' + data[x].color + '" data-card-id="' + data[x].id + '" data-board-id="' + boardId + '">' + data[x].title + '</div>';
             } else {
-              content += '<div class="well well shadow" style="background-color:' + data[x].color + '" id="' +
-                          data[x].html_id + '" data-card-id="' + data[x].id + '"';
-              content += 'data-toggle="modal" data-target="#cardModal"' +
-                          'onclick="updateModal(' + data[x].id + ',\'' + data[x].color + '\',\'' + data[x].title + '\')">' +
-                          data[x].title + '</div>';
+              content += '<div class="well well shadow" style="background-color:' + data[x].color + '" id="draggable' + data[x].id + '" data-card-id="' + data[x].id + '"';
+              content += 'data-toggle="modal" data-target="#cardModal' + data[x].id + '">' + data[x].title + '</div>';
+              content += '<div class="modal fade" id="cardModal' + data[x].id + '" role="dialog">';
+              content += '<div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal">&times;</button>';
+              content += '<h4 class="modal-title">Karte anpassen</h4></div><div class="modal-body">';
+              content += '<form id="change-form-' + data[x].id + '" data-card-id="' + data[x].id + '">';
+              content += '<div class="form-group">';
+              content += '<label for="title' + data[x].id + '">Beschreibung:</label>';
+              content += '<input type="text" class="form-control" id="title' + data[x].id + '" value="' + data[x].title + '"></div>';
+              content += '<label for="color">Farbe wählen:</label><label class="radio-inline">';
+              if (data[x].color == "lightblue") {
+                content += '<input type="radio" name="color" checked="checked" value="lightblue"><%= image_tag("lightblue.PNG") %></label>';
+              } else {
+                content += '<input type="radio" name="color" value="lightblue"><%= image_tag("lightblue.PNG") %></label>';
+              }
+              content += '<label class="radio-inline">'
+              if (data[x].color == "lightcoral") {
+                content += '<input type="radio" name="color" checked="checked" value="lightcoral"><%= image_tag("lightcoral.PNG") %></label>';
+              } else {
+                content += '<input type="radio" name="color" value="lightcoral"><%= image_tag("lightcoral.PNG") %></label>';
+              }
+              content += '<label class="radio-inline">';
+              if (data[x].color == "lightsalmon") {
+                content += '<input type="radio" name="color" checked="checked" value="lightsalmon"><%= image_tag("lightsalmon.PNG") %></label>';
+              } else {
+                content += '<input type="radio" name="color" value="lightsalmon"><%= image_tag("lightsalmon.PNG") %></label>';
+              }
+              content += '<p><button type="submit" class="btn btn-default" id="change-form-button' + data[x].id + '">Fertig</button></p></form></div></div></div></div>';
             }
             $(content).appendTo("#cards" + boardId);
           }
@@ -191,13 +151,30 @@
       }
     });
   }
-  function removeCards(boardId) {
-    $('#cards'+boardId).children().remove()
-  }
 
   function bindListener() {
 
-    $( "#draggable" ).draggable({ revert: "invalid", helper: "clone", zIndex: 100 });
+    $("[id^=change-form]").submit( function (e) {
+      e.preventDefault();
+      var form = $(this);
+      var cardId = form.attr("data-card-id");
+      var boardId = form.attr("data-board-id");
+      var color = form.find('input[type=radio]:checked').val();
+      var title = form.find("input[id^=title]").val();
+      $('#cardModal'+cardId).modal('hide');
+      $.ajax({
+        type: "POST",
+        url: '/update_card/'+cardId,
+        data: { title: title, color: color },
+        success: function(data, textStatus, xhr) {
+          var well = $('#draggable'+cardId);
+          well.css("background-color", color);
+          well.text(title);
+        }
+      });
+    });
+
+    $( "[id^=draggable]" ).draggable({ revert: "invalid", helper: "clone", zIndex: 100 });
 
     $( "[id^=droppable]" ).droppable({
       classes: {

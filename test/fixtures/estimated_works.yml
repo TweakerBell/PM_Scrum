@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  sprint_card_id: 1
+  user_id: 1
+  estimated_days: 1
+
+two:
+  sprint_card_id: 1
+  user_id: 1
+  estimated_days: 1

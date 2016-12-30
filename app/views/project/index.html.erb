@@ -3,19 +3,11 @@
   <div class="container-fluid">
     <div class="row">
 
-      <% @projects.each do |f| %>
-
-          <div class="col-sm-3" style="margin-top: 2em">
-            <div class="well well-lg" style="background-color: burlywood">
-              <%= link_to f.title, controller: "dashboard", action: "index", id: f.id %>
-            </div>
-          </div>
-
-      <% end %>
+      <div id="projects"></div>
 
       <div class="col-sm-3" style="margin-top: 2em">
 
-        <div class="well well-lg" data-toggle="modal" data-target="#new-project-modal">Neues Projekt...</div>
+        <div class="well well-lg shadow" data-toggle="modal" data-target="#new-project-modal">Neues Projekt...</div>
 
         <div class="modal fade" id="new-project-modal" role="dialog">
           <div class="modal-dialog modal-sm">
@@ -25,7 +17,7 @@
                 <h4 class="modal-title">Neues Projekt anlegen</h4>
               </div>
               <div class="modal-body">
-                <%= form_tag("/new_project", method: "post", class: "project_form") do %>
+                <%= form_tag("/new_project", method: "post", class: "project-form") do %>
                     <%= label_tag(:title, "Titel:") %>
                     <%= text_field_tag(:title) %>
                     <br><br><br>
@@ -44,8 +36,45 @@
 
 <script>
 
-  $('#confirm-button').click(function() {
-    $('#new-project-modal').modal('toggle');
+  $(document).ready(function() {
+    getProjects();
   });
+
+
+  $(".project-form").submit( function (e) {
+    e.preventDefault();
+    var form = $(this);
+    var title = form.children("#title").val();
+    $(".dropdown").hide();
+    $.ajax({
+      type: "POST",
+      url: '/new_project',
+      data: { title: title },
+      success: function(data, textStatus, xhr) {
+        $('#new-project-modal').modal('toggle');
+        getProjects();
+      }
+    });
+
+  });
+
+  function getProjects() {
+
+    $.ajax({
+      type: "GET",
+      url: '/get_projects',
+      success: function(data) {
+
+        for (var x = 0; x < data.length; x++) {
+          var content =  '<div class="col-sm-3" style="margin-top: 2em">'
+          content += '<a href="/dashboard/'+ data[x].id +'">'
+          content += '<div class="well well-lg shadow" style="background-color: palegreen; text-align: center">'
+          content += data[x].title + '</div></a></div>';
+          $(content).appendTo("#projects");
+        }
+      }
+    });
+  };
+
 
 </script>

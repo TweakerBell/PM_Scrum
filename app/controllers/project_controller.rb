@@ -1,7 +1,22 @@
 class ProjectController < ApplicationController
 
+  def welcome
+  end
   def index
-    @projects = Project.all
+  end
+  def add_user
+    project = Project.find(params[:projectId])
+    user = User.find(params[:userId])
+    project.users << user
+  end
+  def get_users
+    project = Project.find(params[:project_id])
+    render json: project.users
+  end
+  def get_available_users
+    project = Project.find(params[:project_id])
+    users = User.all - project.users
+    render json: users
   end
 
   def new_project
@@ -18,10 +33,11 @@ class ProjectController < ApplicationController
     project.dashboard.sprint.sprint_boards.build(title: "Test")
     project.dashboard.sprint.sprint_boards.build(title: "Fertig")
     project.save
+    current_user.projects << project
   end
 
   def get_projects
-    projects = Project.all
+    projects = current_user.projects
     render json: projects
   end
 

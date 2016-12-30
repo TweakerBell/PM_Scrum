@@ -16,11 +16,21 @@
           <a class="navbar-brand" href="#">Scrum Tool</a>
         </div>
         <ul class="nav navbar-nav">
-          <li class="active"><%= link_to 'Projekte', start_path %></li>
+          <li class="active"><%= link_to 'Projekte', root_path %></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="#"><span class="glyphicon glyphicon-user"></span> Anmelden</a></li>
-          <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Einloggen</a></li>
+          <li>
+            <%= link_to  new_user_registration_path do %>
+            <span class="glyphicon glyphicon-user"> Anmelden</span><% end %>
+          </li>
+          <li>
+            <%= link_to new_user_session_path do %>
+            <span class="glyphicon glyphicon-log-in"> Einloggen</span><% end %>
+          </li>
+          <li>
+            <%= link_to destroy_user_session_path, method: :delete  do%>
+            <span class="glyphicon glyphicon-log-out"> Abmelden</span><% end %>
+          </li>
         </ul>
       </div>
     </nav>
@@ -28,7 +38,9 @@
     <div class="container-fluid">
       <div class="row">
 
-        <div class="col-sm-1"></div>
+        <div class="col-sm-1"><p class="notice"><%= notice %></p>
+          <p class="alert"><%= alert %></p>
+        </div>
 
         <div class="col-sm-10" style="min-height: 60em;border: groove">
           <%= yield %>

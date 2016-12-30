@@ -1,8 +1,24 @@
 <div id ="dashboard-wrapper">
   <div class="row">
-    <div class="col-sm-3" style="margin-top: 1em; margin-left: 1em">
+    <div class="col-sm-4" style="margin-top: 1em; margin-left: 1em">
       <div class="panel panel-primary">
         <div class="panel-heading"><h3>Projekt: <%= @dashboard.project.title %></h3></div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-sm-6" style="margin-top: 2em">
+              <form id="add-user-form" data-project-id="<%=@dashboard.project.id%>">
+                <div class="form-group">
+                  <label for="sel1">Ntzer wählen:</label>
+                  <select class="form-control" id="sel1">
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-default">Hinzufügen</button>
+              </form>
+            </div>
+            <div class="col-sm-6" style="margin-top: 2em" id="user-list">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -117,6 +133,32 @@
       var boardId = panels[i].attributes[1].value;
       getCards(boardId);
     }
+    $('#user-list').children().remove();
+    getUsers(<%=	 @dashboard.project.id %>);
+    $('#sel1').children().remove();
+    getAvailableUsers(<%=	 @dashboard.project.id %>);
+  });
+
+  $("#add-user-form").submit( function (e) {
+    e.preventDefault();
+    var form = $(this);
+    var projectId = form.attr('data-project-id');
+    var userId = form.find('#sel1').val();
+
+    if(userId != null) {
+      $.ajax({
+        type: "POST",
+        url: '/add_user/'+projectId+'/'+userId,
+        data: { },
+        success: function(data, textStatus, xhr) {
+          $('#user-list').children().remove();
+          getUsers(<%=	 @dashboard.project.id %>);
+          $('#sel1').children().remove();
+          getAvailableUsers(<%=	 @dashboard.project.id %>);
+        }
+      });
+    }
+
   });
 
   $("#change-form").submit( function (e) {
@@ -194,6 +236,40 @@
   function removeCards(boardId) {
     $('#cards'+boardId).children().remove()
   }
+  function getUsers(projectId) {
+
+    $.ajax({
+      type: "GET",
+      url: '/get_users/'+projectId,
+      success: function(data) {
+        if(data != null) {
+          for (var x = 0; x < data.length; x++) {
+
+            var content = '<p>'+ data[x].username +'</p>';
+            $(content).appendTo("#user-list");
+          }
+        }
+      }
+    });
+  }
+
+  function getAvailableUsers(projectId) {
+
+    $.ajax({
+      type: "GET",
+      url: '/get_available_users/'+projectId,
+      success: function(data) {
+        if(data != null) {
+          for (var x = 0; x < data.length; x++) {
+
+            var content = '<option value=' + data[x].id + '>'+ data[x].username +'</option>';
+            $(content).appendTo("#sel1");
+          }
+        }
+      }
+    });
+  }
+
 
   function bindListener() {
 

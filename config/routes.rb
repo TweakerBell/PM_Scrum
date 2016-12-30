@@ -1,11 +1,13 @@
 Rails.application.routes.draw do
+  devise_for :users
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-  root 'project#index'
+  root 'project#welcome'
   get '/start', to: 'project#index'
   post '/new_project', to: 'project#new_project'
   get '/dashboard/:id', to: 'dashboard#index', as: 'dashboard'
   get '/move_to_sprint/:cardId/:boardId', to: 'card#move_to_sprint'
   post '/new_card', to: 'card#new_card'
+  post '/add_user/:projectId/:userId', to: 'project#add_user'
   post '/rename/:id', to: 'card#rename'
   get 'sprint/:id', to: 'sprint#index'
   get '/change_sprint_board/:cardId/:boardId', to: 'sprint#change_board'
@@ -16,4 +18,6 @@ Rails.application.routes.draw do
   get '/check_estimations/:cardId', to: 'sprint_card#check_estimations'
   get '/get_projects', to: 'project#get_projects'
   get '/get_cards/:board_id', to: 'dashboard#get_cards'
+  get '/get_users/:project_id', to: 'project#get_users'
+  get '/get_available_users/:project_id', to: 'project#get_available_users'
 end

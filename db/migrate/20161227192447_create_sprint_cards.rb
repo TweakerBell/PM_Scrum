@@ -5,6 +5,7 @@ class CreateSprintCards < ActiveRecord::Migration[5.0]
       t.integer :last_sprint_board_id
       t.integer :last_user_id
       t.integer :user_id
+      t.string :username
       t.integer :priority
       t.integer :position
       t.integer :sprint_board_id

@@ -1,3 +1,4 @@
 class SprintCard < ApplicationRecord
-  has_many :estimated_works
+  has_many :estimation_rounds
+  belongs_to :sprint_board
 end

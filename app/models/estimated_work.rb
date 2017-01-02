@@ -1,3 +1,3 @@
 class EstimatedWork < ApplicationRecord
-  belongs_to :sprint_card
+  belongs_to :estimation_round
 end

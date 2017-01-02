@@ -3,12 +3,17 @@ class SprintCardController < ApplicationController
   def update
     sprint_card = SprintCard.find(params[:id])
     sprint_card.update(title: params[:title], color: params[:color])
-    estimation = EstimatedWork.find_by(sprint_card_id: sprint_card.id, user_id: params[:user_id])
-    if estimation.nil?
-      sprint_card.estimated_works.create(user_id: params[:user_id], user_name: params[:user_name], estimated_days: params[:aufwand])
-    else
-      estimation.update(estimated_days: params[:aufwand])
+
+    if params[:aufwand].to_i != 0
+      estimation = sprint_card.estimation_rounds.last.estimated_works.find_by(user_id: params[:user_id])
+      if estimation.nil?
+        sprint_card.estimation_rounds.last.estimated_works.create(user_id: params[:user_id], user_name: params[:user_name], estimated_days: params[:aufwand])
+      else
+        estimation.update(estimated_days: params[:aufwand])
+      end
     end
+
+    sprint_card.estimation_rounds.last.work_comments.create(user_name: params[:user_name], text: params[:text]) unless params[:text].empty?
     card = Card.find_by(matching_sprint_card_id: sprint_card.id)
     card.update(title: params[:title], color: params[:color])
 
@@ -22,17 +27,38 @@ class SprintCardController < ApplicationController
     card.update(board_id: board.id, html_id: "")
   end
 
-  def estimate_work
-    sprint_card = SprintCard.find(params[:id])
-  end
-
   def check_estimations
     sprint_card = SprintCard.find(params[:cardId])
-    estimations = sprint_card.estimated_works
+    estimations = sprint_card.estimation_rounds.find(params[:roundId]).estimated_works
 
-    puts estimations.to_json
+    if estimations.count == sprint_card.sprint_board.sprint.dashboard.project.users.count
 
-    render json: estimations
+      day = estimations.first.estimated_days
+      equal_estimation = true
+
+      estimations.each do |f|
+         if day != f.estimated_days
+           equal_estimation = false
+         end
+      end
+      array = Array.new
+      estimations.each do |f|
+        array << f.as_json.merge({agreement: equal_estimation})
+      end
+
+      equal_estimation ? sprint_card.update(released: true, html_id: "draggable", work_to_do: day) : ""
+      puts json: array
+      render json: array
+    else
+    end
+
+  end
+
+  def check_comments
+    sprint_card = SprintCard.find(params[:cardId])
+    comments = sprint_card.estimation_rounds.find(params[:roundId]).work_comments
+
+    render json: comments
   end
 
 end

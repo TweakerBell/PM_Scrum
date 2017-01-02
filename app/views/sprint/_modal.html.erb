@@ -1,0 +1,109 @@
+
+<div class="modal fade" id="sprintCardModal<%= f.id %>" role="dialog">
+  <div class="modal-dialog" style="overflow-y: initial">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Karte anpassen</h4>
+      </div>
+      <div class="modal-body" style="height: 40em;overflow-y: auto;">
+
+        <ul class="nav nav-tabs">
+          <% rounds = f.estimation_rounds %>
+          <% rounds.each do |round| %>
+          <li><a data-toggle="tab" href="#change-form-sprint-<%= f.id %><%= round.id %>">Runde <%= round.id %></a></li>
+          <% end %>
+        </ul>
+
+        <div class="tab-content">
+          <% rounds.each do |round| %>
+              <form id="change-form-sprint-<%= f.id %><%= round.id %>" data-card-id="<%= f.id %>" data-board-title="<%= board.title %>" class="tab-pane fade" data-round-id="<%= round.id %>">
+          <div class="" id="round<%= round.id %>">
+            <div class="tabbable">
+              <ul class="nav nav-tabs">
+                <li <%= board.sprint.dashboard.project.users.first.id == current_user.id ? '' : 'style=display:none '%>><a data-toggle="tab" href="#home<%= round.id %>">Optionen</a></li>
+                <li class="active"><a data-toggle="tab" href="#menu1<%= round.id %>">Diskussion <%= round.id %></a></li>
+                <li><a data-toggle="tab" href="#menu2<%= round.id %>">Aufwand</a></li>
+              </ul>
+              <div class="tab-content">
+                <div id="home<%= round.id %>" class="tab-pane fade">
+                  <div class="form-group">
+                    <br>
+                    <%= round.id %>
+                    <label for="title<%= f.id %>">Beschreibung:</label>
+                    <input type="text" class="form-control" id="title<%= f.id %>" value="<%= f.title %>">
+                  </div>
+                  <div class="colorpick">
+                    <label for="color">Farbe wählen:</label>
+                    <label class="radio-inline">
+                      <% if f.color == "lightblue" %>
+                          <input type="radio" name="color" checked="checked" value="lightblue"><%= image_tag('lightblue.PNG') %>
+                      <% else %>
+                          <input type="radio" name="color" value="lightblue"><%= image_tag('lightblue.PNG') %>
+                      <% end %>
+                    </label>
+                    <label class="radio-inline">
+                      <% if f.color == "lightcoral" %>
+                          <input type="radio" name="color" checked="checked" value="lightcoral"><%= image_tag('lightcoral.PNG') %>
+                      <% else %>
+                          <input type="radio" name="color" value="lightcoral"><%= image_tag('lightcoral.PNG') %>
+                      <% end %>
+                    </label>
+                    <label class="radio-inline">
+                      <% if f.color == "lightsalmon" %>
+                          <input type="radio" name="color" checked="checked" value="lightsalmon"><%= image_tag('lightsalmon.PNG') %>
+                      <% else %>
+                          <input type="radio" name="color" value="lightsalmon"><%= image_tag('lightsalmon.PNG') %>
+                      <% end %>
+                    </label>
+                    <hr>
+                  </div>
+                </div>
+                <% if board.title == "Sprint Backlog" %>
+                    <div id="menu1<%= round.id %>" class="tab-pane fade in active">
+                      <br>
+                      <div class="form-group">
+                        <label for="comment<%= f.id %>">Kommentar: </label>
+                        <input type="text" class="form-control" id="comment<%= f.id %>" value="">
+                      </div>
+                      <div id="work-comments<%= f.id %><%= round.id %>"></div>
+                      <hr>
+                    </div>
+                    <div id="menu2<%= round.id %>" class="tab-pane fade">
+                      <div class="form-group">
+                        <br>
+                        <label for="sel<%= f.id %>">Aufwandsschätzung in Tagen:</label>
+                        <select class="form-control" id="sel<%= f.id %>">
+                          <option>0</option>
+                          <option>1</option>
+                          <option>2</option>
+                          <option>3</option>
+                          <option>5</option>
+                          <option>8</option>
+                          <option>13</option>
+                          <option>20</option>
+                          <option>40</option>
+                          <option>100</option>
+                        </select>
+                      </div>
+                      <div id="estimations<%= f.id %><%= round.id %>"></div>
+                    </div>
+                      <p>
+                        <button type="submit" class="btn btn-default">Abschicken</button>
+                      </p>
+
+                <% end %>
+              </div>
+
+            </div>
+          </div>
+              </form>
+          <% end %>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

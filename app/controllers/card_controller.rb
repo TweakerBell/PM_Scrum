@@ -14,7 +14,8 @@ class CardController < ApplicationController
 
       dashboard = Dashboard.find(card.board.dashboard.id)
       sprint_card = SprintCard.create(title: card.title, priority: 1, visible: true, sprint_board_id: dashboard.sprint.sprint_boards.first.id,
-                                      color: card.color, released: false, matching_card_id: params[:cardId], html_id: "draggable")
+                                      color: card.color, released: false, matching_card_id: params[:cardId], html_id: "")
+      sprint_card.estimation_rounds.create(active: true)
       card.update(board_id: params[:boardId], matching_sprint_card_id: sprint_card.id)
 
     end

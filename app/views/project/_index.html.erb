@@ -37,6 +37,7 @@
 <script>
 
   $(document).ready(function() {
+    $("#projects").children().remove();
     getProjects();
   });
 
@@ -52,6 +53,7 @@
       data: { title: title },
       success: function(data, textStatus, xhr) {
         $('#new-project-modal').modal('toggle');
+        $("#projects").children().remove();
         getProjects();
       }
     });

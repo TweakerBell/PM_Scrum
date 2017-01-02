@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   root 'project#welcome'
   get '/start', to: 'project#index'
   post '/new_project', to: 'project#new_project'
+  delete '/destroy_project/:projectId', to: 'project#destroy_project',as: 'destroy_project'
   get '/dashboard/:id', to: 'dashboard#index', as: 'dashboard'
   get '/move_to_sprint/:cardId/:boardId', to: 'card#move_to_sprint'
   post '/new_card', to: 'card#new_card'

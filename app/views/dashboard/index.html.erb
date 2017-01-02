@@ -2,20 +2,30 @@
   <div class="row">
     <div class="col-sm-4" style="margin-top: 1em; margin-left: 1em">
       <div class="panel panel-primary">
-        <div class="panel-heading"><h3>Projekt: <%= @dashboard.project.title %></h3></div>
+        <div class="panel-heading">
+          <h3>Projekt: <%= @dashboard.project.title %>
+            <div style="float: right">
+              <%=	 link_to destroy_project_path(@dashboard.project.id), method: :delete, data: {confirm: 'Projekt wirklich löschen?'} do %>
+                  <span class="glyphicon glyphicon-remove" style="color:red"></span>
+              <% end %>
+            </div>
+          </h3>
+        </div>
         <div class="panel-body">
           <div class="row">
-            <div class="col-sm-6" style="margin-top: 2em">
+            <div class="col-sm-6">
               <form id="add-user-form" data-project-id="<%=@dashboard.project.id%>">
                 <div class="form-group">
-                  <label for="sel1">Ntzer wählen:</label>
+                  <label for="sel1">Nutzer wählen:</label>
                   <select class="form-control" id="sel1">
                   </select>
                 </div>
                 <button type="submit" class="btn btn-default">Hinzufügen</button>
               </form>
             </div>
-            <div class="col-sm-6" style="margin-top: 2em" id="user-list">
+            <div class="col-sm-6">
+              <strong>Projektteilnehmer</strong>
+              <div id="user-list"></div>
             </div>
           </div>
         </div>
@@ -39,26 +49,7 @@
 
             <% if board.title == "Project Backlog" %>
                 <div class="panel-footer">
-                  <div data-toggle="modal" data-target="#new-card-modal"> Neue Aufgabe anlegen... </div>
-                </div>
-                <div class="modal fade" id="new-card-modal" role="dialog">
-                  <div class="modal-dialog modal-sm">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Neue Aufgabe anlegen</h4>
-                      </div>
-                      <div class="modal-body">
-                        <%= form_tag("/new_card", id:"new-card-form") do %>
-                            <%= hidden_field_tag 'board-id', board.id %>
-                            <%= label_tag(:title, "Beschreibung:") %>
-                            <%= text_field_tag(:title) %>
-                            <br><br><br>
-                            <%= submit_tag("Anlegen", class:"btn btn-success", id: "confirm-button") %>
-                        <% end %>
-                      </div>
-                    </div>
-                  </div>
+                  <div data-toggle="modal" data-target="#new-card-modal" onclick="updateNewCardForm(<%= board.id %>)"> Neue Aufgabe anlegen... </div>
                 </div>
             <% elsif board.title == "Fertig" %>
 
@@ -84,6 +75,27 @@
           </div>
         </div>
 
+    </div>
+  </div>
+
+  <div class="modal fade" id="new-card-modal" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Neue Aufgabe anlegen</h4>
+        </div>
+        <div class="modal-body">
+          <form id="new-card-form" action="/new_card" accept-charset="UTF-8" method="post">
+            <input type="hidden" name="board-id" id="board-id" data-board-id="">
+            <label for="title">Beschreibung:</label>
+            <input type="text" name="title" id="title">
+            <br><br><br>
+            <input type="submit" name="commit" value="Anlegen" class="btn btn-success" id="confirm-button" data-disable-with="Anlegen">
+          </form>
+
+        </div>
+      </div>
     </div>
   </div>
 
@@ -183,7 +195,7 @@
 
   $('#new-card-form').submit( function (e) {
     e.preventDefault();
-    var boardId = $('#board-id').val();
+    var boardId = $(this).attr("data-board-id");
     var title = $('#title').val();
     $('#new-card-modal').modal('hide');
 
@@ -194,6 +206,8 @@
       success: function(data, textStatus, xhr) {
         removeCards(boardId);
         getCards(boardId);
+        $('#new-card-form')[0].reset();
+        $('#confirm-button').prop('disabled', false)
       }
     });
   });
@@ -203,6 +217,11 @@
     form.attr("data-card-id", cardId);
     form.find('#'+color).prop('checked', true)
     form.find('#title').prop('value', title);
+  }
+
+  function updateNewCardForm(boardId) {
+    var form = $('#new-card-form');
+    form.attr("data-board-id", boardId);
   }
 
   function getCards(boardId) {
@@ -273,7 +292,7 @@
 
   function bindListener() {
 
-    $( "#draggable" ).draggable({ revert: "invalid", helper: "clone", zIndex: 100 });
+    $( "[id^=draggable]" ).draggable({ revert: "invalid", helper: "clone", zIndex: 100 });
 
     $( "[id^=droppable]" ).droppable({
       classes: {

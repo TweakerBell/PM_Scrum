@@ -41,5 +41,10 @@ class ProjectController < ApplicationController
     render json: projects
   end
 
+  def destroy_project
+    project = Project.find(params[:projectId])
+    project.destroy
+    render 'project/welcome'
+  end
 
 end

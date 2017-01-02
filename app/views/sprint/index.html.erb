@@ -111,7 +111,7 @@
   });
 
   $(document).ready( function() {
-    $( "#draggable" ).draggable({ revert: "invalid", helper: "clone", zIndex: 100 });
+    $( "[id^=draggable]" ).draggable({ revert: "invalid", helper: "clone", zIndex: 100 });
 
     $( "[id^=droppable]" ).droppable({
       classes: {

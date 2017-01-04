@@ -139,4 +139,9 @@ class SprintCardController < ApplicationController
     end
   end
 
+  def update_options
+    sprint_card = SprintCard.find(params[:card_id])
+    sprint_card.update(color: params[:color], title: params[:title])
+  end
+
 end

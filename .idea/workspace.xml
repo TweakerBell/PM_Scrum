@@ -2,16 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a8a33e48-94ed-4b94-a202-89498d228f65" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/card_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/card_controller.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/project_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/project_controller.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/sprint_card_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/sprint_card_controller.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/estimation_round.rb" afterPath="$PROJECT_DIR$/app/models/estimation_round.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/sprint/_modal.html.erb" afterPath="$PROJECT_DIR$/app/views/sprint/_modal.html.erb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/sprint/index.html.erb" afterPath="$PROJECT_DIR$/app/views/sprint/index.html.erb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config/routes.rb" afterPath="$PROJECT_DIR$/config/routes.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/db/migrate/20170102171227_create_estimation_rounds.rb" afterPath="$PROJECT_DIR$/db/migrate/20170102171227_create_estimation_rounds.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/db/schema.rb" afterPath="$PROJECT_DIR$/db/schema.rb" />
     </list>
     <ignored path="PM_Scrum.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -43,8 +36,8 @@
       <file leaf-file-name="routes.rb" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/config/routes.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="21" column="55" selection-start-line="21" selection-start-column="55" selection-end-line="21" selection-end-column="55" />
+            <state relative-caret-position="510">
+              <caret line="30" column="66" selection-start-line="30" selection-start-column="66" selection-end-line="30" selection-end-column="66" />
               <folding />
             </state>
           </provider>
@@ -63,9 +56,11 @@
       <file leaf-file-name="index.html.erb" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/views/sprint/index.html.erb">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="21" column="24" selection-start-line="21" selection-start-column="24" selection-end-line="21" selection-end-column="24" />
-              <folding />
+            <state relative-caret-position="246">
+              <caret line="331" column="72" selection-start-line="331" selection-start-column="72" selection-end-line="331" selection-end-column="72" />
+              <folding>
+                <marker date="1483542823288" expanded="true" signature="15921:15933" ph="..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -83,8 +78,8 @@
       <file leaf-file-name="sprint_card_controller.rb" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/controllers/sprint_card_controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-323">
-              <caret line="68" column="102" selection-start-line="68" selection-start-column="102" selection-end-line="68" selection-end-column="102" />
+            <state relative-caret-position="408">
+              <caret line="143" column="66" selection-start-line="143" selection-start-column="66" selection-end-line="143" selection-end-column="66" />
               <folding />
             </state>
           </provider>
@@ -530,12 +525,12 @@
       <workItem from="1483355827139" duration="2074000" />
       <workItem from="1483360901405" duration="30885000" />
       <workItem from="1483456218747" duration="37058000" />
-      <workItem from="1483524203107" duration="8217000" />
+      <workItem from="1483524203107" duration="12759000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="191012000" />
+    <option name="totallyTimeSpent" value="195554000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -936,34 +931,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/views/sprint/_modal.html.erb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="56" selection-start-line="15" selection-start-column="56" selection-end-line="15" selection-end-column="56" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config/routes.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="21" column="55" selection-start-line="21" selection-start-column="55" selection-end-line="21" selection-end-column="55" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/db/schema.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
           <caret line="41" column="20" selection-start-line="41" selection-start-column="16" selection-end-line="41" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/controllers/sprint_card_controller.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-323">
-          <caret line="68" column="102" selection-start-line="68" selection-start-column="102" selection-end-line="68" selection-end-column="102" />
           <folding />
         </state>
       </provider>
@@ -976,11 +947,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/config/routes.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="30" column="66" selection-start-line="30" selection-start-column="66" selection-end-line="30" selection-end-column="66" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/controllers/sprint_card_controller.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="143" column="66" selection-start-line="143" selection-start-column="66" selection-end-line="143" selection-end-column="66" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/sprint/_modal.html.erb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="15" column="56" selection-start-line="15" selection-start-column="56" selection-end-line="15" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/views/sprint/index.html.erb">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="21" column="24" selection-start-line="21" selection-start-column="24" selection-end-line="21" selection-end-column="24" />
-          <folding />
+        <state relative-caret-position="246">
+          <caret line="331" column="72" selection-start-line="331" selection-start-column="72" selection-end-line="331" selection-end-column="72" />
+          <folding>
+            <marker date="1483542823288" expanded="true" signature="15921:15933" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>

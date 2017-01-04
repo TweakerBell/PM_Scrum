@@ -28,4 +28,5 @@ Rails.application.routes.draw do
   get '/update_comments/:round_id', to: 'sprint_card#update_comments'
   get '/estimate/:card_id', to: 'sprint_card#estimate'
   get '/check_estimation_done/:card_id', to: 'sprint_card#check_estimation_done'
+  post '/update_options/:card_id', to: 'sprint_card#update_options'
 end

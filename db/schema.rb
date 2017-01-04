@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 20170102171227) do
 
   create_table "estimation_rounds", force: :cascade do |t|
     t.integer  "sprint_card_id"
+    t.integer  "round_number"
     t.boolean  "active"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false

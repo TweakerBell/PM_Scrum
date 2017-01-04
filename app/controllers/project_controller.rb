@@ -47,4 +47,8 @@ class ProjectController < ApplicationController
     render 'project/welcome'
   end
 
+  def user_count
+    render json: {user_count: Project.find(params[:project_id]).users.count}
+  end
+
 end

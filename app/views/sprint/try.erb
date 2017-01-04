@@ -1,0 +1,523 @@
+<%= link_to 'Zurück', :back, style:'float:right;color:red'%>
+<div class="container-fluid">
+<%  @sprint.sprint_boards.each do |board| %>
+    <div class="col-sm-2" style="margin-top: 2em">
+      <button type="button" class="btn btn-default" onclick="updateModal('<%= board.title %>',2)" id="b1">Default</button>
+      <div class="panel panel-default shadow2">
+        <div class="panel-heading"><%= board.title %></div>
+
+        <div class="panel-body" id="droppable" data-board-id="<%=board.id%>" style="min-height: 8em">
+
+          <% board.sprint_cards.each do |f| %>
+              <% if board.title == "Fertig" %>
+
+                  <div class="well well shadow" style="background-color: <%= f.color %>" data-card-id="<%=f.id%>">
+                    <%= f.title %>
+                  </div>
+
+              <% else %>
+              <div class="well well-sm shadow" style="background-color: <%= f.color %>" id="<%= f.html_id %>" data-card-id="<%=f.id%>" data-board-title="<%=board.title%>"
+                   data-toggle="modal" data-target="#sprintCardModal<%= f.id %>">
+                <%= f.title %>
+                <% if f.released %>
+                    <hr>
+                    <div class="row">
+                      <div class="col-sm-4" >
+                        <div style="float: left">
+                          <%= f.username.nil? ? "Username" : f.username %>
+                        </div>
+                      </div>
+                      <div class="col-sm-8" >
+                        <div style="float: right">
+                          Aufwand : <%= f.work_to_do %>
+                        </div>
+                      </div>
+                    </div>
+                <% end %>
+
+              </div>
+              <%= render partial: 'modal', locals: {f: f, board: board} %>
+
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+<% end %>
+</div>
+<script>
+
+  function bindListeners() {
+    $("[id^=change-form-sprint]").submit( function (e) {
+      e.preventDefault();
+    });
+  }
+  function updateComment(formId) {
+    var form = $('#'+formId);
+    var roundId = form.attr("data-round-id");
+    var sprintCardId = form.attr("data-card-id");
+    var text = form.find("input[id^=comment]").val();
+    form.find('#comment').children().remove();
+    $.ajax({
+      method: 'GET',
+      url: '/update_comments/'+roundId,
+      data: {text: text, username: "<%= current_user.username %>"},
+      success: function(data) {
+
+        var content = '<table class="table"><thead>' +
+            '<tr><th>User</th><th>Kommentar</th><th>Datum</th></tr></thead><tbody></div>';
+        for (var y = 0; y < data.length; y++) {
+          var local = data[y];
+          var date = new Date(local.updated_at);
+          var tag = date.getDate();
+          tag = (tag < 10) ? ("0" + tag) : tag;
+          var monat = date.getMonth();
+          monat += 1;
+          monat = (monat < 10) ? ("0" + monat) : monat;
+          var jahr = date.getFullYear();
+          var stunde = date.getHours();
+          var minute = date.getMinutes();
+          minute = (minute < 10) ? ("0" + minute) : minute;
+          var sekunden = date.getSeconds();
+          sekunden = (sekunden < 10) ? ("0" + sekunden) : sekunden;
+
+          var datum = "<p>Am: " + tag + "." + monat + "." + jahr + "</p><p>Um: " + stunde + ":" + minute + ":" + sekunden + "</p>";
+
+          content += '<tr><td>' + local.user_name + '</td><td>' + local.text + '</td><td>' + datum + '</td></tr>';
+        }
+        content += '</tbody></table>';
+        form.find("input[id^=comment]").val('');
+        form.find('#comment').append(content);
+      }
+    });
+  }
+  function estimate(formId) {
+    var form = $('#'+formId);
+    var roundId = form.attr("data-round-id");
+    var sprintCardId = form.attr("data-card-id");
+    var aufwand = form.find("#sel"+sprintCardId+" option:selected" ).text();
+    $.ajax({
+      type: "GET",
+      url: '/estimate/' + sprintCardId,
+      dataType: 'json',
+      data: {aufwand: aufwand, round_id: roundId},
+      success: function (data) {
+        if (data != null) {
+          var content = '<table class="table"><thead>' +
+              '<tr><th>User</th><th>Aufwand</th><th>Datum</th></tr></thead><tbody>';
+
+          for (var x = 0; x < data.length; x++) {
+            var date = new Date(data[x].updated_at);
+            var tag = date.getDate();
+            tag = (tag < 10) ? ("0" + tag) : tag;
+            var monat = date.getMonth();
+            monat += 1;
+            monat = (monat < 10) ? ("0" + monat) : monat;
+            var jahr = date.getFullYear();
+            var stunde = date.getHours();
+            var minute = date.getMinutes();
+            minute = (minute < 10) ? ("0" + minute) : minute;
+            var sekunden = date.getSeconds();
+            sekunden = (sekunden < 10) ? ("0" + sekunden) : sekunden;
+
+            var datum = "<p>Am: " + tag + "." + monat + "." + jahr + "</p><p>Um: " + stunde + ":" + minute + ":" + sekunden + "</p>";
+
+            content += '<tr><td>' + data[x].user_name + '</td><td>' + data[x].estimated_days + ' Tage</td><td>' + datum + '</td></tr>';
+          }
+          content += "</tbody></table>";
+
+          form.find('#aufwand').append(content);
+
+          var estimationsDiv = $("#estimations" + sprintCardId + roundId);
+          if(estimationsDiv.attr("data-done") == true) {
+            form.find('#estimation-button').css("display", "none");
+          } else {
+            if (data[0].agreement) {
+              var well = $('.well[data-card-id=' + sprintCardId + ']');
+              well.first().prop("id", "draggable");
+              estimationsDiv.attr("data-done", true);
+              form.find('#estimation-button').css("display", "none");
+            }
+            if (data[0].agreement == false) {
+              estimationsDiv.attr("data-done", true);
+              form.find('#estimation-button').css("display", "none");
+              $.ajax({
+                type: "POST",
+                url: '/add_round/' + sprintCardId,
+                dataType: 'json',
+                success: function (data) {
+                  updateModal("Sprint Backlog", sprintCardId)
+                }
+              });
+            }
+          }
+        }
+      }
+    });
+  }
+
+  $(document).ready( function() {
+    $( "[id^=draggable]" ).draggable({ revert: "invalid", helper: "clone", zIndex: 100 });
+
+    $( "[id^=droppable]" ).droppable({
+      classes: {
+        "ui-droppable-active": "ui-state-active",
+        "ui-droppable-hover": "ui-state-hover"
+      },
+      drop: function( event, ui ) {
+
+        var cardId = ui.draggable.attr("data-card-id");
+        var boardId = $(this).attr("data-board-id");
+        var header = $(this).parent().children('.panel-heading');
+
+        if(header.text().toString() == "Fertig") {
+
+          $(this).append(ui.draggable);
+          $(ui.helper).remove();
+
+          $.ajax({
+            url: '/sprint_card_done/'+cardId+'/'+boardId,
+            success: function(data, textStatus, xhr) {
+            }
+          });
+          $(ui.draggable).disable();
+
+        } else {
+
+          $(this).append(ui.draggable);
+          $.ajax({
+            url: '/change_sprint_board/'+cardId+'/'+boardId,
+            success: function(data, textStatus, xhr) {
+            }
+          });
+        }
+      }
+    });
+  } );
+
+  function cardAssets(sprintCardId){
+    var req1 = $.ajax({
+      type: "GET",
+      url: '/card_assets/' + sprintCardId,
+      dataType: 'json',
+      success: function (data1) {
+      }
+    });
+    var req2 = $.ajax({
+      type: "GET",
+      url: '/user_count/' + <%= @sprint.dashboard.project.id %>,
+      dataType: 'json',
+      success: function (data2) {
+      }
+    });
+    var req3 = $.ajax({
+      type: "GET",
+      url: '/check_estimation_done/' + sprintCardId,
+      dataType: 'json',
+      success: function (data3) {
+      }
+    });
+
+    $.when(req1, req2, req3).done(function(data1, data2, data3){
+      alert(data1);
+      alert(data1[0].id);
+      alert(data1.id);
+      alert(data2.id);
+    });
+  }
+
+  function updateModal(boardTitle, sprintCardId) {
+    if(boardTitle == "Sprint Backlog") {
+      var modal = $('#sprintCardModal'+sprintCardId);
+      $.ajax({
+        type: "GET",
+        url: '/card_assets/' + sprintCardId,
+        dataType: 'json',
+        success: function (data) {
+          var userCount = 0;
+          $.ajax({
+            type: "GET",
+            url: '/user_count/' + <%= @sprint.dashboard.project.id %>,
+            dataType: 'json',
+            success: function (data2) {
+              userCount = data2.user_count;
+
+          modal.find('#round-ul'+sprintCardId).children().remove();
+          modal.find('#content'+sprintCardId).children().remove();
+          for (var x = 0; x < data["estimation_rounds"].length; x++) {
+            var estimationId = data["estimation_rounds"][x].id;
+            var roundNumber = data["estimation_rounds"][x].round_number;
+            alert(roundNumber);
+            var workComments = data["estimation_rounds"][x]["work_comments"];
+            var estimatedWork = data["estimation_rounds"][x]["estimated_works"];
+            $.ajax({
+              type: "GET",
+              url: '/check_estimation_done/' + sprintCardId,
+              dataType: 'json',
+              success: function (data3) {
+
+                if(x == 0) {
+                  var content = '<li class="active">';
+                } else {
+                  var content = '<li>';
+                }
+                content += '<a data-toggle="tab" href="#change-form-sprint-'+sprintCardId+estimationId+'">';
+                alert(roundNumber);
+                content += 'Runde '+roundNumber+'</a>';
+                content += '</li>';
+                modal.find('#round-ul'+sprintCardId).append(content);
+
+
+                content = '<form id="change-form-sprint-'+sprintCardId+estimationId+'"';
+                content += ' data-card-id="'+sprintCardId+'" data-board-title="'+boardTitle+'"';
+                if(x == 0){
+                  content += 'class="tab-pane active" data-round-id="'+estimationId+'"';
+                } else {
+                  content += 'class="tab-pane fade" data-round-id="'+estimationId+'"';
+                }
+                content += ' data-round-number="'+roundNumber+'">';
+                content += '<div class="" id="round'+estimationId+'">';
+                content += '<div class="tabbable">';
+                content += '<ul class="nav nav-tabs">';
+                content += '<li <%= @sprint.dashboard.project.users.first.id == current_user.id ? "" : "style=display:none"%>>';
+                content += '<a data-toggle="tab" href="#home'+estimationId+'">Optionen</a>';
+                content += '</li>';
+                content += '<li class="active">';
+                content += '<a data-toggle="tab" href="#menu1'+estimationId+'">Diskussion</a>';
+                content += '</li>';
+                content += '<li>';
+                content += '<a data-toggle="tab" href="#menu2'+estimationId+'">Aufwand</a>';
+                content += '</li>';
+                content += '</ul>';
+                content += '<div class="tab-content">';
+                content += '<div id="home'+estimationId+'" class="tab-pane fade">';
+                content += '<div class="form-group"><br>';
+                content += '<label for="title'+sprintCardId+'">Beschreibung:</label>';
+                content += '<input type="text" class="form-control" id="title'+sprintCardId+'" value="'+data.title+'">';
+                content += '</div>';
+                content += '<div class="colorpick">';
+                content += '<label for="color">Farbe wählen:</label>';
+                content += '<label class="radio-inline">';
+                if(data.color == "lightblue") {
+                  content += '<input type="radio" name="color" checked="checked" value="lightblue"><%= image_tag("lightblue.PNG") %>';
+                } else {
+                  content += '<input type="radio" name="color" value="lightblue"><%= image_tag("lightblue.PNG") %>';
+                }
+                content += '</label>';
+                content += '<label class="radio-inline">';
+                if(data.color == "lightcoral") {
+                  content += '<input type="radio" name="color" checked="checked" value="lightcoral"><%= image_tag("lightcoral.PNG") %>';
+                } else {
+                  content += '<input type="radio" name="color" value="lightcoral"><%= image_tag("lightcoral.PNG") %>';
+                }
+                content += '</label>';
+                content += '<label class="radio-inline">';
+                if(data.color == "lightsalmon") {
+                  content += '<input type="radio" name="color" checked="checked" value="lightsalmon"><%= image_tag("lightsalmon.PNG") %>';
+                } else {
+                  content += '<input type="radio" name="color" value="lightsalmon"><%= image_tag("lightsalmon.PNG") %>';
+                }
+                content += '</label><hr></div></div>';
+                // if board.title == "Sprint Backlog" war hier vorher für den Rest
+                content += '<div id="menu1'+estimationId+'" class="tab-pane fade in active"><br>';
+                content += '<div class="form-group">';
+                content += '<label for="comment'+sprintCardId+'">Kommentar: </label>';
+                content += '<input type="text" class="form-control" id="comment'+sprintCardId+'" value="">';
+                content += '</div>';
+
+                content += '<div id="work-comments'+sprintCardId+estimationId+'"><hr>';
+                content += '<div class="container-fluid" id="comment">';
+                content += '<table class="table"><thead>' +
+                    '<tr><th>User</th><th>Kommentar</th><th>Datum</th></tr></thead><tbody></div>';
+                for (var y = 0; y < workComments.length; y++) {
+                  var local = workComments[y];
+                  var date = new Date(local.updated_at);
+                  var tag = date.getDate();
+                  tag = (tag < 10) ? ("0" + tag) : tag;
+                  var monat = date.getMonth();
+                  monat += 1;
+                  monat = (monat < 10) ? ("0" + monat) : monat;
+                  var jahr = date.getFullYear();
+                  var stunde = date.getHours();
+                  var minute = date.getMinutes();
+                  minute = (minute < 10) ? ("0" + minute) : minute;
+                  var sekunden = date.getSeconds();
+                  sekunden = (sekunden < 10) ? ("0" + sekunden) : sekunden;
+
+                  var datum = "<p>Am: " + tag + "." + monat + "." + jahr + "</p><p>Um: " + stunde + ":" + minute + ":" + sekunden + "</p>";
+
+                  content += '<tr><td>' + local.user_name + '</td><td>' + local.text + '</td><td>' + datum + '</td></tr>';
+                }
+                content += "</tbody></table></div>";
+                content += '<p><button type="submit" class="btn btn-default"';
+                content += 'onclick="updateComment(\'change-form-sprint-'+sprintCardId+estimationId+'\')">Aktualisieren</button></p>';
+                content += '</div></div>';
+
+                content += '<div id="menu2'+estimationId+'" class="tab-pane fade">';
+                if(data3.has_voted != true) {
+                  content += '<div class="form-group"><br>';
+                  content += '<label for="sel'+sprintCardId+'">Aufwandsschätzung in Tagen:</label>';
+                  content += '<select class="form-control" id="sel'+sprintCardId+'">';
+                  content += '<option>0</option><option>1</option><option>2</option><option>3</option>';
+                  content += '<option>5</option><option>8</option><option>13</option><option>20</option>';
+                  content += '<option>40</option><option>100</option>';
+                  content += '</select></div>';
+                }
+                content += '<div id="estimations'+sprintCardId+estimationId+'">';
+                content += '<div class="container-fluid" id="aufwand">';
+
+                var showEstimations = false;
+                var estLength = estimatedWork.length;
+                if(userCount == estLength) {
+                  showEstimations = true;
+                }
+                if(showEstimations) {
+                  content += '<table class="table"><thead>' +
+                      '<tr><th>User</th><th>Aufwand</th><th>Datum</th></tr></thead><tbody>';
+                  for (var z = 0; z < estLength; z++) {
+                    local = estimatedWork[z];
+                    date = new Date(local.updated_at);
+                    tag = date.getDate();
+                    tag = (tag < 10) ? ("0" + tag) : tag;
+                    monat = date.getMonth();
+                    monat += 1;
+                    monat = (monat < 10) ? ("0" + monat) : monat;
+                    jahr = date.getFullYear();
+                    stunde = date.getHours();
+                    minute = date.getMinutes();
+                    minute = (minute < 10) ? ("0" + minute) : minute;
+                    sekunden = date.getSeconds();
+                    sekunden = (sekunden < 10) ? ("0" + sekunden) : sekunden;
+
+                    datum = "<p>Am: " + tag + "." + monat + "." + jahr + "</p><p>Um: " + stunde + ":" + minute + ":" + sekunden + "</p>";
+
+                    content += '<tr><td>' + local.user_name + '</td><td>' + local.estimated_days + ' Tage</td><td>' + datum + '</td></tr>';
+                  }
+                  content += "</tbody></table>";
+                }
+                content += '</div>';
+                content += '</div>';
+                if(showEstimations != true) {
+                  content += '<p><button type="submit" class="btn btn-default"';
+                  content += 'onclick="estimate(\'change-form-sprint-'+sprintCardId+estimationId+'\')" id="estimation-button">Abschicken</button></p>';
+                }
+                content += '</div>';
+                content += '</div></div></div></form>';
+
+
+                modal.find('#content'+sprintCardId).append(content);
+
+                if(userCount == estLength && data3.voting_done != true) {
+                  $.ajax({
+                    type: "POST",
+                    url: '/add_round/' + sprintCardId,
+                    dataType: 'json',
+                    data: {round_number:  roundNumber},
+                    success: function (data) {
+                      updateModal("Sprint Backlog", sprintCardId)
+                    }
+                  });
+                }
+
+
+              }});
+          }
+          bindListeners();
+        }
+      });
+      }
+    });
+    }
+  }
+
+  function checkEstimations(boardTitle, sprintCardId, roundId) {
+    if(boardTitle == "Sprint Backlog") {
+      $.ajax({
+        type: "GET",
+        url: '/check_estimations/'+sprintCardId+'/'+roundId,
+        dataType : 'json',
+        success: function(data) {
+          if (data != null) {
+            var content = '<div class="container-fluid" id="aufwand"> <table class="table"><thead>' +
+                '<tr><th>User</th><th>Aufwand</th><th>Datum</th></tr></thead><tbody>';
+
+            for (var x = 0; x < data.length; x++) {
+              var date = new Date(data[x].updated_at);
+              var tag = date.getDate();
+              tag = (tag < 10) ? ("0" + tag) : tag;
+              var monat = date.getMonth();
+              monat += 1;
+              monat = (monat < 10) ? ("0" + monat) : monat;
+              var jahr = date.getFullYear();
+              var stunde = date.getHours();
+              var minute = date.getMinutes();
+              minute = (minute < 10) ? ("0" + minute) : minute;
+              var sekunden = date.getSeconds();
+              sekunden = (sekunden < 10) ? ("0" + sekunden) : sekunden;
+
+              var datum = "<p>Am: " + tag + "." + monat + "." + jahr + "</p><p>Um: " + stunde + ":" + minute + ":" + sekunden + "</p>";
+
+              content += '<tr><td>' + data[x].user_name + '</td><td>' + data[x].estimated_days + ' Tage</td><td>' + datum + '</td></tr>';
+            }
+            content += "</tbody></table></div>";
+            var estimationsDiv = $("#estimations" + sprintCardId + roundId);
+            estimationsDiv.children().remove();
+            $(content).appendTo(estimationsDiv);
+
+            if (data[0].agreement && estimationsDiv.attr("data-done") != true) {
+              var well = $('.well[data-card-id=' + sprintCardId + ']');
+              well.first().prop("id", "draggable");
+              estimationsDiv.attr("data-done", true);
+            }
+            if (data[0].agreement == false && estimationsDiv.attr("data-done") != true) {
+              estimationsDiv.attr("data-done", true);
+              $.ajax({
+                type: "POST",
+                url: '/add_round/' + sprintCardId,
+                dataType: 'json',
+                success: function (data) {
+                }
+              });
+            }
+          }
+        }
+      });
+    }
+  }
+
+  function checkComments(boardTitle, sprintCardId, roundId) {
+    if(boardTitle == "Sprint Backlog") {
+      $.ajax({
+        type: "GET",
+        url: '/check_comments/'+sprintCardId+'/'+roundId,
+        success: function(data) {
+          var content = '<div class="container-fluid" id="comment"> <table class="table"><thead>' +
+              '<tr><th>User</th><th>Kommentar</th><th>Datum</th></tr></thead><tbody>';
+
+          for (var x = 0; x < data.length; x++) {
+            var date = new Date(data[x].updated_at);
+            var tag = date.getDate();
+            tag = (tag < 10) ? ("0" + tag) : tag ;
+            var monat = date.getMonth();
+            monat += 1;
+            monat = (monat < 10) ? ("0" + monat) : monat ;
+            var jahr = date.getFullYear();
+            var stunde = date.getHours();
+            var minute = date.getMinutes();
+            minute = (minute < 10) ? ("0" + minute) : minute ;
+            var sekunden = date.getSeconds();
+            sekunden = (sekunden < 10) ? ("0" + sekunden) : sekunden ;
+
+            var datum = "<p>Am: " +tag+ "." +monat+ "." +jahr+ "</p><p>Um: " +stunde+ ":" +minute+ ":" +sekunden +"</p>";
+
+            content += '<tr><td>'+data[x].user_name+'</td><td>'+data[x].text+'</td><td>'+datum+'</td></tr>';
+          }
+          content += "</tbody></table></div>";
+          $("#work-comments"+sprintCardId+roundId).children().remove();
+          $(content).appendTo("#work-comments"+sprintCardId+roundId);
+        }
+      });
+    }
+  };
+
+</script>

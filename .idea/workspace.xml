@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a8a33e48-94ed-4b94-a202-89498d228f65" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/sprint/index.html.erb" afterPath="$PROJECT_DIR$/app/views/sprint/index.html.erb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/dashboard/index.html.erb" afterPath="$PROJECT_DIR$/app/views/dashboard/index.html.erb" />
     </list>
     <ignored path="PM_Scrum.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -51,7 +51,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.html.erb" pinned="false" current-in-tab="true">
+      <file leaf-file-name="index.html.erb" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/views/sprint/index.html.erb">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="401">
@@ -72,23 +72,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.html.erb" pinned="false" current-in-tab="false">
+      <file leaf-file-name="index.html.erb" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/views/dashboard/index.html.erb">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="67" column="0" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
+            <state relative-caret-position="306">
+              <caret line="90" column="89" selection-start-line="90" selection-start-column="89" selection-end-line="90" selection-end-column="89" />
               <folding>
                 <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="e#8517#8688#0#HTML" expanded="false" />
-                <element signature="e#8728#8810#0#HTML" expanded="false" />
-                <element signature="e#8841#9971#0#HTML" expanded="false" />
-                <element signature="e#10004#10053#0#HTML" expanded="false" />
-                <element signature="e#10085#10413#0#HTML" expanded="false" />
-                <element signature="e#10455#10845#0#HTML" expanded="false" />
-                <element signature="e#10874#12331#0#HTML" expanded="false" />
-                <marker date="1483649683274" expanded="true" signature="9221:9238" ph="..." />
+                <element signature="e#8619#8790#0#HTML" expanded="false" />
+                <element signature="e#8830#8912#0#HTML" expanded="false" />
+                <element signature="e#8943#10073#0#HTML" expanded="false" />
+                <element signature="e#10106#10155#0#HTML" expanded="false" />
+                <element signature="e#10187#10515#0#HTML" expanded="false" />
+                <element signature="e#10557#10947#0#HTML" expanded="false" />
+                <element signature="e#10976#12433#0#HTML" expanded="false" />
+                <marker date="1483650696890" expanded="true" signature="9323:9340" ph="..." />
               </folding>
             </state>
           </provider>
@@ -181,8 +181,8 @@
         <option value="$PROJECT_DIR$/db/seeds.rb" />
         <option value="$PROJECT_DIR$/app/controllers/sprint_card_controller.rb" />
         <option value="$PROJECT_DIR$/app/controllers/dashboard_controller.rb" />
-        <option value="$PROJECT_DIR$/app/views/dashboard/index.html.erb" />
         <option value="$PROJECT_DIR$/app/views/sprint/index.html.erb" />
+        <option value="$PROJECT_DIR$/app/views/dashboard/index.html.erb" />
       </list>
     </option>
   </component>
@@ -511,12 +511,12 @@
       <workItem from="1483524203107" duration="42752000" />
       <workItem from="1483614824751" duration="9552000" />
       <workItem from="1483632691102" duration="3946000" />
-      <workItem from="1483639483391" duration="10134000" />
+      <workItem from="1483639483391" duration="10859000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="249179000" />
+    <option name="totallyTimeSpent" value="249904000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -914,55 +914,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config/routes.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="33" column="23" selection-start-line="33" selection-start-column="9" selection-end-line="33" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/views/layouts/application.html.erb">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
           <caret line="5" column="76" selection-start-line="5" selection-start-column="76" selection-end-line="5" selection-end-column="76" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/controllers/dashboard_controller.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/db/schema.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="89" column="23" selection-start-line="89" selection-start-column="16" selection-end-line="89" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/views/dashboard/index.html.erb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="67" column="0" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="e#8517#8688#0#HTML" expanded="false" />
-            <element signature="e#8728#8810#0#HTML" expanded="false" />
-            <element signature="e#8841#9971#0#HTML" expanded="false" />
-            <element signature="e#10004#10053#0#HTML" expanded="false" />
-            <element signature="e#10085#10413#0#HTML" expanded="false" />
-            <element signature="e#10455#10845#0#HTML" expanded="false" />
-            <element signature="e#10874#12331#0#HTML" expanded="false" />
-            <marker date="1483649683274" expanded="true" signature="9221:9238" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -989,6 +945,50 @@
             <marker date="1483649858441" expanded="true" signature="20035:20047" ph="..." />
             <marker date="1483649858441" expanded="true" signature="23896:23907" ph="..." />
             <marker date="1483649858441" expanded="true" signature="23896:23910" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/controllers/dashboard_controller.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/routes.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="33" column="23" selection-start-line="33" selection-start-column="9" selection-end-line="33" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/db/schema.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="89" column="23" selection-start-line="89" selection-start-column="16" selection-end-line="89" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/dashboard/index.html.erb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="90" column="89" selection-start-line="90" selection-start-column="89" selection-end-line="90" selection-end-column="89" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="e#8619#8790#0#HTML" expanded="false" />
+            <element signature="e#8830#8912#0#HTML" expanded="false" />
+            <element signature="e#8943#10073#0#HTML" expanded="false" />
+            <element signature="e#10106#10155#0#HTML" expanded="false" />
+            <element signature="e#10187#10515#0#HTML" expanded="false" />
+            <element signature="e#10557#10947#0#HTML" expanded="false" />
+            <element signature="e#10976#12433#0#HTML" expanded="false" />
+            <marker date="1483650696890" expanded="true" signature="9323:9340" ph="..." />
           </folding>
         </state>
       </provider>

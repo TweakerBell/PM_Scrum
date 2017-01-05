@@ -46,11 +46,8 @@
 
             <div class="panel-heading"><%= board.title %>
             </div>
-            <% if board.title == "Fertige Sprints" %>
-              <div class="panel-body" style="min-height: 8em" data-board-id="<%=board.id%>">
-            <% else %>
-              <div class="panel-body" style="min-height: 8em"  id="droppable<%= board.id %>" data-board-id="<%=board.id%>">
-            <% end %>
+
+              <div class="panel-body" style="min-height: 8em"  <%=  board.title == "Fertige Sprints"? '' : 'id=droppable'+board.id.to_s+'' %> data-board-id="<%=board.id%>">
               <div id="cards<%= board.id %>">
                 <% if board.title == "Aktueller Sprint" %>
                   <div class="drop-helper" id="droppable<%= board.id %>">

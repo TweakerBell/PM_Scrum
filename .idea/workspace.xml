@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a8a33e48-94ed-4b94-a202-89498d228f65" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/sprint/index.html.erb" afterPath="$PROJECT_DIR$/app/views/sprint/index.html.erb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/dashboard/index.html.erb" afterPath="$PROJECT_DIR$/app/views/dashboard/index.html.erb" />
     </list>
     <ignored path="PM_Scrum.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -20,7 +20,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/PM_Scrum@Development__PM_Scrum.coverage" NAME="Development: PM_Scrum Coverage Results" MODIFIED="1483615106084" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="PM_Scrum" />
+    <SUITE FILE_PATH="coverage/PM_Scrum@Development__PM_Scrum.coverage" NAME="Development: PM_Scrum Coverage Results" MODIFIED="1483635256813" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="PM_Scrum" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -34,8 +34,8 @@
       <file leaf-file-name="routes.rb" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/config/routes.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="9" column="69" selection-start-line="9" selection-start-column="69" selection-end-line="9" selection-end-column="69" />
+            <state relative-caret-position="408">
+              <caret line="33" column="23" selection-start-line="33" selection-start-column="9" selection-end-line="33" selection-end-column="23" />
               <folding />
             </state>
           </provider>
@@ -61,11 +61,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.html.erb" pinned="false" current-in-tab="true">
+      <file leaf-file-name="index.html.erb" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/views/sprint/index.html.erb">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="24">
-              <caret line="343" column="11" selection-start-line="343" selection-start-column="11" selection-end-line="343" selection-end-column="11" />
+            <state relative-caret-position="1214">
+              <caret line="383" column="128" selection-start-line="383" selection-start-column="128" selection-end-line="383" selection-end-column="128" />
               <folding>
                 <marker date="1483633633895" expanded="true" signature="19961:19973" ph="..." />
                 <marker date="1483633633895" expanded="true" signature="23822:23833" ph="..." />
@@ -75,10 +75,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="sprint_card_controller.rb" pinned="false" current-in-tab="false">
+      <file leaf-file-name="index.html.erb" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/views/dashboard/index.html.erb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="833">
+              <caret line="49" column="137" selection-start-line="49" selection-start-column="137" selection-end-line="49" selection-end-column="137" />
+              <folding>
+                <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+                <marker date="1483636027143" expanded="true" signature="8541:8558" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sprint_card_controller.rb" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/controllers/sprint_card_controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1516">
+            <state relative-caret-position="629">
               <caret line="166" column="51" selection-start-line="166" selection-start-column="51" selection-end-line="166" selection-end-column="51" />
               <folding />
             </state>
@@ -141,9 +154,9 @@
         <option value="$PROJECT_DIR$/config/routes.rb" />
         <option value="$PROJECT_DIR$/app/controllers/sprint_card_controller.rb" />
         <option value="$PROJECT_DIR$/app/assets/stylesheets/application.scss" />
-        <option value="$PROJECT_DIR$/app/views/dashboard/index.html.erb" />
         <option value="$PROJECT_DIR$/config/environments/production.rb" />
         <option value="$PROJECT_DIR$/app/views/sprint/index.html.erb" />
+        <option value="$PROJECT_DIR$/app/views/dashboard/index.html.erb" />
       </list>
     </option>
   </component>
@@ -693,35 +706,35 @@
       <workItem from="1483456218747" duration="37058000" />
       <workItem from="1483524203107" duration="42752000" />
       <workItem from="1483614824751" duration="9552000" />
-      <workItem from="1483632691102" duration="935000" />
+      <workItem from="1483632691102" duration="3946000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="236034000" />
+    <option name="totallyTimeSpent" value="239045000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24520256" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2897787" sideWeight="0.39712155" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32771337" sideWeight="0.4914712" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39726028" sideWeight="0.60287845" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33719704" sideWeight="0.4936034" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32771337" sideWeight="0.4914712" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32771337" sideWeight="0.4936034" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39726028" sideWeight="0.60287845" order="3" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -1073,29 +1086,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config/routes.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="69" selection-start-line="9" selection-start-column="69" selection-end-line="9" selection-end-column="69" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/assets/stylesheets/application.scss">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="416">
           <caret line="55" column="21" selection-start-line="55" selection-start-column="21" selection-end-line="55" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/views/dashboard/index.html.erb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="51" column="17" selection-start-line="51" selection-start-column="17" selection-end-line="51" selection-end-column="17" />
-          <folding>
-            <element signature="e#10336#11793#0#HTML" expanded="false" />
-            <marker date="1483626356215" expanded="true" signature="8683:8700" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1131,14 +1125,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/controllers/sprint_card_controller.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1516">
-          <caret line="166" column="51" selection-start-line="166" selection-start-column="51" selection-end-line="166" selection-end-column="51" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/controllers/dashboard_controller.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="289">
@@ -1149,13 +1135,40 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/views/sprint/index.html.erb">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="24">
-          <caret line="343" column="11" selection-start-line="343" selection-start-column="11" selection-end-line="343" selection-end-column="11" />
+        <state relative-caret-position="1214">
+          <caret line="383" column="128" selection-start-line="383" selection-start-column="128" selection-end-line="383" selection-end-column="128" />
           <folding>
             <marker date="1483633633895" expanded="true" signature="19961:19973" ph="..." />
             <marker date="1483633633895" expanded="true" signature="23822:23833" ph="..." />
             <marker date="1483633633895" expanded="true" signature="23822:23836" ph="..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/dashboard/index.html.erb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="833">
+          <caret line="49" column="137" selection-start-line="49" selection-start-column="137" selection-end-line="49" selection-end-column="137" />
+          <folding>
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <marker date="1483636027143" expanded="true" signature="8541:8558" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/routes.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="33" column="23" selection-start-line="33" selection-start-column="9" selection-end-line="33" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/controllers/sprint_card_controller.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="629">
+          <caret line="166" column="51" selection-start-line="166" selection-start-column="51" selection-end-line="166" selection-end-column="51" />
+          <folding />
         </state>
       </provider>
     </entry>

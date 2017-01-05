@@ -346,7 +346,7 @@
           content += '<div class="" id="round'+estimationId+'">';
           content += '<div class="tabbable">';
           content += '<ul class="nav nav-tabs">';
-          content += '<li <%= @sprint.dashboard.project.users.first.id == current_user.id ? "" : "style=display:none"%>>';
+          content += '<li <%= current_user.product_owner? || urrent_user.scrum_master? ? "" : "style=display:none"%>>';
           content += '<a data-toggle="tab" href="#home'+estimationId+'">Optionen</a>';
           content += '</li>';
           content += '<li class="active">';

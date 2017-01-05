@@ -4,6 +4,13 @@ class ProjectController < ApplicationController
   end
   def index
   end
+  def role_management
+    @users = User.all
+  end
+  def change_role
+    user = User.find(params[:user_id])
+    user.update(role: params[:role])
+  end
   def add_user
     project = Project.find(params[:projectId])
     user = User.find(params[:userId])
@@ -24,16 +31,18 @@ class ProjectController < ApplicationController
 
     project.build_dashboard
     project.dashboard.boards.build(title: "Project Backlog")
-    project.dashboard.boards.build(title: "Sprint Backlog")
-    project.dashboard.boards.build(title: "Fertig")
+    project.dashboard.boards.build(title: "Aktueller Sprint")
+    project.dashboard.boards.build(title: "Fertige Sprints")
     project.dashboard.build_sprint
     project.dashboard.sprint.sprint_boards.build(title: "Sprint Backlog")
-    project.dashboard.sprint.sprint_boards.build(title: "Dev")
+    project.dashboard.sprint.sprint_boards.build(title: "Planned")
+    project.dashboard.sprint.sprint_boards.build(title: "In Work")
     project.dashboard.sprint.sprint_boards.build(title: "Code Review")
     project.dashboard.sprint.sprint_boards.build(title: "Test")
-    project.dashboard.sprint.sprint_boards.build(title: "Fertig")
+    project.dashboard.sprint.sprint_boards.build(title: "Done")
     project.save
     current_user.projects << project
+    current_user.product_owner!
   end
 
   def get_projects

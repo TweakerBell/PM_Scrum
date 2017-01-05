@@ -1,42 +1,55 @@
-<%= link_to 'Zurück', :back, style:'float:right;color:red'%>
 <div class="container-fluid">
 <%  @sprint.sprint_boards.each do |board| %>
     <div class="col-sm-2" style="margin-top: 2em">
       <div class="panel panel-default shadow2">
         <div class="panel-heading"><%= board.title %></div>
 
-        <div class="panel-body" id="droppable" data-board-id="<%=board.id%>" style="min-height: 8em">
+        <div class="panel-body ui-widget-header" id="droppable<%=board.id%>" data-board-id="<%=board.id%>" data-board-title="<%= board.title %>"
+             style="min-height: 8em">
 
           <% board.sprint_cards.each do |f| %>
               <% if board.title == "Fertig" %>
-
-                  <div class="well well shadow" style="background-color: <%= f.color %>" data-card-id="<%=f.id%>">
-                    <%= f.title %>
-                  </div>
-
-              <% else %>
-              <div class="well well-sm shadow" style="background-color: <%= f.color %>" id="<%= f.html_id %>" data-card-id="<%=f.id%>" data-board-title="<%=board.title%>"
-                   data-toggle="modal" data-target="#sprintCardModal<%= f.id %>" onclick="updateModal('<%= board.title %>',<%= f.id %>)">
-                <%= f.title %>
-                <% if f.released %>
-                    <hr>
-                    <div class="row">
-                      <div class="col-sm-4" >
-                        <div style="float: left">
-                          <%= f.username.nil? ? "Username" : f.username %>
-                        </div>
-                      </div>
-                      <div class="col-sm-8" >
-                        <div style="float: right">
-                          Aufwand : <%= f.work_to_do %>
-                        </div>
-                      </div>
+                  <div class="sprintcard shadow" style="background-color: <%= f.color %>"
+                       data-card-id="<%=f.id%>">
+                    <div class="title" style="margin: 1em">
+                      <%= f.title %>
                     </div>
-                <% end %>
+                  </div>
+                  <p></p>
+              <% else %>
+                  <div class="sprintcard shadow ui-widget-content" style="background-color: <%= f.color %>;min-width: 10em"
+                       data-card-id="<%=f.id%>" id="<%= f.html_id %>" data-board-title="<%=board.title%>"
+                       data-toggle="modal" data-target="#sprintCardModal<%= f.id %>"
+                       onclick="updateModal(this, <%= f.id %>)">
+                    <div class="title" style="margin: 0.5em 0em 0.5em 1em">
+                      <%= f.title %>
+                    </div>
+                    <div style="border-bottom: 2px solid whitesmoke"></div>
+                    <div id="priodiv" style="margin: 0.2em 0 0.2em 1em; font-size: x-small">
+                      Priorität: <%= f.priority %>
+                    </div>
+                    <% if f.released %>
+                     <div style="; border-bottom: 2px solid whitesmoke"></div>
+                     <div>
+                       <div style="margin: 0.2em 0 0.2em 1em; font-size: x-small">
+                         User: <%= f.username.nil? ? 'Unassigned' : f.username %>
+                       </div>
+                       <div style="; border-bottom: 2px solid whitesmoke"></div>
+                       <div class="progress" style="margin: 0.2em 0.2em 0.2em 0.2em">
+                         <% done = (f.work_done.to_f / f.work_to_do)*100 %>
+                         <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="<%= done %>"
+                              aria-valuemin="0" aria-valuemax="100" style="width:<%= done %>%" id="progressbar<%= f.id %>">
 
-              </div>
+                         </div>
+                         <span><%= f.work_done %> von <%= f.work_to_do %> fertig</span>
+                       </div>
+                     </div>
+
+                    <% end %>
+                  </div>
+                  <p></p>
               <%= render partial: 'modal', locals: {f: f, board: board} %>
-
+                  <p></p>
             <% end %>
           <% end %>
         </div>
@@ -57,19 +70,49 @@
     var color = form.find('input[type=radio]:checked').val();
     var title = form.find("input[id^=title]").val();
     var cardId = form.attr("data-card-id");
+    var prio = form.find("#prio"+cardId+" option:selected" ).text();
     $.ajax({
       method: 'POST',
       url: '/update_options/'+cardId,
-      data: {title: title, color: color},
+      data: {title: title, color: color, priority: prio},
       success: function(data) {
-        updateModal("Sprint Backlog", cardId);
-        var well = $('.well[data-card-id=' + cardId + ']');
-        well.first().css("background-color", color);
-        well.text(title);
+        updateModal(form, cardId);
+        var div = $('div[data-card-id='+cardId+']')
+        div.css("background-color", color);
+        div.children('.title').text(title);
+        div.children('#priodiv').text("Priorität: "+prio);
       }
     });
   }
-
+  function updateWorkDone(formId) {
+    var form = $('#'+formId);
+    var workDone = form.find("input[id^=work-done]").val();
+    var cardId = form.attr("data-card-id");
+    var boardTitle = form.closest('.panel-body').attr('data-board-title');
+    $.ajax({
+      method: 'POST',
+      url: '/update_work_done/'+cardId,
+      data: {work_done: workDone},
+      success: function(data) {
+        location.reload();
+      }
+    });
+  }
+  function registerForCard(formId) {
+    var form = $('#'+formId);
+    var cardId = form.attr("data-card-id");
+    var confirmed = confirm('Diese Aufgabe wirklich übernehmen?');
+    if(confirmed) {
+      $.ajax({
+        method: 'POST',
+        url: '/register_for_card/'+cardId,
+        data: {username: "<%= current_user.username %>", user_id: <%= current_user.id %> },
+        success: function(data) {
+          location.reload();
+        }
+      });
+    }
+  }
   function updateComment(formId) {
     var form = $('#'+formId);
     var roundId = form.attr("data-round-id");
@@ -150,10 +193,18 @@
               form.find('#estimation-button').css("display", "none");
             } else {
               if (data[0].agreement) {
-                var well = $('.well[data-card-id=' + sprintCardId + ']');
+/*                var well = $('.well[data-card-id=' + sprintCardId + ']');
                 well.first().prop("id", "draggable");
                 estimationsDiv.attr("data-done", true);
-                form.find('#estimation-button').css("display", "none");
+                form.find('#estimation-button').css("display", "none");*/
+                $.ajax({
+                  type: "POST",
+                  url: '/move_to_planned/' + sprintCardId,
+                  dataType: 'json',
+                  success: function (data) {
+                    location.reload();
+                  }
+                });
               }
               if (data[0].agreement == false) {
                 estimationsDiv.attr("data-done", true);
@@ -164,7 +215,7 @@
                   url: '/add_round/' + sprintCardId+'/'+roundNumber,
                   dataType: 'json',
                   success: function (data) {
-                    updateModal("Sprint Backlog", sprintCardId)
+                    updateModal(form, sprintCardId)
                   }
                 });
               }
@@ -183,44 +234,49 @@
     $( "[id^=draggable]" ).draggable({ revert: "invalid", helper: "clone", zIndex: 100 });
 
     $( "[id^=droppable]" ).droppable({
-      classes: {
-        "ui-droppable-active": "ui-state-active",
-        "ui-droppable-hover": "ui-state-hover"
-      },
+      activeClass: "ui-state-active",
       drop: function( event, ui ) {
-
+        console.log('---');
+        console.log('Dropped');
         var cardId = ui.draggable.attr("data-card-id");
         var boardId = $(this).attr("data-board-id");
         var header = $(this).parent().children('.panel-heading');
-
         if(header.text().toString() == "Fertig") {
-
+          console.log('if');
           $(this).append(ui.draggable);
           $(ui.helper).remove();
 
           $.ajax({
             url: '/sprint_card_done/'+cardId+'/'+boardId,
-            success: function(data, textStatus, xhr) {
+            success: function() {
+              ui.draggable.attr("data-board-title", $(this).attr('data-board-title') );
             }
           });
           $(ui.draggable).disable();
 
         } else {
-
-          $(this).append(ui.draggable);
-          $.ajax({
-            url: '/change_sprint_board/'+cardId+'/'+boardId,
-            success: function(data, textStatus, xhr) {
-            }
-          });
+          console.log('Else');
+          console.log($(this).attr('data-board-title'));
+          console.log(ui.draggable.attr("data-board-title"));
+          if($(this).attr('data-board-title') != ui.draggable.attr("data-board-title")) {
+            $(this).append(ui.draggable);
+            ui.draggable.attr("data-board-title", $(this).attr('data-board-title') );
+            $.ajax({
+              url: '/change_sprint_board/'+cardId+'/'+boardId,
+              success: function() {
+              }
+            });
+          }
         }
       }
     });
   } );
 
 
-  function updateModal(boardTitle, sprintCardId) {
-    if(boardTitle == "Sprint Backlog") {
+  function updateModal(caller, sprintCardId) {
+    var boardTitle = $(caller).attr('data-board-title');
+    console.log(boardTitle);
+    if(true) {
 
       var req1 = $.ajax({
         type: "GET",
@@ -241,8 +297,8 @@
         var modal = $('#sprintCardModal'+sprintCardId);
         modal.find('#round-ul'+sprintCardId).children().remove();
         modal.find('#content'+sprintCardId).children().remove();
-
-        for (var x = 0; x < data1[0]["estimation_rounds"].length; x++) {
+        var roundCount = data1[0]["estimation_rounds"].length;
+        for (var x = 0; x < roundCount; x++) {
           var roundNumber = data1[0]["estimation_rounds"][x].round_number;
           var estimationId = data1[0]["estimation_rounds"][x].id;
 
@@ -299,6 +355,21 @@
           content += '<li>';
           content += '<a data-toggle="tab" href="#menu2'+estimationId+'">Aufwand</a>';
           content += '</li>';
+          if(data1[0].username == null && sameDay && roundCount-1 == x && boardTitle == "Planned") {
+            content += '<li>';
+            content += '<a data-toggle="tab" href="#menu5'+estimationId+'">Übernehmen</a>';
+            content += '</li>';
+          }
+          if(boardTitle == "In Work" && roundCount-1 == x) {
+            content += '<li>';
+            content += '<a data-toggle="tab" href="#menu3'+estimationId+'">Erledigt</a>';
+            content += '</li>';
+          }
+          if(boardTitle == "Code Review" && roundCount-1 == x) {
+            content += '<li>';
+            content += '<a data-toggle="tab" href="#menu4'+estimationId+'">Change</a>';
+            content += '</li>';
+          }
           content += '</ul>';
           content += '<div class="tab-content">';
           content += '<div id="home'+estimationId+'" class="tab-pane fade">';
@@ -329,6 +400,15 @@
             content += '<input type="radio" name="color" value="lightsalmon"><%= image_tag("lightsalmon.PNG") %>';
           }
           content += '</label><hr></div>';
+          content += '<div class="form-group">';
+          content += '<label for="prio'+sprintCardId+'">Priorität:</label>';
+          content += '<select class="form-control" id="prio'+sprintCardId+'">';
+          content += '<option></option>';
+          content += '<option>gering</option>';
+          content += '<option>mittel</option>';
+          content += '<option>hoch</option>';
+          content += '</select>';
+          content += '</div>';
           content += '<p><button type="submit" class="btn btn-default"';
           content += 'onclick="updateOptions(\'change-form-sprint-'+sprintCardId+estimationId+'\')">Aktualisieren</button></p>';
           content += '</div>';
@@ -409,7 +489,7 @@
               dataType: 'json',
               success: function (data4) {
                 if(data4.round_created) {
-                  updateModal("Sprint Backlog", sprintCardId);
+                  updateModal(this, sprintCardId);
                 }
               }
             });
@@ -446,6 +526,42 @@
             content += 'onclick="estimate(\'change-form-sprint-'+sprintCardId+estimationId+'\','+roundNumber+')" id="estimation-button">Abschicken</button></p>';
           }
           content += '</div>';
+
+          if(boardTitle != "Sprint Backlog") {
+            content += '<div id="menu3'+estimationId+'" class="tab-pane fade"><br>';
+            content += '<div class="form-group">';
+            content += '<label for="work-done'+sprintCardId+'">Bisher erledigt in Tagen: </label>';
+            content += '<input type="text" class="form-control" id="work-done'+sprintCardId+'" value="" style="max-width: 20%">';
+            content += '</div>';
+
+            content += '<div id="work-comments'+sprintCardId+estimationId+'"><hr>';
+            content += '<div class="container-fluid" id="comment">';
+            content += '</div>';
+            content += '<p><button type="submit" class="btn btn-default"';
+            content += 'onclick="updateWorkDone(\'change-form-sprint-'+sprintCardId+estimationId+'\')">Aktualisieren</button></p>';
+            content += '</div></div>';
+          }
+          if(data1[0].username == null && sameDay && roundCount-1 == x && boardTitle == "Planned") {
+            content += '<div id="menu5'+estimationId+'" class="tab-pane fade"><br>';
+            content += '<p><button type="submit" class="btn btn-danger"';
+            content += 'onclick="registerForCard(\'change-form-sprint-'+sprintCardId+estimationId+'\')">Übernehmen</button></p>';
+            content += '</div>';
+          }
+          if(boardTitle == "Code Review" && roundCount-1 == x) {
+            content += '<div id="menu4'+estimationId+'" class="tab-pane fade"><br>';
+            content += '<div class="form-group">';
+            content += '<label for="comment'+sprintCardId+'">Kommentar: </label>';
+            content += '<input type="text" class="form-control" id="comment'+sprintCardId+'" value=""">';
+            content += '</div>';
+
+            content += '<div id="work-comments'+sprintCardId+estimationId+'"><hr>';
+            content += '<div class="container-fluid" id="comment">';
+            content += '</div>';
+            content += '<p><button type="submit" class="btn btn-default"';
+            content += 'onclick="updateComment(\'change-form-sprint-'+sprintCardId+estimationId+'\')">Aktualisieren</button></p>';
+            content += '</div></div>';
+          }
+
           content += '</div></div></div></form>';
 
 
@@ -457,92 +573,5 @@
       });
     }
   }
-
-  function checkEstimations(boardTitle, sprintCardId, roundId) {
-    if(boardTitle == "Sprint Backlog") {
-      $.ajax({
-        type: "GET",
-        url: '/check_estimations/'+sprintCardId+'/'+roundId,
-        dataType : 'json',
-        success: function(data) {
-          if (data != null) {
-            var content = '<div class="container-fluid" id="aufwand"> <table class="table"><thead>' +
-                '<tr><th>User</th><th>Aufwand</th><th>Datum</th></tr></thead><tbody>';
-
-            for (var x = 0; x < data.length; x++) {
-              var date = new Date(data[x].updated_at);
-              var tag = date.getDate();
-              tag = (tag < 10) ? ("0" + tag) : tag;
-              var monat = date.getMonth();
-              monat += 1;
-              monat = (monat < 10) ? ("0" + monat) : monat;
-              var jahr = date.getFullYear();
-              var stunde = date.getHours();
-              var minute = date.getMinutes();
-              minute = (minute < 10) ? ("0" + minute) : minute;
-              var sekunden = date.getSeconds();
-              sekunden = (sekunden < 10) ? ("0" + sekunden) : sekunden;
-
-              var datum = "<p>Am: " + tag + "." + monat + "." + jahr + "</p><p>Um: " + stunde + ":" + minute + ":" + sekunden + "</p>";
-
-              content += '<tr><td>' + data[x].user_name + '</td><td>' + data[x].estimated_days + ' Tage</td><td>' + datum + '</td></tr>';
-            }
-            content += "</tbody></table></div>";
-            var estimationsDiv = $("#estimations" + sprintCardId + roundId);
-            estimationsDiv.children().remove();
-            $(content).appendTo(estimationsDiv);
-
-            if (data[0].agreement && estimationsDiv.attr("data-done") != true) {
-              var well = $('.well[data-card-id=' + sprintCardId + ']');
-              well.first().prop("id", "draggable");
-              estimationsDiv.attr("data-done", true);
-            }
-            if (data[0].agreement == false && estimationsDiv.attr("data-done") != true) {
-              estimationsDiv.attr("data-done", true);
-              $.ajax({
-                type: "POST",
-                url: '/add_round/' + sprintCardId,
-                dataType: 'json',
-                success: function (data) {
-                }
-              });
-            }
-          }
-        }
-      });
-    }
-  }
-
-  function checkComments(boardTitle, sprintCardId, roundId) {
-    if(boardTitle == "Sprint Backlog") {
-      $.ajax({
-        type: "GET",
-        url: '/check_comments/'+sprintCardId+'/'+roundId,
-        success: function(data) {
-          var content = '';
-          for (var x = 0; x < data.length; x++) {
-            var date = new Date(data[x].updated_at);
-            var tag = date.getDate();
-            tag = (tag < 10) ? ("0" + tag) : tag ;
-            var monat = date.getMonth();
-            monat += 1;
-            monat = (monat < 10) ? ("0" + monat) : monat ;
-            var jahr = date.getFullYear();
-            var stunde = date.getHours();
-            var minute = date.getMinutes();
-            minute = (minute < 10) ? ("0" + minute) : minute ;
-            var sekunden = date.getSeconds();
-            sekunden = (sekunden < 10) ? ("0" + sekunden) : sekunden ;
-
-            var datum = "<p>Am: " +tag+ "." +monat+ "." +jahr+ "</p><p>Um: " +stunde+ ":" +minute+ ":" +sekunden +"</p>";
-
-            content += '<tr><td>'+data[x].user_name+'</td><td>'+data[x].text+'</td><td>'+datum+'</td></tr>';
-          }
-          $("#table"+sprintCardId+roundId).children().remove();
-          $(content).appendTo("#table"+sprintCardId+roundId);
-        }
-      });
-    }
-  };
 
 </script>

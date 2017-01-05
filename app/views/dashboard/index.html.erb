@@ -5,28 +5,32 @@
         <div class="panel-heading">
           <h3>Projekt: <%= @dashboard.project.title %>
             <div style="float: right">
+              <% if current_user.product_owner? %>
               <%=	 link_to destroy_project_path(@dashboard.project.id), method: :delete, data: {confirm: 'Projekt wirklich löschen?'} do %>
                   <span class="glyphicon glyphicon-remove" style="color:red"></span>
+              <% end %>
               <% end %>
             </div>
           </h3>
         </div>
         <div class="panel-body">
           <div class="row">
-            <div class="col-sm-6">
-              <form id="add-user-form" data-project-id="<%=@dashboard.project.id%>">
-                <div class="form-group">
-                  <label for="sel1">Nutzer wählen:</label>
-                  <select class="form-control" id="sel1">
-                  </select>
-                </div>
-                <button type="submit" class="btn btn-default">Hinzufügen</button>
-              </form>
-            </div>
-            <div class="col-sm-6">
-              <strong>Projektteilnehmer</strong>
-              <div id="user-list"></div>
-            </div>
+            <% if current_user.product_owner? %>
+              <div class="col-sm-7">
+                <form id="add-user-form" data-project-id="<%=@dashboard.project.id%>">
+                  <div class="form-group">
+                    <label for="sel1">Nutzer wählen:</label>
+                    <select class="form-control" id="sel1">
+                    </select>
+                  </div>
+                  <button type="submit" class="btn btn-default">Hinzufügen</button>
+                </form>
+              </div>
+              <div class="col-sm-5">
+                <strong>Projektteilnehmer</strong>
+                <div id="user-list"></div>
+              </div>
+            <% end %>
           </div>
         </div>
       </div>
@@ -42,25 +46,36 @@
 
             <div class="panel-heading"><%= board.title %>
             </div>
-
-            <div class="panel-body" style="min-height: 8em"  id="droppable<%= board.id %>" data-board-id="<%=board.id%>">
-              <div id="cards<%= board.id %>"></div>
+            <% if board.title == "Fertige Sprints" %>
+              <div class="panel-body" style="min-height: 8em" data-board-id="<%=board.id%>">
+            <% else %>
+              <div class="panel-body" style="min-height: 8em"  id="droppable<%= board.id %>" data-board-id="<%=board.id%>">
+            <% end %>
+              <div id="cards<%= board.id %>">
+                <% if board.title == "Aktueller Sprint" %>
+                  <div class="drop-helper" id="droppable<%= board.id %>">
+                  </div>
+                <% end %>
+              </div>
             </div>
 
-            <% if board.title == "Project Backlog" %>
-                <div class="panel-footer">
-                  <div data-toggle="modal" data-target="#new-card-modal" onclick="updateNewCardForm(<%= board.id %>)"> Neue Aufgabe anlegen... </div>
+            <% if board.title == "Project Backlog" && current_user.product_owner? %>
+                <div class="panel-footer" style="text-align: center">
+                  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#new-card-modal"
+                          onclick="updateNewCardForm(<%= board.id %>)">
+                    Neues Item anlegen
+                  </button>
                 </div>
-            <% elsif board.title == "Fertig" %>
+            <% elsif board.title == "Fertige Sprints" %>
 
                 <div class="panel-footer">
                 </div>
 
             <% else %>
 
-                <div class="panel-footer">
+                <div class="panel-footer" style="text-align: center">
                   <div>
-                    <%= link_to("Zum Sprint", controller: "sprint", action: "index", id: @dashboard.id) %>
+                    <%=	 link_to 'Zum Sprint', sprint_path(@dashboard.id), class:'btn btn-primary'  %>
                   </div>
                 </div>
             <% end %>
@@ -231,11 +246,12 @@
       url: '/get_cards/'+boardId,
       success: function(data) {
         if(data != null) {
+          $("#cards" + boardId).children().remove();
           for (var x = 0; x < data.length; x++) {
 
             var content = "";
 
-            if (data[x].title == "Fertig") {
+            if (data[x].title == "Fertige Sprints") {
               content += '<div class="well well shadow" style="background-color:' + data[x].color + '" data-card-id="' +
                   data[x].id + '" data-board-id="' + boardId + '">' + data[x].title + '</div>';
             } else {
@@ -245,7 +261,7 @@
                           'onclick="updateModal(' + data[x].id + ',\'' + data[x].color + '\',\'' + data[x].title + '\')">' +
                           data[x].title + '</div>';
             }
-            $(content).appendTo("#cards" + boardId);
+            $("#cards" + boardId).append(content);
           }
         }
         bindListener();
@@ -281,7 +297,7 @@
         if(data != null) {
           for (var x = 0; x < data.length; x++) {
 
-            var content = '<option value=' + data[x].id + '>'+ data[x].username +'</option>';
+            var content = '<option value=' + data[x].id + '>'+ data[x].username + ' ('+ data[x].role +')</option>';
             $(content).appendTo("#sel1");
           }
         }
@@ -299,26 +315,36 @@
         "ui-droppable-active": "ui-state-active",
         "ui-droppable-hover": "ui-state-hover"
       },
-      drop: function( event, ui ) {
+      drop: function (event, ui) {
         var cardId = ui.draggable.attr("data-card-id");
         var boardId = $(this).attr("data-board-id");
-        var boardName =  $(this).closest('.panel').children('.panel-heading').text().trim();
-        if(boardName === "Sprint Backlog") {
-          $.ajax({
-            url: '/move_to_sprint/'+cardId+'/'+boardId,
-            success: function(data, textStatus, xhr) {
-            }
-          });
-        } else {
-          $.ajax({
-            url: '/change_board/'+cardId+'/'+boardId,
-            success: function(data, textStatus, xhr) {
-            }
-          });
+        var boardName = $(this).closest('.panel').children('.panel-heading').text().trim();
+        var oldBoardName = ui.draggable.closest('.panel').children('.panel-heading').text().trim();
+        if (oldBoardName == "Project Backlog" && boardName === "Aktueller Sprint") {
+          var confirmed = confirm('Wirklich dem Sprint hinzufügen?');
+          if (confirmed) {
+            $.ajax({
+              url: '/move_to_sprint/' + cardId + '/' + boardId,
+              success: function () {
+              }
+            });
+            $(this).append(ui.draggable)
+          }
         }
-        $(this).append(ui.draggable);
+        if (boardName == 'Project Backlog' && oldBoardName == "Aktueller Sprint") {
+          var confirmed2 = confirm('Wirklich aus aktuellem Sprint löschen?');
+          if (confirmed2) {
+            $.ajax({
+              method: 'POST',
+              url: '/change_board_and_delete/' + cardId + '/' + boardId,
+              success: function () {
+              }
+            });
+            $(this).append(ui.draggable);
+          }
+        }
       }
-    });
+    })
   }
 
 </script>

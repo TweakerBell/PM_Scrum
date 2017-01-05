@@ -8,4 +8,9 @@ class SprintController < ApplicationController
     sprint_card = SprintCard.find(params[:cardId])
     sprint_card.update(sprint_board_id: params[:boardId])
   end
+
+  def get_sprint_cards
+    cards = SprintCard.where(sprint_board_id: params[:sprint_board_id])
+    render json: cards
+  end
 end

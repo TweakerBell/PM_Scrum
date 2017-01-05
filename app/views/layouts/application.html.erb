@@ -19,18 +19,22 @@
           <li class="active"><%= link_to 'Projekte', root_path %></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li>
-            <%= link_to  new_user_registration_path do %>
-            <span class="glyphicon glyphicon-user"> Anmelden</span><% end %>
-          </li>
-          <li>
-            <%= link_to new_user_session_path do %>
-            <span class="glyphicon glyphicon-log-in"> Einloggen</span><% end %>
-          </li>
-          <li>
-            <%= link_to destroy_user_session_path, method: :delete  do%>
-            <span class="glyphicon glyphicon-log-out"> Abmelden</span><% end %>
-          </li>
+          <% if !user_signed_in? %>
+            <li>
+              <%= link_to  new_user_registration_path do %>
+              <span class="glyphicon glyphicon-user"> Anmelden</span><% end %>
+            </li>
+            <li>
+              <%= link_to new_user_session_path do %>
+              <span class="glyphicon glyphicon-log-in"> Einloggen</span><% end %>
+            </li>
+          <% end %>
+          <% if user_signed_in? %>
+            <li>
+              <%= link_to destroy_user_session_path, method: :delete  do%>
+              <span class="glyphicon glyphicon-log-out"> Abmelden</span><% end %>
+            </li>
+          <% end %>
         </ul>
       </div>
     </nav>

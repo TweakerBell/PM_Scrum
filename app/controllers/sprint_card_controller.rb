@@ -20,11 +20,15 @@ class SprintCardController < ApplicationController
   end
 
   def done
+=begin
     card = Card.find_by(matching_sprint_card_id: params[:cardId])
+=end
     SprintCard.find(params[:cardId]).update(sprint_board_id: params[:boardId])
+=begin
     board = Board.find(card.board_id)
     board = board.dashboard.boards.find_by(title: "Fertig")
     card.update(board_id: board.id, html_id: "")
+=end
   end
 
   def check_estimations
@@ -141,7 +145,26 @@ class SprintCardController < ApplicationController
 
   def update_options
     sprint_card = SprintCard.find(params[:card_id])
-    sprint_card.update(color: params[:color], title: params[:title])
+    prio = params[:priority]
+    prio != '' ? sprint_card.update(color: params[:color], title: params[:title], priority: prio) :
+        sprint_card.update(color: params[:color], title: params[:title])
+
+  end
+
+  def update_work_done
+    sprint_card = SprintCard.find(params[:card_id])
+    sprint_card.update(work_done: params[:work_done])
+  end
+
+  def register_for_card
+    sprint_card = SprintCard.find(params[:card_id])
+    sprint_card.update(username: params[:username], user_id: params[:user_id])
+  end
+
+  def move_to_planned
+    sprint_card = SprintCard.find(params[:card_id])
+    planned_id = sprint_card.sprint_board.sprint.sprint_boards.find_by(title: 'Planned').id
+    sprint_card.update(sprint_board_id: planned_id)
   end
 
 end

@@ -80,7 +80,7 @@ ActiveRecord::Schema.define(version: 20170102171227) do
     t.integer  "last_user_id"
     t.integer  "user_id"
     t.string   "username"
-    t.integer  "priority"
+    t.string   "priority"
     t.integer  "position"
     t.integer  "sprint_board_id"
     t.boolean  "visible"
@@ -114,6 +114,7 @@ ActiveRecord::Schema.define(version: 20170102171227) do
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
+    t.integer  "role"
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
     t.index ["email"], name: "index_users_on_email", unique: true

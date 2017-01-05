@@ -13,8 +13,9 @@ class CardController < ApplicationController
     else
 
       dashboard = Dashboard.find(card.board.dashboard.id)
-      sprint_card = SprintCard.create(title: card.title, priority: 1, visible: true, sprint_board_id: dashboard.sprint.sprint_boards.first.id,
-                                      color: card.color, released: false, matching_card_id: params[:cardId], html_id: "")
+      sprint_card = SprintCard.create(title: card.title, visible: true, sprint_board_id: dashboard.sprint.sprint_boards.first.id,
+                                      color: card.color, released: false, matching_card_id: params[:cardId], html_id: "",
+                                      work_done: 0, priority: "gering")
       sprint_card.estimation_rounds.create(active: true, round_number: 1)
       card.update(board_id: params[:boardId], matching_sprint_card_id: sprint_card.id)
 

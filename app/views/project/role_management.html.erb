@@ -1,0 +1,44 @@
+<%	 if current_user.product_owner? %>
+    <div class="container-fluid">
+      <h2>Nutzerverwaltung</h2>
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Rolle</th>
+          <th>Neue Rolle</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <%	 @users.each do |f| %>
+            <tr>
+              <td><%=	 f.username %></td>
+              <td><%=	 f.email %></td>
+              <td id="role<%= f.id %>"><%=	 f.role %></td>
+              <td><%=	 select("user_select", f.id , %w[stakeholder product_owner scrum_master scrum_team], {}, { index: nil }) %></td>
+              <td><button type="button" class="btn btn-default" id="button<%= f.id %>" onclick="update(<%= f.id %>)">Speichern</button></td>
+            </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+<% end %>
+
+<script>
+  function update(userId) {
+    var selection = $('#user_select__'+userId).val();
+    var confirmed = confirm('Wirklich ändern?');
+    if(confirmed) {
+      $.ajax({
+        type: "POST",
+        url: '/change_role',
+        data: { user_id: userId, role: selection },
+        success: function(data) {
+          $('#role'+userId).text(selection);
+        }
+      });
+    }
+  }
+</script>

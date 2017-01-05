@@ -11,4 +11,4 @@ User.create(email: "muh@kuh.de", username: "MuhKuh", password: 123456, password_
 User.create(email: "papa@schlumpf.de", username: "Papa Schlumpf", password: 123456, password_confirmation: 123456)
 User.create(email: "jake@at.de", username: "Jake the dog", password: 123456, password_confirmation: 123456)
 User.create(email: "finn@at.de", username: "Finn the human", password: 123456, password_confirmation: 123456)
-User.create(username: "admin", email: "a@b.de", password: 123456, password_confirmation: 123456)
+User.create(username: "admin", email: "a@b.de", password: 123456, password_confirmation: 123456, role: "product_owner")

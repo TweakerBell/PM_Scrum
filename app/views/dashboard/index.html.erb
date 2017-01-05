@@ -1,6 +1,6 @@
 <div id ="dashboard-wrapper">
   <div class="row">
-    <div class="col-sm-4" style="margin-top: 1em; margin-left: 1em">
+    <div class="col-sm-6" style="margin-top: 1em;">
       <div class="panel panel-primary">
         <div class="panel-heading">
           <h3>Projekt: <%= @dashboard.project.title %>
@@ -16,7 +16,7 @@
         <div class="panel-body">
           <div class="row">
             <% if current_user.product_owner? %>
-              <div class="col-sm-7">
+              <div class="col-sm-5">
                 <form id="add-user-form" data-project-id="<%=@dashboard.project.id%>">
                   <div class="form-group">
                     <label for="sel1">Nutzer wählen:</label>
@@ -26,7 +26,7 @@
                   <button type="submit" class="btn btn-default">Hinzufügen</button>
                 </form>
               </div>
-              <div class="col-sm-5">
+              <div class="col-sm-7">
                 <strong>Projektteilnehmer</strong>
                 <div id="user-list"></div>
               </div>
@@ -34,61 +34,65 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
+      <div class="container-fluid">
+        <div class="row">
+          <%  @dashboard.boards.each do |board| %>
+              <div class="col-sm-4" style="margin-top: 2em">
+                <div class="panel panel-default shadow2" data-value="<%= board.id %>">
 
-  <div class="container-fluid">
-
-    <div class="row">
-      <%  @dashboard.boards.each do |board| %>
-        <div class="col-sm-2" style="margin-top: 2em">
-          <div class="panel panel-default shadow2" data-value="<%= board.id %>">
-
-            <div class="panel-heading"><%= board.title %>
-            </div>
-
-              <div class="panel-body" style="min-height: 8em"  <%=  board.title == "Fertige Sprints"? '' : 'id=droppable'+board.id.to_s+'' %> data-board-id="<%=board.id%>">
-              <div id="cards<%= board.id %>">
-                <% if board.title == "Aktueller Sprint" %>
-                  <div class="drop-helper" id="droppable<%= board.id %>">
+                  <div class="panel-heading"><%= board.title %>
                   </div>
-                <% end %>
+
+                  <div class="panel-body" style="min-height: 8em"  <%=  board.title == "Fertige Sprints"? '' : 'id=droppable'+board.id.to_s+'' %> data-board-id="<%=board.id%>">
+                    <div id="cards<%= board.id %>">
+                      <% if board.title == "Aktueller Sprint" %>
+                          <div class="drop-helper" id="droppable<%= board.id %>">
+                          </div>
+                      <% end %>
+                    </div>
+                  </div>
+
+                  <% if board.title == "Project Backlog" && current_user.product_owner? %>
+                      <div class="panel-footer" style="text-align: center">
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#new-card-modal"
+                                onclick="updateNewCardForm(<%= board.id %>)">
+                          Neues Item anlegen
+                        </button>
+                      </div>
+                  <% elsif board.title == "Fertige Sprints" %>
+
+                      <div class="panel-footer">
+                      </div>
+
+                  <% else %>
+
+                      <div class="panel-footer" style="text-align: center">
+                        <div>
+                          <%=	 link_to 'Zum Sprint', sprint_path(@dashboard.id), class:'btn btn-primary'  %>
+                        </div>
+                      </div>
+                  <% end %>
+                </div>
               </div>
-            </div>
-
-            <% if board.title == "Project Backlog" && current_user.product_owner? %>
-                <div class="panel-footer" style="text-align: center">
-                  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#new-card-modal"
-                          onclick="updateNewCardForm(<%= board.id %>)">
-                    Neues Item anlegen
-                  </button>
-                </div>
-            <% elsif board.title == "Fertige Sprints" %>
-
-                <div class="panel-footer">
-                </div>
-
-            <% else %>
-
-                <div class="panel-footer" style="text-align: center">
-                  <div>
-                    <%=	 link_to 'Zum Sprint', sprint_path(@dashboard.id), class:'btn btn-primary'  %>
-                  </div>
-                </div>
-            <% end %>
-          </div>
+          <% end %>
         </div>
-    <% end %>
-
-
-        <div class="col-sm-6" style="margin-top: 2em">
-          <div class="well well shadow" style="background-color: burlywood">
-            Hier kommen dann Graph shizzle und Statistiken
-          </div>
-        </div>
-
+      </div>
+    </div>
+    <div class="col-sm-6" style="margin-top: 1em;">
+      <div class="well well shadow" style="background-color: burlywood">
+        <p>Aktueller Sprint</p>
+        <%= pie_chart({"Erledigt" => @ready[:done], "Noch zu erledigen" => @ready[:left]},donut: true) %>
+        <%= bar_chart [
+                          {name: "Work Done", data: SprintCard.group(:username).sum(:work_done)},
+                          {name: "Work to do", data: SprintCard.group(:username).sum(:work_to_do)}
+                      ] %>
+        <%= bar_chart SprintCard.group(:work_to_do).count, xtitle: "Anzahl Tasks", ytitle: "Aufwand in Tagen" %>
+      </div>
     </div>
   </div>
+
+
+
 
   <div class="modal fade" id="new-card-modal" role="dialog">
     <div class="modal-dialog modal-sm">

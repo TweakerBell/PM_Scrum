@@ -2,6 +2,12 @@ class DashboardController < ApplicationController
 
   def index
     @dashboard = Dashboard.find_by(project_id: params[:id])
+    to_do = SprintCard.sum(:work_to_do)
+    done = SprintCard.sum(:work_done)
+    left = to_do - done
+    @ready = {left: left, done: done}
+
+
   end
 
   def change_board

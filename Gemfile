@@ -6,6 +6,8 @@ git_source(:github) do |repo_name|
 end
 
 gem 'devise'
+gem 'chartkick'
+gem 'groupdate'
 gem 'jquery-ui-rails'
 gem 'bootstrap-sass', '~> 3.2.0'
 gem 'autoprefixer-rails'
@@ -34,6 +36,7 @@ gem 'jbuilder', '~> 2.5'
 # Use ActiveModel has_secure_password
 gem 'bcrypt'
 
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
@@ -46,7 +49,8 @@ group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'web-console', '>= 3.3.0'
   # Use sqlite3 as the database for Active Record
-  gem 'sqlite3'
+#  gem 'sqlite3'
+  gem 'mysql2'
   gem "better_errors"
   gem "binding_of_caller"
 end

@@ -77,10 +77,12 @@
       data: {title: title, color: color, priority: prio},
       success: function(data) {
         updateModal(form, cardId);
-        var div = $('div[data-card-id='+cardId+']')
+        var div = $('div[data-card-id='+cardId+']');
         div.css("background-color", color);
         div.children('.title').text(title);
-        div.children('#priodiv').text("Priorität: "+prio);
+        if(prio != ""){
+          div.children('#priodiv').text("Priorität: "+prio);
+        }
       }
     });
   }
@@ -275,7 +277,6 @@
 
   function updateModal(caller, sprintCardId) {
     var boardTitle = $(caller).attr('data-board-title');
-    console.log(boardTitle);
     if(true) {
 
       var req1 = $.ajax({
@@ -304,7 +305,7 @@
 
           var work = data1[0]["estimation_rounds"][x]["estimated_works"];
           // alert(JSON.stringify(work));
-          var day = data1[0]["estimation_rounds"][0]["estimated_works"][0];
+          var day = data1[0]["estimation_rounds"][x]["estimated_works"][0];
           if(typeof day === 'undefined') {
             day = 999;
           } else {
@@ -314,16 +315,17 @@
           var sameDay = true;
           if(typeof work !== 'undefined') {
             for(var z = 0; z < work.length; z++) {
-              if(day != data1[0]["estimation_rounds"][0]["estimated_works"][z].estimated_days) {
+              if(day != data1[0]["estimation_rounds"][x]["estimated_works"][z].estimated_days) {
                 sameDay = false;
               }
               var name = "<%= current_user.username %>";
-              if(name == data1[0]["estimation_rounds"][0]["estimated_works"][z].user_name) {
+              if(name == data1[0]["estimation_rounds"][x]["estimated_works"][z].user_name) {
                 hasVoted = true;
               }
             }
           }
 
+          console.log('Runde: '+x + ' hast voted: ' + hasVoted);
           if(x == 0) {
             var content = '<li class="active">';
           } else {

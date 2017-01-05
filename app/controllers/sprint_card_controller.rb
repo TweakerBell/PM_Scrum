@@ -158,7 +158,8 @@ class SprintCardController < ApplicationController
 
   def register_for_card
     sprint_card = SprintCard.find(params[:card_id])
-    sprint_card.update(username: params[:username], user_id: params[:user_id])
+    next_board_id = sprint_card.sprint_board.sprint.sprint_boards.find_by(title: 'In Work').id
+    sprint_card.update(username: params[:username], user_id: params[:user_id], sprint_board_id: next_board_id)
   end
 
   def move_to_planned

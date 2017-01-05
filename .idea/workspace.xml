@@ -2,19 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a8a33e48-94ed-4b94-a202-89498d228f65" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/.generators" afterPath="$PROJECT_DIR$/.idea/.generators" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/PM_Scrum.iml" afterPath="$PROJECT_DIR$/.idea/PM_Scrum.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Gemfile" afterPath="$PROJECT_DIR$/Gemfile" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Gemfile.lock" afterPath="$PROJECT_DIR$/Gemfile.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/assets/javascripts/application.js" afterPath="$PROJECT_DIR$/app/assets/javascripts/application.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/dashboard_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/dashboard_controller.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/sprint_card_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/sprint_card_controller.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/dashboard/index.html.erb" afterPath="$PROJECT_DIR$/app/views/dashboard/index.html.erb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/layouts/application.html.erb" afterPath="$PROJECT_DIR$/app/views/layouts/application.html.erb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/sprint/index.html.erb" afterPath="$PROJECT_DIR$/app/views/sprint/index.html.erb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config/database.yml" afterPath="$PROJECT_DIR$/config/database.yml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/db/seeds.rb" afterPath="$PROJECT_DIR$/db/seeds.rb" />
     </list>
     <ignored path="PM_Scrum.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -87,20 +75,20 @@
       <file leaf-file-name="index.html.erb" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/views/dashboard/index.html.erb">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="87" column="26" selection-start-line="87" selection-start-column="26" selection-end-line="87" selection-end-column="26" />
+            <state relative-caret-position="289">
+              <caret line="62" column="22" selection-start-line="62" selection-start-column="22" selection-end-line="62" selection-end-column="22" />
               <folding>
                 <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="e#8457#8628#0#HTML" expanded="false" />
-                <element signature="e#8668#8750#0#HTML" expanded="false" />
-                <element signature="e#8781#9911#0#HTML" expanded="false" />
-                <element signature="e#9944#9993#0#HTML" expanded="false" />
-                <element signature="e#10025#10353#0#HTML" expanded="false" />
-                <element signature="e#10395#10785#0#HTML" expanded="false" />
-                <element signature="e#10814#12271#0#HTML" expanded="false" />
-                <marker date="1483648799634" expanded="true" signature="9161:9178" ph="..." />
+                <element signature="e#8517#8688#0#HTML" expanded="false" />
+                <element signature="e#8728#8810#0#HTML" expanded="false" />
+                <element signature="e#8841#9971#0#HTML" expanded="false" />
+                <element signature="e#10004#10053#0#HTML" expanded="false" />
+                <element signature="e#10085#10413#0#HTML" expanded="false" />
+                <element signature="e#10455#10845#0#HTML" expanded="false" />
+                <element signature="e#10874#12331#0#HTML" expanded="false" />
+                <marker date="1483649683274" expanded="true" signature="9221:9238" ph="..." />
               </folding>
             </state>
           </provider>
@@ -523,12 +511,12 @@
       <workItem from="1483524203107" duration="42752000" />
       <workItem from="1483614824751" duration="9552000" />
       <workItem from="1483632691102" duration="3946000" />
-      <workItem from="1483639483391" duration="9308000" />
+      <workItem from="1483639483391" duration="9954000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="248353000" />
+    <option name="totallyTimeSpent" value="248999000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -987,20 +975,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/views/dashboard/index.html.erb">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="87" column="26" selection-start-line="87" selection-start-column="26" selection-end-line="87" selection-end-column="26" />
+        <state relative-caret-position="289">
+          <caret line="62" column="22" selection-start-line="62" selection-start-column="22" selection-end-line="62" selection-end-column="22" />
           <folding>
             <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="e#8457#8628#0#HTML" expanded="false" />
-            <element signature="e#8668#8750#0#HTML" expanded="false" />
-            <element signature="e#8781#9911#0#HTML" expanded="false" />
-            <element signature="e#9944#9993#0#HTML" expanded="false" />
-            <element signature="e#10025#10353#0#HTML" expanded="false" />
-            <element signature="e#10395#10785#0#HTML" expanded="false" />
-            <element signature="e#10814#12271#0#HTML" expanded="false" />
-            <marker date="1483648799634" expanded="true" signature="9161:9178" ph="..." />
+            <element signature="e#8517#8688#0#HTML" expanded="false" />
+            <element signature="e#8728#8810#0#HTML" expanded="false" />
+            <element signature="e#8841#9971#0#HTML" expanded="false" />
+            <element signature="e#10004#10053#0#HTML" expanded="false" />
+            <element signature="e#10085#10413#0#HTML" expanded="false" />
+            <element signature="e#10455#10845#0#HTML" expanded="false" />
+            <element signature="e#10874#12331#0#HTML" expanded="false" />
+            <marker date="1483649683274" expanded="true" signature="9221:9238" ph="..." />
           </folding>
         </state>
       </provider>

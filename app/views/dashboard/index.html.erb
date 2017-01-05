@@ -52,13 +52,15 @@
                     </div>
                   </div>
 
-                  <% if board.title == "Project Backlog" && current_user.product_owner? %>
+                  <% if board.title == "Project Backlog" %>
+                      <% if current_user.product_owner? %>
                       <div class="panel-footer" style="text-align: center">
                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#new-card-modal"
                                 onclick="updateNewCardForm(<%= board.id %>)">
                           Neues Item anlegen
                         </button>
                       </div>
+                      <% end %>
                   <% elsif board.title == "Fertige Sprints" %>
 
                       <div class="panel-footer">

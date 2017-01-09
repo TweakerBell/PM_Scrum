@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a8a33e48-94ed-4b94-a202-89498d228f65" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dataSources/27439d85-cdd1-4b5c-b91f-85a82ea91782.xml" afterPath="$PROJECT_DIR$/.idea/dataSources/27439d85-cdd1-4b5c-b91f-85a82ea91782.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dataSources/cb56c19b-0856-4721-bab7-fdad0cc613b3.xml" afterPath="$PROJECT_DIR$/.idea/dataSources/cb56c19b-0856-4721-bab7-fdad0cc613b3.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dataSources/deb5eed4-e20a-465a-8444-6c2a34c3d7c1.xml" afterPath="$PROJECT_DIR$/.idea/dataSources/deb5eed4-e20a-465a-8444-6c2a34c3d7c1.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dataSources.xml" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config/database.yml" afterPath="$PROJECT_DIR$/config/database.yml" />
     </list>
     <ignored path="PM_Scrum.iws" />
@@ -142,8 +140,8 @@
       <file leaf-file-name="database.yml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/config/database.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="476">
-              <caret line="28" column="33" lean-forward="false" selection-start-line="28" selection-start-column="33" selection-end-line="28" selection-end-column="33" />
+            <state relative-caret-position="204">
+              <caret line="12" column="9" lean-forward="false" selection-start-line="12" selection-start-column="9" selection-end-line="12" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -878,12 +876,12 @@
       <workItem from="1483813197652" duration="17472000" />
       <workItem from="1483864656042" duration="13973000" />
       <workItem from="1483915323844" duration="5301000" />
-      <workItem from="1483946710410" duration="41420000" />
+      <workItem from="1483946710410" duration="41604000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="364046000" />
+    <option name="totallyTimeSpent" value="364230000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -1387,8 +1385,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/config/database.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="28" column="33" lean-forward="false" selection-start-line="28" selection-start-column="33" selection-end-line="28" selection-end-column="33" />
+        <state relative-caret-position="204">
+          <caret line="12" column="9" lean-forward="false" selection-start-line="12" selection-start-column="9" selection-end-line="12" selection-end-column="9" />
           <folding />
         </state>
       </provider>

@@ -19,23 +19,76 @@ class SprintCardController < ApplicationController
 
   end
 
+  def delete_sprint_card
+    sprint_card = SprintCard.find(params[:card_id])
+    sprint_card.destroy
+  end
+
   def done
-=begin
-    card = Card.find_by(matching_sprint_card_id: params[:cardId])
-=end
-    SprintCard.find(params[:cardId]).update(sprint_board_id: params[:boardId])
-=begin
-    board = Board.find(card.board_id)
-    board = board.dashboard.boards.find_by(title: "Fertig")
-    card.update(board_id: board.id, html_id: "")
-=end
+    sprint_card = SprintCard.find(params[:cardId])
+    sprint = sprint_card.sprint_board.sprint
+    sprint_board = sprint.sprint_boards.find_by(title: 'Done')
+    sprint_card.update(sprint_board_id: sprint_board.id, html_id: '', label: 'done')
+
+    all_card_count = 0
+    sprint_card.sprint_board.sprint.sprint_boards.each do |f|
+      all_card_count += f.sprint_cards.count
+    end
+
+    done_card_count = 0
+    sprint_card.sprint_board.sprint.sprint_boards.each do |f|
+      done_card_count += f.sprint_cards.where(label: 'done').count
+    end
+
+    if all_card_count == done_card_count
+      sprint.update(finished: true, active:false)
+      new_sprint = sprint.dashboard.sprints.create(active: true, finished:false, started:false)
+      new_sprint.sprint_boards.build(title: "Sprint Backlog")
+      new_sprint.sprint_boards.build(title: "Planned")
+      new_sprint.sprint_boards.build(title: "In Work")
+      new_sprint.sprint_boards.build(title: "Code Review")
+      new_sprint.sprint_boards.build(title: "Done")
+      new_sprint.save
+    end
+
+  end
+
+  def update_prio
+
+    n = params[:ind].length
+    n.times do |f|
+      Card.find(params[:ids][f]).update(priority: params[:ind][f])
+    end
+
+  end
+
+  def update_retro
+    sprint = Sprint.find(params[:sprint_id])
+    if params[:text] != ''
+      sprint.sprint_retro_comments.create(text: params[:text], username: current_user.username,
+                                          sprint_id: sprint.id, pro: params[:pro])
+    end
+
+    if params[:pro] == "true"
+      comments = sprint.sprint_retro_comments.where(pro: true)
+    else
+      comments = sprint.sprint_retro_comments.where(pro: false)
+    end
+    puts comments.to_json
+    render json: comments
+  end
+
+  def change_board
+    sprint_card = SprintCard.find(params[:cardId])
+    sprint_board = sprint_card.sprint_board.sprint.sprint_boards.find_by(title: params[:board_title])
+    sprint_card.update(sprint_board_id: sprint_board.id)
   end
 
   def check_estimations
     sprint_card = SprintCard.find(params[:cardId])
     estimations = sprint_card.estimation_rounds.find_by(round_number: params[:round_number]).estimated_works
 
-    if estimations.count == sprint_card.sprint_board.sprint.dashboard.project.users.count
+    if estimations.count == sprint_card.sprint_board.sprint.dashboard.project.users.where( role: "scrum_team").count
 
       day = estimations.first.estimated_days
       equal_estimation = true
@@ -80,7 +133,7 @@ class SprintCardController < ApplicationController
 
   def card_assets
     sprint_card = SprintCard.find(params[:card_id])
-    asset = sprint_card.to_json(include: { estimation_rounds: {include: [:work_comments, :estimated_works] }})
+    asset = sprint_card.to_json(include: [:change_requests, estimation_rounds: {include: [:work_comments, :estimated_works] }])
     puts asset
     render json: asset
   end
@@ -92,12 +145,19 @@ class SprintCardController < ApplicationController
     render json: round.work_comments
   end
 
+  def update_request
+    sprint_card = SprintCard.find(params[:card_id])
+    sprint_card.change_requests.create(username: current_user.username, text: params[:text]) unless params[:text].nil? || params[:text].empty?
+
+    render json: sprint_card.change_requests
+  end
+
   def estimate
     sprint_card = SprintCard.find(params[:card_id])
     round = EstimationRound.find(params[:round_id])
     estimation = round.estimated_works.find_by(user_id: current_user.id)
     estimation.nil? ? round.estimated_works.create(user_id: current_user.id, user_name: current_user.username, estimated_days: params[:aufwand]) : ""
-    user_count = sprint_card.sprint_board.sprint.dashboard.project.users.count
+    user_count = sprint_card.sprint_board.sprint.dashboard.project.users.where( role: "scrum_team").count
 
     if user_count == round.estimated_works.count
 
@@ -115,7 +175,17 @@ class SprintCardController < ApplicationController
         array << f.as_json.merge({agreement: equal_estimation})
       end
 
-      equal_estimation ? sprint_card.update(released: true, html_id: "draggable", work_to_do: day) : ""
+      if equal_estimation
+        sprint_card.update(released: true, work_to_do: day)
+      end
+      sprint = sprint_card.sprint_board.sprint
+      all_cards = SprintCard.where(sprint_id: sprint.id )
+
+      if all_cards.count == SprintCard.where(sprint_id: sprint.id).where.not(work_to_do: "null").count
+        Statistic.create(sprint_id: sprint.id, work_total: all_cards.sum(:work_to_do), work_left: all_cards.sum(:work_to_do), work_done: all_cards.sum(:work_done))
+        sprint.update(active: true)
+      end
+
       render json: array
     end
   end
@@ -154,18 +224,40 @@ class SprintCardController < ApplicationController
   def update_work_done
     sprint_card = SprintCard.find(params[:card_id])
     sprint_card.update(work_done: params[:work_done])
+    sprint = sprint_card.sprint_board.sprint
+    all_cards = SprintCard.where(sprint_id: sprint.id )
+    today = Statistic.where(sprint_id: sprint.id, created_at: DateTime.now.midnight..DateTime.now.end_of_day).first
+    if today.nil?
+      Statistic.create(sprint_id: sprint.id, work_total: all_cards.sum(:work_to_do),
+                       work_left: (all_cards.sum(:work_to_do) - all_cards.sum(:work_done)),
+                       work_done: all_cards.sum(:work_done))
+    else
+      today.update(work_total: all_cards.sum(:work_to_do),
+                   work_left: (all_cards.sum(:work_to_do) - all_cards.sum(:work_done)),
+                   work_done: all_cards.sum(:work_done))
+    end
+
   end
 
   def register_for_card
     sprint_card = SprintCard.find(params[:card_id])
     next_board_id = sprint_card.sprint_board.sprint.sprint_boards.find_by(title: 'In Work').id
-    sprint_card.update(username: params[:username], user_id: params[:user_id], sprint_board_id: next_board_id)
+    sprint_card.update(username: current_user.username, user_id: current_user.id, sprint_board_id: next_board_id, released: true, html_id: "draggable")
   end
 
   def move_to_planned
     sprint_card = SprintCard.find(params[:card_id])
     planned_id = sprint_card.sprint_board.sprint.sprint_boards.find_by(title: 'Planned').id
     sprint_card.update(sprint_board_id: planned_id)
+  end
+
+  def new_sprint_card
+    card = Card.find(params[:card_id])
+    sprint = Sprint.find(params[:sprint_id])
+    sprint_board = sprint.sprint_boards.second
+    sprint_card = SprintCard.create(title: params[:title], card_id: card.id, sprint_board_id: sprint_board.id, color: params[:color],
+                                    work_done: 0, released: false, priority: params[:priority], sprint_id: sprint.id)
+    sprint_card.estimation_rounds.create(active: true, round_number: 1)
   end
 
 end

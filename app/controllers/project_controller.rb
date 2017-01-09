@@ -30,19 +30,16 @@ class ProjectController < ApplicationController
     project = Project.new(title: params[:title])
 
     project.build_dashboard
-    project.dashboard.boards.build(title: "Project Backlog")
+    project.dashboard.boards.build(title: "Product Backlog")
     project.dashboard.boards.build(title: "Aktueller Sprint")
-    project.dashboard.boards.build(title: "Fertige Sprints")
-    project.dashboard.build_sprint
-    project.dashboard.sprint.sprint_boards.build(title: "Sprint Backlog")
-    project.dashboard.sprint.sprint_boards.build(title: "Planned")
-    project.dashboard.sprint.sprint_boards.build(title: "In Work")
-    project.dashboard.sprint.sprint_boards.build(title: "Code Review")
-    project.dashboard.sprint.sprint_boards.build(title: "Test")
-    project.dashboard.sprint.sprint_boards.build(title: "Done")
+    project.dashboard.sprints.build(active: true, started: false, finished: false)
+    project.dashboard.sprints.last.sprint_boards.build(title: "Sprint Backlog")
+    project.dashboard.sprints.last.sprint_boards.build(title: "Planned")
+    project.dashboard.sprints.last.sprint_boards.build(title: "In Work")
+    project.dashboard.sprints.last.sprint_boards.build(title: "Code Review")
+    project.dashboard.sprints.last.sprint_boards.build(title: "Done")
     project.save
     current_user.projects << project
-    current_user.product_owner!
   end
 
   def get_projects
@@ -57,7 +54,8 @@ class ProjectController < ApplicationController
   end
 
   def user_count
-    render json: {user_count: Project.find(params[:project_id]).users.count}
+    users = Project.find(params[:project_id]).users.where(role: "scrum_team").count
+    render json: {user_count: users}
   end
 
 end

@@ -32,13 +32,7 @@
   border-style: outset;
   min-height:5em;
 }
-.drop-helper {
-  min-height: 4em;
-  background-image: image_url('drop.PNG');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-}
+
 .progress {
   position:relative;
 }
@@ -51,9 +45,16 @@
   z-index:2;
   font-size: smaller;
 }
-.ui-state-active {
+.dropzone {
   background-image: image_url('drop.PNG');
   background-size: 25%;
   background-repeat: no-repeat;
   background-position: center;
+}
+table {
+  width: 100%;
+  table-layout: fixed;
+}
+td {
+  width: 20%
 }

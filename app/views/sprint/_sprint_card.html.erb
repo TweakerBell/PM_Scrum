@@ -1,0 +1,46 @@
+<div class="col-sm-6">
+  <div class="sprintcard shadow ui-widget-content" style="background-color: <%= sprint_card.color %>"
+       data-sprint-card-id="<%=sprint_card.id%>" <%= current_user.username == sprint_card.username ? "id=#{sprint_card.html_id}" :"" %>
+       data-board-title="<%= sprint_card.sprint_board.title%>"
+       data-toggle="modal" data-target="#sprintCardModal<%= sprint_card.id %>"
+       onclick="updateModal(this, <%= sprint_card.id %>)">
+    <div class="title" style="margin: 0.5em 0em 0.5em 1em">
+      <%= sprint_card.title %>
+    </div>
+    <div style="border-bottom: 2px solid whitesmoke"></div>
+    <div id="priodiv" style="margin: 0.2em 0 0.2em 1em; font-size: x-small">
+      <% prio = sprint_card.priority%>
+      <% case prio
+           when 1
+             text = "hoch"
+           when 2
+             text = "mittel"
+           when 3
+             text = "gering"
+           else
+             text = ''
+         end %>
+
+      Priorität: <%= text %>
+    </div>
+    <% if sprint_card.released %>
+        <div style="border-bottom: 2px solid whitesmoke"></div>
+        <div style="; border-bottom: 2px solid whitesmoke"></div>
+        <div>
+          <div style="margin: 0.2em 0 0.2em 1em; font-size: x-small">
+            User: <%= sprint_card.username.nil? ? 'Unassigned' : sprint_card.username %>
+          </div>
+          <div style="; border-bottom: 2px solid whitesmoke"></div>
+          <div class="progress" style="margin: 0.2em 0.2em 0.2em 0.2em">
+            <% done = (sprint_card.work_done.to_f / sprint_card.work_to_do)*100 %>
+            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="<%= done %>"
+                 aria-valuemin="0" aria-valuemax="100" style="width:<%= done %>%" id="progressbar<#%= f.id %>">
+
+            </div>
+            <span><%= sprint_card.work_done %> von <%= sprint_card.work_to_do %> fertig</span>
+          </div>
+        </div>
+    <% end %>
+  </div>
+  <%= render partial: 'modal', locals: {f: sprint_card, board: sprint_card.sprint_board} %>
+</div>

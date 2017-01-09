@@ -1,63 +1,114 @@
 <div class="container-fluid">
-<%  @sprint.sprint_boards.each do |board| %>
-    <div class="col-sm-2" style="margin-top: 2em">
-      <div class="panel panel-default shadow2">
-        <div class="panel-heading"><%= board.title %></div>
+  <% if @sprint.finished %>
+      <%= render partial: 'finished', locals: {sprint: @sprint} %>
+  <% end %>
+  <div class="table-responsive">
+    <table class="table table-hover table-bordered" style="margin-top: 1em">
+      <thead>
+        <tr>
+          <%  @sprint.sprint_boards.each do |sprint_board| %>
+            <th><%=	 sprint_board.title %></th>
+          <%  end %>
+        </tr>
+      </thead>
+      <tbody>
+         <%  @sprint.cards.each do |card| %>
+            <tr>
+              <td>
+                <div class="well well shadow" style="background-color:<%= card.color %>"  data-card-id="<%= card.id %>"
+                     data-toggle="modal" data-target="#cardModal"
+                     onclick="updateNewSprintCardModal(<%= card.id %>, <%=@sprint.id%>)">
+                  <%= card.title %>
+                </div>
+              </td>
+              <td data-board-name="Planned">
+                <div class="row">
 
-        <div class="panel-body ui-widget-header" id="droppable<%=board.id%>" data-board-id="<%=board.id%>" data-board-title="<%= board.title %>"
-             style="min-height: 8em">
+                <%  card.sprint_cards.each do |sprint_card| %>
+                    <%	 if sprint_card.sprint_board.title == "Planned" %>
+                          <%= render partial: 'sprint_card', locals: {sprint_card: sprint_card} %>
+                    <%	 end %>
+                <%  end %>
+                </div>
+              </td>
+              <td id="droppable" data-board-name="In Work">
+                <%  card.sprint_cards.each do |sprint_card| %>
+                    <%	 if sprint_card.sprint_board.title == "In Work" %>
+                        <%= render partial: 'sprint_card', locals: {sprint_card: sprint_card} %>
+                    <%	 end %>
+                <% end %>
+              </td>
+              <td id="droppable" data-board-name="Code Review">
+                <%  card.sprint_cards.each do |sprint_card| %>
+                  <%	 if sprint_card.sprint_board.title == "Code Review" %>
+                        <%= render partial: 'sprint_card', locals: {sprint_card: sprint_card} %>
+                  <%	 end %>
+                <%  end %>
+              </td>
+              <td data-board-name="Done">
+                <%  card.sprint_cards.each do |sprint_card| %>
+                  <%	 if sprint_card.sprint_board.title == "Done" %>
+                        <%= render partial: 'sprint_card', locals: {sprint_card: sprint_card} %>
+                  <%	 end %>
+                <%  end %>
+              </td>
+            </tr>
+         <%	 end %>
+      </tbody>
+    </table>
+  </div>
 
-          <% board.sprint_cards.each do |f| %>
-              <% if board.title == "Fertig" %>
-                  <div class="sprintcard shadow" style="background-color: <%= f.color %>"
-                       data-card-id="<%=f.id%>">
-                    <div class="title" style="margin: 1em">
-                      <%= f.title %>
-                    </div>
-                  </div>
-                  <p></p>
-              <% else %>
-                  <div class="sprintcard shadow ui-widget-content" style="background-color: <%= f.color %>;min-width: 10em"
-                       data-card-id="<%=f.id%>" id="<%= f.html_id %>" data-board-title="<%=board.title%>"
-                       data-toggle="modal" data-target="#sprintCardModal<%= f.id %>"
-                       onclick="updateModal(this, <%= f.id %>)">
-                    <div class="title" style="margin: 0.5em 0em 0.5em 1em">
-                      <%= f.title %>
-                    </div>
-                    <div style="border-bottom: 2px solid whitesmoke"></div>
-                    <div id="priodiv" style="margin: 0.2em 0 0.2em 1em; font-size: x-small">
-                      Priorität: <%= f.priority %>
-                    </div>
-                    <% if f.released %>
-                     <div style="; border-bottom: 2px solid whitesmoke"></div>
-                     <div>
-                       <div style="margin: 0.2em 0 0.2em 1em; font-size: x-small">
-                         User: <%= f.username.nil? ? 'Unassigned' : f.username %>
-                       </div>
-                       <div style="; border-bottom: 2px solid whitesmoke"></div>
-                       <div class="progress" style="margin: 0.2em 0.2em 0.2em 0.2em">
-                         <% done = (f.work_done.to_f / f.work_to_do)*100 %>
-                         <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="<%= done %>"
-                              aria-valuemin="0" aria-valuemax="100" style="width:<%= done %>%" id="progressbar<%= f.id %>">
+  <div class="modal fade" id="cardModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Task erstellen</h4>
+        </div>
+        <div class="modal-body">
+          <form id="create-sprint-card" data-card-id="" data-sprint-id="">
+            <div class="form-group">
+              <label for="title">Beschreibung:</label>
+              <textarea class="form-control" rows="4" id="title" style="resize: vertical"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="color">Farbe wählen:</label>
+              <label class="radio-inline">
+                <input type="radio" name="color" value="lightblue" id="lightblue" checked><%= image_tag('lightblue.PNG') %>
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="color" value="lightcoral" id="lightcoral"><%= image_tag('lightcoral.PNG') %>
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="color" value="lightsalmon" id="lightsalmon"><%= image_tag('lightsalmon.PNG') %>
+              </label>
+            </div>
+            <div class="form-group">
+              <label for="prio">Priorität:</label>
+              <select class="form-control" id="prio">
+                <option value="3">gering</option>
+                <option value="2">mittel</option>
+                <option value="1">hoch</option>
+              </select>
+            </div>'
+            <p>
+              <button type="submit" class="btn btn-default">Fertig</button>
+            </p>
 
-                         </div>
-                         <span><%= f.work_done %> von <%= f.work_to_do %> fertig</span>
-                       </div>
-                     </div>
-
-                    <% end %>
-                  </div>
-                  <p></p>
-              <%= render partial: 'modal', locals: {f: f, board: board} %>
-                  <p></p>
-            <% end %>
-          <% end %>
+          </form>
         </div>
       </div>
+
     </div>
-<% end %>
+  </div>
 </div>
 <script>
+
+  function updateNewSprintCardModal(cardId, sprintId) {
+    var form = $('#create-sprint-card');
+    form.attr("data-card-id", cardId);
+    form.attr("data-sprint-id", sprintId);
+  }
 
   function bindListeners() {
     $("[id^=change-form-sprint]").submit( function (e) {
@@ -70,18 +121,19 @@
     var color = form.find('input[type=radio]:checked').val();
     var title = form.find("input[id^=title]").val();
     var cardId = form.attr("data-card-id");
-    var prio = form.find("#prio"+cardId+" option:selected" ).text();
+    var prio = form.find("#prio"+cardId+" option:selected" ).val();
+    var prioText = form.find("#prio"+cardId+" option:selected" ).text();
     $.ajax({
       method: 'POST',
       url: '/update_options/'+cardId,
       data: {title: title, color: color, priority: prio},
       success: function(data) {
         updateModal(form, cardId);
-        var div = $('div[data-card-id='+cardId+']');
+        var div = $('div[data-sprint-card-id='+cardId+']');
         div.css("background-color", color);
         div.children('.title').text(title);
         if(prio != ""){
-          div.children('#priodiv').text("Priorität: "+prio);
+          div.children('#priodiv').text("Priorität: "+prioText);
         }
       }
     });
@@ -108,7 +160,7 @@
       $.ajax({
         method: 'POST',
         url: '/register_for_card/'+cardId,
-        data: {username: "<%= current_user.username %>", user_id: <%= current_user.id %> },
+        data: {},
         success: function(data) {
           location.reload();
         }
@@ -152,6 +204,43 @@
       }
     });
   }
+  function updateRequest(formId) {
+      var form = $('#'+formId);
+      var roundId = form.attr("data-round-id");
+      var sprintCardId = form.attr("data-card-id");;
+      var text = form.find("input[id^=request]").val();
+      $.ajax({
+          method: 'Post',
+          url: '/update_request/'+sprintCardId,
+          data: {text: text, username: "<%= current_user.username %>"},
+          success: function(data) {
+
+              var content = '';
+              for (var y = 0; y < data.length; y++) {
+                  var local = data[y];
+                  var date = new Date(local.updated_at);
+                  var tag = date.getDate();
+                  tag = (tag < 10) ? ("0" + tag) : tag;
+                  var monat = date.getMonth();
+                  monat += 1;
+                  monat = (monat < 10) ? ("0" + monat) : monat;
+                  var jahr = date.getFullYear();
+                  var stunde = date.getHours();
+                  var minute = date.getMinutes();
+                  minute = (minute < 10) ? ("0" + minute) : minute;
+                  var sekunden = date.getSeconds();
+                  sekunden = (sekunden < 10) ? ("0" + sekunden) : sekunden;
+
+                  var datum = "<p>Am: " + tag + "." + monat + "." + jahr + "</p><p>Um: " + stunde + ":" + minute + ":" + sekunden + "</p>";
+
+                  content += '<tr><td>' + local.username + '</td><td>' + local.text + '</td><td>' + datum + '</td></tr>';
+              }
+              form.find("input[id^=request]").val('');
+              form.find('[id^=tablereq]').children().remove();
+              form.find('[id^=tablereq]').append(content);
+          }
+      });
+  }
   function estimate(formId, roundNumber) {
     var form = $('#'+formId);
     var roundId = form.attr("data-round-id");
@@ -159,7 +248,7 @@
     var aufwand = form.find("#sel"+sprintCardId+" option:selected" ).text();
     if(aufwand != 0) {
       $.ajax({
-        type: "GET",
+        type: "Post",
         url: '/estimate/' + sprintCardId,
         dataType: 'json',
         data: {aufwand: aufwand, round_id: roundId},
@@ -195,18 +284,18 @@
               form.find('#estimation-button').css("display", "none");
             } else {
               if (data[0].agreement) {
-/*                var well = $('.well[data-card-id=' + sprintCardId + ']');
+                var well = $('.well[data-card-id=' + sprintCardId + ']');
                 well.first().prop("id", "draggable");
                 estimationsDiv.attr("data-done", true);
-                form.find('#estimation-button').css("display", "none");*/
-                $.ajax({
+                form.find('#estimation-button').css("display", "none");
+/*                $.ajax({
                   type: "POST",
                   url: '/move_to_planned/' + sprintCardId,
                   dataType: 'json',
                   success: function (data) {
                     location.reload();
                   }
-                });
+                });*/
               }
               if (data[0].agreement == false) {
                 estimationsDiv.attr("data-done", true);
@@ -232,40 +321,55 @@
     }
   }
 
+  $('#create-sprint-card').submit( function (e) {
+    e.preventDefault();
+    var cardId = $(this).attr("data-card-id");
+    var sprintId = $(this).attr("data-sprint-id");
+    var color = $(this).find('input[type=radio]:checked').val();
+    var title = $(this).find('#title').val();
+    var prio = $(this).find("#prio option:selected" ).val();
+    $('#cardModal').modal('hide');
+
+    $.ajax({
+      type: "POST",
+      url: '/new_sprint_card',
+      data: { title: title, card_id: cardId, sprint_id: sprintId, color: color, priority: prio},
+      success: function(data) {
+        location.reload();
+      }
+    });
+  });
+
   $(document).ready( function() {
-    $( "[id^=draggable]" ).draggable({ revert: "invalid", helper: "clone", zIndex: 100 });
+    $( "[id^=draggable]" ).draggable({ revert: "invalid", helper: "clone", zIndex: 100, axis: "x",
+    start: function() {
+        $(this).parent().parent().parent().children('#droppable').addClass('dropzone');
+    },
+    stop: function() {
+        $(this).parent().parent().parent().children('#droppable').removeClass('dropzone');
+    }});
 
     $( "[id^=droppable]" ).droppable({
       activeClass: "ui-state-active",
       drop: function( event, ui ) {
-        console.log('---');
-        console.log('Dropped');
-        var cardId = ui.draggable.attr("data-card-id");
-        var boardId = $(this).attr("data-board-id");
-        var header = $(this).parent().children('.panel-heading');
-        if(header.text().toString() == "Fertig") {
-          console.log('if');
-          $(this).append(ui.draggable);
-          $(ui.helper).remove();
-
+        var cardId = ui.draggable.attr("data-sprint-card-id");
+        var boardTitle = $(this).attr('data-board-name');
+        if(boardTitle == "Done") {
           $.ajax({
-            url: '/sprint_card_done/'+cardId+'/'+boardId,
+            url: '/sprint_card_done/'+cardId+'/'+boardTitle,
             success: function() {
-              ui.draggable.attr("data-board-title", $(this).attr('data-board-title') );
+              location.reload();
             }
           });
-          $(ui.draggable).disable();
 
         } else {
-          console.log('Else');
-          console.log($(this).attr('data-board-title'));
-          console.log(ui.draggable.attr("data-board-title"));
-          if($(this).attr('data-board-title') != ui.draggable.attr("data-board-title")) {
-            $(this).append(ui.draggable);
+
+          if(boardTitle != ui.draggable.attr("data-board-title")) {
             ui.draggable.attr("data-board-title", $(this).attr('data-board-title') );
             $.ajax({
-              url: '/change_sprint_board/'+cardId+'/'+boardId,
+              url: '/change_sprint_board/'+cardId+'/'+boardTitle,
               success: function() {
+                  location.reload();
               }
             });
           }
@@ -273,10 +377,70 @@
       }
     });
   } );
+  function sprintCardDone(sprintCardId) {
+      $.ajax({
+          method: 'POST',
+          url: '/sprint_card_done/'+sprintCardId,
+          success: function() {
+              location.reload();
+          }
+      });
+  }
+
+  function updateRetro(sprintId, opinion) {
+      var text = '';
+      if(opinion) {
+          var pro = $('#comment-pro');
+          text = pro.val();
+          pro.val('');
+      } else {
+          var contra = $('#comment-contra');
+          text = contra.val();
+          contra.val('');
+      }
+      $.ajax({
+          method: 'GET',
+          url: '/update_retro',
+          data: {sprint_id: sprintId, pro: opinion, text: text},
+          success: function(data) {
+              var content = '';
+              for (var x = 0; x < data.length; x++) {
+                  content += '<tr>';
+                  content += '<td>'+data[x].username+'</td>';
+                  content += '<td>'+data[x].text+'</td>';
+                  content += '</tr>';
+              }
+              if(opinion) {
+                  var bod = $('#body-pro');
+                  bod.children().remove();
+                  bod.append(content);
+              } else {
+                  var bodc = $('#body-con');
+                  bodc.children().remove();
+                  bodc.append(content);
+              }
+          }
+      });
+  }
+
+  function deleteSprintCard(cardId) {
+      var confirmed = confirm('Task wirklich löschen?');
+      if(confirmed){
+          $.ajax({
+              method: 'DELETE',
+              url: '/delete_sprint_card/'+cardId,
+              success: function(data) {
+                  $('#sprintCardModal'+cardId+'').modal('hide');
+                  $('[data-sprint-card-id='+cardId+']').remove()
+              }
+          });
+      }
+  }
 
 
   function updateModal(caller, sprintCardId) {
     var boardTitle = $(caller).attr('data-board-title');
+    console.log('Titel: '+boardTitle);
     if(true) {
 
       var req1 = $.ajax({
@@ -299,30 +463,33 @@
         modal.find('#round-ul'+sprintCardId).children().remove();
         modal.find('#content'+sprintCardId).children().remove();
         var roundCount = data1[0]["estimation_rounds"].length;
+        console.log('round count ' +roundCount );
         for (var x = 0; x < roundCount; x++) {
           var roundNumber = data1[0]["estimation_rounds"][x].round_number;
           var estimationId = data1[0]["estimation_rounds"][x].id;
-
+          var estLength = data1[0]["estimation_rounds"][x]["estimated_works"].length;
           var work = data1[0]["estimation_rounds"][x]["estimated_works"];
-          // alert(JSON.stringify(work));
           var day = data1[0]["estimation_rounds"][x]["estimated_works"][0];
           if(typeof day === 'undefined') {
             day = 999;
           } else {
             day = day.estimated_days
           }
-          var hasVoted = false;
-          var sameDay = true;
-          if(typeof work !== 'undefined') {
-            for(var z = 0; z < work.length; z++) {
-              if(day != data1[0]["estimation_rounds"][x]["estimated_works"][z].estimated_days) {
-                sameDay = false;
+            var hasVoted = false;
+            var sameDay = false;
+          if(day != 999) {
+              sameDay = true;
+              if(typeof work !== 'undefined') {
+                  for(var z = 0; z < work.length; z++) {
+                      if(day != data1[0]["estimation_rounds"][x]["estimated_works"][z].estimated_days) {
+                          sameDay = false;
+                      }
+                      var name = "<%= current_user.username %>";
+                      if(name == data1[0]["estimation_rounds"][x]["estimated_works"][z].user_name) {
+                          hasVoted = true;
+                      }
+                  }
               }
-              var name = "<%= current_user.username %>";
-              if(name == data1[0]["estimation_rounds"][x]["estimated_works"][z].user_name) {
-                hasVoted = true;
-              }
-            }
           }
 
           console.log('Runde: '+x + ' hast voted: ' + hasVoted);
@@ -348,28 +515,28 @@
           content += '<div class="" id="round'+estimationId+'">';
           content += '<div class="tabbable">';
           content += '<ul class="nav nav-tabs">';
-          content += '<li <%= current_user.product_owner? || current_user.scrum_master? ? "" : "style=display:none"%>>';
+          content += '<li <%= current_user.scrum_team? ? "" : "style=display:none"%>>';
           content += '<a data-toggle="tab" href="#home'+estimationId+'">Optionen</a>';
           content += '</li>';
           content += '<li class="active">';
           content += '<a data-toggle="tab" href="#menu1'+estimationId+'">Diskussion</a>';
           content += '</li>';
-          content += '<li>';
+          content += '<li <%= current_user.scrum_team? ? "" : "style=display:none"%>>';
           content += '<a data-toggle="tab" href="#menu2'+estimationId+'">Aufwand</a>';
           content += '</li>';
-          if(data1[0].username == null && sameDay && roundCount-1 == x && boardTitle == "Planned") {
+          if(data1[0].username == null && sameDay && roundCount-1 == x && boardTitle == "Planned" && estLength == userCount) {
             content += '<li>';
             content += '<a data-toggle="tab" href="#menu5'+estimationId+'">Übernehmen</a>';
             content += '</li>';
           }
-          if(boardTitle == "In Work" && roundCount-1 == x) {
+          if(boardTitle == "In Work" && roundCount-1 == x && data1[0].username == '<%= current_user.username %>') {
             content += '<li>';
             content += '<a data-toggle="tab" href="#menu3'+estimationId+'">Erledigt</a>';
             content += '</li>';
           }
           if(boardTitle == "Code Review" && roundCount-1 == x) {
             content += '<li>';
-            content += '<a data-toggle="tab" href="#menu4'+estimationId+'">Change</a>';
+            content += '<a data-toggle="tab" href="#menu4'+estimationId+'">Change Request</a>';
             content += '</li>';
           }
           content += '</ul>';
@@ -406,9 +573,9 @@
           content += '<label for="prio'+sprintCardId+'">Priorität:</label>';
           content += '<select class="form-control" id="prio'+sprintCardId+'">';
           content += '<option></option>';
-          content += '<option>gering</option>';
-          content += '<option>mittel</option>';
-          content += '<option>hoch</option>';
+          content += '<option value="3">gering</option>';
+          content += '<option value="2">mittel</option>';
+          content += '<option value="1">hoch</option>';
           content += '</select>';
           content += '</div>';
           content += '<p><button type="submit" class="btn btn-default"';
@@ -474,7 +641,6 @@
           content += '<div class="container-fluid" id="aufwand">';
 
           var showEstimations = false;
-          var estLength = data1[0]["estimation_rounds"][x]["estimated_works"].length;
           var estimationsDiv = $("#estimations" + sprintCardId + estimationId);
           if(userCount == estLength && sameDay) {
             showEstimations = true;
@@ -491,7 +657,7 @@
               dataType: 'json',
               success: function (data4) {
                 if(data4.round_created) {
-                  updateModal(this, sprintCardId);
+                    updateModal(this, sprintCardId);
                 }
               }
             });
@@ -532,8 +698,9 @@
           if(boardTitle != "Sprint Backlog") {
             content += '<div id="menu3'+estimationId+'" class="tab-pane fade"><br>';
             content += '<div class="form-group">';
-            content += '<label for="work-done'+sprintCardId+'">Bisher erledigt in Tagen: </label>';
-            content += '<input type="text" class="form-control" id="work-done'+sprintCardId+'" value="" style="max-width: 20%">';
+            var done = $('[data-sprint-card-id='+sprintCardId+']').find('.progress').text().trim().split(' ');
+            content += '<label for="work-done'+sprintCardId+'">Bisher von '+ done[2]+' erledigt in Tagen: </label>';
+            content += '<input type="text" class="form-control" id="work-done'+sprintCardId+'" value="'+done[0]+'" style="max-width: 20%">';
             content += '</div>';
 
             content += '<div id="work-comments'+sprintCardId+estimationId+'"><hr>';
@@ -551,16 +718,42 @@
           }
           if(boardTitle == "Code Review" && roundCount-1 == x) {
             content += '<div id="menu4'+estimationId+'" class="tab-pane fade"><br>';
+            if(<%= current_user.product_owner? %>){
+                content += '<button type="button" class="btn btn-success" onclick="sprintCardDone('+sprintCardId+')">Genehmigen</button><br><br>';
+            }
             content += '<div class="form-group">';
-            content += '<label for="comment'+sprintCardId+'">Kommentar: </label>';
-            content += '<input type="text" class="form-control" id="comment'+sprintCardId+'" value=""">';
+            content += '<label for="request'+sprintCardId+'">Kommentar: </label>';
+            content += '<input type="text" class="form-control" id="request'+sprintCardId+'" value=""">';
             content += '</div>';
 
-            content += '<div id="work-comments'+sprintCardId+estimationId+'"><hr>';
-            content += '<div class="container-fluid" id="comment">';
-            content += '</div>';
+            content += '<div id="change-request'+sprintCardId+estimationId+'"><hr>';
+
+              content += '<div class="container-fluid" id="request">';
+              content += '<table class="table"><thead>' +
+                  '<tr><th>User</th><th>Kommentar</th><th>Datum</th></tr></thead><tbody id="tablereq'+sprintCardId+estimationId+'">';
+              for (var y = 0; y < data1[0]["change_requests"].length; y++) {
+                  var local = data1[0]["change_requests"][y];
+                  var date = new Date(local.updated_at);
+                  var tag = date.getDate();
+                  tag = (tag < 10) ? ("0" + tag) : tag;
+                  var monat = date.getMonth();
+                  monat += 1;
+                  monat = (monat < 10) ? ("0" + monat) : monat;
+                  var jahr = date.getFullYear();
+                  var stunde = date.getHours();
+                  var minute = date.getMinutes();
+                  minute = (minute < 10) ? ("0" + minute) : minute;
+                  var sekunden = date.getSeconds();
+                  sekunden = (sekunden < 10) ? ("0" + sekunden) : sekunden;
+
+                  var datum = "<p>Am: " + tag + "." + monat + "." + jahr + "</p><p>Um: " + stunde + ":" + minute + ":" + sekunden + "</p>";
+
+                  content += '<tr><td>' + local.username + '</td><td>' + local.text + '</td><td>' + datum + '</td></tr>';
+              }
+              content += "</tbody></table></div>";
+
             content += '<p><button type="submit" class="btn btn-default"';
-            content += 'onclick="updateComment(\'change-form-sprint-'+sprintCardId+estimationId+'\')">Aktualisieren</button></p>';
+            content += 'onclick="updateRequest(\'change-form-sprint-'+sprintCardId+estimationId+'\')">Aktualisieren</button></p>';
             content += '</div></div>';
           }
 

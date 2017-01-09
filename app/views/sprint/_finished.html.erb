@@ -1,0 +1,57 @@
+<div class="container-fluid">
+  <div class="row">
+    <h3 style="padding-left: 1em"><span class="label label-primary">Sprint Retrospective</span></h3>
+    <div class="col-sm-6">
+      <div class="table-responsive shadow" style="border: solid 1px;padding: 0 1em 1em 1em">
+        <h5>Positive Beobachtungen</h5>
+        <table class="table table-striped" style="width: 100%;table-layout: fixed">
+          <thead>
+          <tr>
+            <th style="width: 30%">Name</th>
+            <th style="width: 70%">Kommentar</th>
+          </tr>
+          </thead>
+          <tbody id="body-pro">
+          <% sprint.sprint_retro_comments.where(pro: true).each do |row| %>
+          <tr>
+            <td><%= row.username %></td>
+            <td><%= row.text %></td>
+          </tr>
+          <% end %>
+          </tbody>
+        </table>
+        <div class="form-group">
+          <label for="comment-pro">Kommentar:</label>
+          <textarea class="form-control" rows="2" id="comment-pro" style="resize: vertical"></textarea>
+        </div>
+        <button type="button" class="btn btn-success" onclick="updateRetro(<%= sprint.id %>, true)">Aktualisieren</button>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="table-responsive shadow" style="border: solid 1px;padding: 0 1em 1em 1em">
+        <h5>Negative Beobachtungen</h5>
+        <table class="table table-striped" style="width: 100%;table-layout: fixed">
+          <thead>
+          <tr>
+            <th style="width: 30%">Name</th>
+            <th style="width: 70%">Kommentar</th>
+          </tr>
+          </thead>
+          <tbody id="body-con">
+          <% sprint.sprint_retro_comments.where(pro: false).each do |row| %>
+              <tr>
+                <td><%= row.username %></td>
+                <td><%= row.text %></td>
+              </tr>
+          <% end %>
+          </tbody>
+        </table>
+        <div class="form-group">
+          <label for="comment-contra">Kommentar:</label>
+          <textarea class="form-control" rows="2" id="comment-contra" style="resize: vertical"></textarea>
+        </div>
+        <button type="button" class="btn btn-danger" onclick="updateRetro(<%= sprint.id %>, false)">Aktualisieren</button>
+      </div>
+    </div>
+  </div>
+</div>

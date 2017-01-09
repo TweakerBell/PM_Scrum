@@ -6,9 +6,10 @@ class CreateSprintCards < ActiveRecord::Migration[5.0]
       t.integer :last_user_id
       t.integer :user_id
       t.string :username
-      t.string :priority
+      t.integer :priority
       t.integer :position
       t.integer :sprint_board_id
+      t.integer :card_id
       t.boolean :visible
       t.string :change_request
       t.string :color
@@ -18,6 +19,7 @@ class CreateSprintCards < ActiveRecord::Migration[5.0]
       t.boolean :released
       t.integer :matching_card_id
       t.string :html_id
+      t.integer :sprint_id
 
       t.timestamps
     end

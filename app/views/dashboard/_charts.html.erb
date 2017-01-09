@@ -1,0 +1,12 @@
+<% line_chart @orig, xtitle: "Burndown Chart", ytitle: "Noch benötigte Personentage", label: "Personentage  übrig" %>
+<%= line_chart [
+                   {name: "Personentage gesamt", data: @first},
+                   {name: "Personentage erledigt", data: @second},
+                   {name: "Personentage übrig", data: @third}
+               ], legend: "bottom" %>
+<%= pie_chart({"Erledigt" => @ready[:done], "Noch zu erledigen" => @ready[:left]},donut: true) %>
+<%= bar_chart [
+                  {name: "Work Done", data: @fourth},
+                  {name: "Work to do", data: @six}
+              ] %>
+<%= bar_chart @seven, xtitle: "Anzahl Tasks übernommen" %>

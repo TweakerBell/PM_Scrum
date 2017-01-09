@@ -10,34 +10,44 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170102171227) do
+ActiveRecord::Schema.define(version: 20170109133731) do
 
-  create_table "boards", force: :cascade do |t|
+  create_table "boards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
     t.integer  "dashboard_id"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
   end
 
-  create_table "cards", force: :cascade do |t|
+  create_table "cards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
     t.integer  "last_board_id"
     t.integer  "last_user_id"
     t.integer  "board_id"
     t.string   "color"
-    t.integer  "matching_sprint_card_id"
+    t.integer  "sprint_id"
+    t.integer  "priority"
     t.string   "html_id"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.integer  "work_to_do"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
-  create_table "dashboards", force: :cascade do |t|
+  create_table "change_requests", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "sprint_card_id"
+    t.string   "text"
+    t.string   "username"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  create_table "dashboards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "project_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "estimated_works", force: :cascade do |t|
+  create_table "estimated_works", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "estimation_round_id"
     t.integer  "user_id"
     t.string   "user_name"
@@ -46,43 +56,45 @@ ActiveRecord::Schema.define(version: 20170102171227) do
     t.datetime "updated_at",          null: false
   end
 
-  create_table "estimation_rounds", force: :cascade do |t|
+  create_table "estimation_rounds", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "sprint_card_id"
     t.integer  "round_number"
+    t.integer  "card_id"
     t.boolean  "active"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
   end
 
-  create_table "projects", force: :cascade do |t|
+  create_table "projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "projects_users", id: false, force: :cascade do |t|
+  create_table "projects_users", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "project_id"
     t.integer "user_id"
-    t.index ["project_id"], name: "index_projects_users_on_project_id"
-    t.index ["user_id"], name: "index_projects_users_on_user_id"
+    t.index ["project_id"], name: "index_projects_users_on_project_id", using: :btree
+    t.index ["user_id"], name: "index_projects_users_on_user_id", using: :btree
   end
 
-  create_table "sprint_boards", force: :cascade do |t|
+  create_table "sprint_boards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
     t.integer  "sprint_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "sprint_cards", force: :cascade do |t|
+  create_table "sprint_cards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
     t.integer  "last_sprint_board_id"
     t.integer  "last_user_id"
     t.integer  "user_id"
     t.string   "username"
-    t.string   "priority"
+    t.integer  "priority"
     t.integer  "position"
     t.integer  "sprint_board_id"
+    t.integer  "card_id"
     t.boolean  "visible"
     t.string   "change_request"
     t.string   "color"
@@ -92,17 +104,40 @@ ActiveRecord::Schema.define(version: 20170102171227) do
     t.boolean  "released"
     t.integer  "matching_card_id"
     t.string   "html_id"
+    t.integer  "sprint_id"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
   end
 
-  create_table "sprints", force: :cascade do |t|
-    t.integer  "dashboard_id"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+  create_table "sprint_retro_comments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "username"
+    t.string   "text"
+    t.integer  "sprint_id"
+    t.boolean  "pro"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "sprints", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "dashboard_id"
+    t.integer  "sprint_number"
+    t.boolean  "active"
+    t.boolean  "started"
+    t.boolean  "finished"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  create_table "statistics", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "work_total"
+    t.integer  "work_done"
+    t.integer  "work_left"
+    t.integer  "sprint_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "email",                  default: "", null: false
     t.string   "encrypted_password",     default: "", null: false
     t.string   "username"
@@ -117,11 +152,11 @@ ActiveRecord::Schema.define(version: 20170102171227) do
     t.integer  "role"
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   end
 
-  create_table "work_comments", force: :cascade do |t|
+  create_table "work_comments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "text"
     t.integer  "estimation_round_id"
     t.string   "user_name"

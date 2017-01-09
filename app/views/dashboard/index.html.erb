@@ -28,7 +28,9 @@
               </div>
               <div class="col-sm-7">
                 <strong>Projektteilnehmer</strong>
-                <div id="user-list"></div>
+                <div class="row container-fluid" id="user-list">
+
+                </div>
               </div>
             <% end %>
           </div>
@@ -38,58 +40,77 @@
         <div class="row">
           <%  @dashboard.boards.each do |board| %>
               <div class="col-sm-4" style="margin-top: 2em">
-                <div class="panel panel-default shadow2" data-value="<%= board.id %>">
+                <div class="panel panel-default get shadow2" data-value="<%= board.id %>">
 
                   <div class="panel-heading"><%= board.title %>
                   </div>
 
-                  <div class="panel-body" style="min-height: 8em"  <%=  board.title == "Fertige Sprints"? '' : 'id=droppable'+board.id.to_s+'' %> data-board-id="<%=board.id%>">
+                  <div class="panel-body" style="min-height: 8em" id="droppable"
+                       data-board-id="<%=board.id%>">
                     <div id="cards<%= board.id %>">
-                      <% if board.title == "Aktueller Sprint" %>
-                          <div class="drop-helper" id="droppable<%= board.id %>">
-                          </div>
+                      <% if board.title.strip == "Product Backlog" %>
+                          <ul class="list-group" id="sortable">
+                          </ul>
                       <% end %>
                     </div>
                   </div>
 
-                  <% if board.title == "Project Backlog" %>
+                  <% if board.title == "Product Backlog" %>
                       <% if current_user.product_owner? %>
                       <div class="panel-footer" style="text-align: center">
                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#new-card-modal"
-                                onclick="updateNewCardForm(<%= board.id %>)">
+                                onclick="updateNewCardForm(<%= board.id %>, '<%= board.title %>')">
                           Neues Item anlegen
                         </button>
                       </div>
                       <% end %>
-                  <% elsif board.title == "Fertige Sprints" %>
-
-                      <div class="panel-footer">
-                      </div>
-
                   <% else %>
-
                       <div class="panel-footer" style="text-align: center">
                         <div>
-                          <%=	 link_to 'Zum Sprint', sprint_path(@dashboard.id), class:'btn btn-primary'  %>
+                          <%=	 link_to 'Zum Sprint', sprint_path(@dashboard.sprints.find_by(active: true).id), class:'btn btn-primary'  %>
                         </div>
                       </div>
                   <% end %>
                 </div>
               </div>
           <% end %>
+          <div class="col-sm-4" style="margin-top: 2em">
+            <div class="panel panel-default shadow2" data-value="">
+              <div class="panel-heading">Sprint Archiv
+              </div>
+              <div class="panel-body" style="min-height: 8em">
+                <%	@done_sprints.each do |done_sprint|  %>
+                    <%=	 link_to sprint_path(@dashboard.sprints.find_by(active: false).id) do %>
+                    <div class="well well shadow" style="background-color: lightseagreen; color:whitesmoke">
+                      Sprint<br>
+                      Start: <%=  done_sprint.created_at.strftime("%d.%m.%Y")	%>
+                    </div>
+                    <% end %>
+                <%  end %>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     <div class="col-sm-6" style="margin-top: 1em;">
       <div class="well well shadow" style="background-color: burlywood">
         <p>Aktueller Sprint</p>
-        <%= pie_chart({"Erledigt" => @ready[:done], "Noch zu erledigen" => @ready[:left]},donut: true) %>
-        <%= bar_chart [
-                          {name: "Work Done", data: SprintCard.group(:username).sum(:work_done)},
-                          {name: "Work to do", data: SprintCard.group(:username).sum(:work_to_do)}
-                      ] %>
-        <%= bar_chart SprintCard.group(:username).count, xtitle: "Anzahl Tasks übernommen" %>
-        <!--<#%= bar_chart SprintCard.group(:work_to_do).count, xtitle: "Anzahl Tasks", ytitle: "Aufwand in Tagen" %>-->
+        <% sprint = @dashboard.sprints.find_by(active: true) %>
+        <% if !sprint.nil? %>
+          <%= line_chart Statistic.where(sprint_id: sprint.id).group_by_day(:created_at).sum(:work_left), xtitle: "Burndown Chart", ytitle: "Noch benötigte Personentage", label: "Personentage  übrig" %>
+          <button type="button" class="btn btn-default"
+                  onclick="renderCharts()" id="show-button" style="margin: 0.5em 0 0.5em 0">Mehr Grafiken anzeigen
+            <span class="glyphicon glyphicon-chevron-down"></span></button>
+            <button type="button" class="btn btn-default"
+                    onclick="hideCharts()" style="display: none;margin: 0.5em 0 0.5em 0" id="hide-button">Weniger Grafiken anzeigen
+              <span class="glyphicon glyphicon-chevron-up"></span></button>
+          <div class="more-charts" style="display: none">
+
+          </div>
+        <% else %>
+          <div>Burndown Chart und Statistiken können erst angezeigt werden, wenn alle Tasks im Sprint geplant sind.</div>
+        <% end %>
       </div>
     </div>
   </div>
@@ -106,10 +127,11 @@
         </div>
         <div class="modal-body">
           <form id="new-card-form" action="/new_card" accept-charset="UTF-8" method="post">
-            <input type="hidden" name="board-id" id="board-id" data-board-id="">
+            <input type="hidden" name="board-id" id="board-id" data-board-id="" data-board-name="">
             <label for="title">Beschreibung:</label>
-            <input type="text" name="title" id="title">
-            <br><br><br>
+            <textarea class="form-control" rows="4" id="title" style="resize: vertical"></textarea>
+            <br>
+            <br><br>
             <input type="submit" name="commit" value="Anlegen" class="btn btn-success" id="confirm-button" data-disable-with="Anlegen">
           </form>
 
@@ -117,7 +139,6 @@
       </div>
     </div>
   </div>
-
   <div class="modal fade" id="cardModal" role="dialog">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -126,7 +147,7 @@
           <h4 class="modal-title">Karte anpassen</h4>
         </div>
         <div class="modal-body">
-          <form id="change-form" data-card-id="">
+         <!-- <form id="change-form" data-card-id="">
             <div class="form-group">
               <label for="title">Beschreibung:</label>
               <input type="text" class="form-control" id="title" value="">
@@ -145,7 +166,7 @@
               <button type="submit" class="btn btn-default">Fertig</button>
             </p>
 
-          </form>
+          </form>-->
         </div>
       </div>
 
@@ -157,17 +178,21 @@
 <script>
 
   $(document).ready( function () {
-
-    var panels = $('.panel.panel-default');
+    var panels = $('.panel.panel-default.get');
 
     for (var i = 0; i < panels.length; i++) {
       var boardId = panels[i].attributes[1].value;
-      getCards(boardId);
+      var boardName = panels[i];
+      boardName = $(boardName).find('.panel-heading').text();
+      getCards(boardId, boardName);
     }
     $('#user-list').children().remove();
     getUsers(<%=	 @dashboard.project.id %>);
     $('#sel1').children().remove();
     getAvailableUsers(<%=	 @dashboard.project.id %>);
+      $("[id^=change-form]").submit( function (e) {
+          e.preventDefault();
+      });
   });
 
   $("#add-user-form").submit( function (e) {
@@ -196,7 +221,6 @@
     e.preventDefault();
     var form = $(this);
     var cardId = form.attr("data-card-id");
-    var boardId = form.attr("data-board-id");
     var color = form.find('input[type=radio]:checked').val();
     var title = form.find("input[id^=title]").val();
     $('#cardModal').modal('hide');
@@ -205,9 +229,10 @@
       url: '/update_card/'+cardId,
       data: { title: title, color: color },
       success: function(data, textStatus, xhr) {
-        var well = $('#draggable'+cardId);
+/*        var well = $('#draggable'+cardId);
         well.css("background-color", color);
-        well.text(title);
+        well.text(title);*/
+        location.reload();
       }
     });
   });
@@ -215,57 +240,348 @@
   $('#new-card-form').submit( function (e) {
     e.preventDefault();
     var boardId = $(this).attr("data-board-id");
+    var boardName = $(this).attr("data-board-name");
     var title = $('#title').val();
     $('#new-card-modal').modal('hide');
 
     $.ajax({
       type: "POST",
       url: '/new_card',
-      data: { title: title, board_id: boardId, html_id: "draggable" },
+      data: { title: title, board_id: boardId},
       success: function(data, textStatus, xhr) {
-        removeCards(boardId);
-        getCards(boardId);
         $('#new-card-form')[0].reset();
         $('#confirm-button').prop('disabled', false)
+        getCards(boardId, boardName.trim());
       }
     });
   });
 
-  function updateModal(cardId, color, title) {
+  function renderCharts() {
+      $.ajax({
+          type: "GET",
+          url: '/render_charts',
+          data: {id: <%= @dashboard.id %>},
+          success: function(data) {
+              $('.more-charts').fadeToggle('slow');
+              $('.more-charts').children().remove();
+              $('.more-charts').append(data);
+              $('#show-button').toggle();
+              $('#hide-button').toggle();
+          }
+      });
+  }
+  function hideCharts() {
+      $('.more-charts').fadeToggle('slow');
+      $('#hide-button').toggle();
+      $('#show-button').toggle();
+
+  }
+  function updateCardOptions(formId) {
+      var form = $('#'+formId);
+      var color = form.find('input[type=radio]:checked').val();
+      var title = form.find("input[id^=title]").val();
+      var cardId = form.attr("data-card-id");
+      var boardTitle = form.attr("data-board-title");
+      var prio = form.find("#prio"+cardId+" option:selected" ).val();
+      var prioText = form.find("#prio"+cardId+" option:selected" ).text();
+      $.ajax({
+          method: 'POST',
+          url: '/update_card_options/'+cardId,
+          data: {title: title, color: color, priority: prio},
+          success: function(data) {
+              updateModal(form, cardId, color, title, boardTitle);
+              var div = $('div[data-card-id='+cardId+']');
+              div.css("background-color", color);
+              div.children('.title').text(title);
+              if(prio != ""){
+                  div.children('#priodiv').text("Priorität: "+prioText);
+              }
+          }
+      });
+  }
+
+  function updateModal(caller, cardId, color, title, boardTitle) {
     var form = $('#change-form');
     form.attr("data-card-id", cardId);
-    form.find('#'+color).prop('checked', true)
+    form.find('#'+color).prop('checked', true);
     form.find('#title').prop('value', title);
+
+    var req1 = $.ajax({
+        type: "GET",
+        url: '/assets/' + cardId,
+        dataType: 'json',
+        success: function (data1) {
+        }
+    });
+    var req2 = $.ajax({
+        type: "GET",
+        url: '/user_count/' + <%= @dashboard.project.id %>,
+        dataType: 'json',
+        success: function (data2) {
+        }
+    });
+    $.when(req1, req2).done(function(data1, data2){
+        var userCount = data2[0].user_count;
+        var modal = $('#cardModal');
+        modal.find('.modal-body').children().remove();
+        var roundCount = data1[0]["estimation_rounds"].length;
+        for (var x = 0; x < roundCount; x++) {
+            var roundNumber = data1[0]["estimation_rounds"][x].round_number;
+            var estimationId = data1[0]["estimation_rounds"][x].id;
+            var estLength = data1[0]["estimation_rounds"][x]["estimated_works"].length;
+            var work = data1[0]["estimation_rounds"][x]["estimated_works"];
+            var day = data1[0]["estimation_rounds"][x]["estimated_works"][0];
+            if (typeof day === 'undefined') {
+                day = 999;
+            } else {
+                day = day.estimated_days
+            }
+            var hasVoted = false;
+            var sameDay = false;
+            if (day != 999) {
+                sameDay = true;
+                if (typeof work !== 'undefined') {
+                    for (var z = 0; z < work.length; z++) {
+                        if (day != data1[0]["estimation_rounds"][x]["estimated_works"][z].estimated_days) {
+                            sameDay = false;
+                        }
+                        var name = "<%= current_user.username %>";
+                        if (name == data1[0]["estimation_rounds"][x]["estimated_works"][z].user_name) {
+                            hasVoted = true;
+                        }
+                    }
+                }
+            }
+
+        var content = '';
+        content = '<form id="change-form-'+cardId+estimationId+'"';
+        content += ' data-card-id="'+cardId+'" data-board-title="'+boardTitle+'"';
+        if(x == 0){
+            content += 'class="tab-pane active" data-round-id="'+estimationId+'"';
+        } else {
+            content += 'class="tab-pane fade" data-round-id="'+estimationId+'"';
+        }
+        content += ' data-round-number="'+data1[0]["estimation_rounds"][x].round_number+'">';
+        content += '<div class="" id="round'+estimationId+'">';
+        content += '<div class="tabbable">';
+        content += '<ul class="nav nav-tabs">';
+        content += '<li <%= current_user.scrum_team? ? "" : "style=display:none"%>>';
+        content += '<a data-toggle="tab" href="#home'+estimationId+'">Optionen</a>';
+        content += '</li>';
+        content += '<li class="active">';
+        content += '<a data-toggle="tab" href="#menu1'+estimationId+'">Diskussion</a>';
+        content += '</li>';
+        content += '<li <%= current_user.scrum_team? ? "" : "style=display:none"%>>';
+        content += '<a data-toggle="tab" href="#menu2'+estimationId+'">Aufwand</a>';
+        content += '</li>';
+        content += '</ul>';
+
+        content += '<div class="tab-content">';
+        content += '<div id="home'+estimationId+'" class="tab-pane fade">';
+        content += '<div class="form-group"><br>';
+        content += '<label for="title'+cardId+'">Beschreibung:</label>';
+        content += '<input type="text" class="form-control" id="title'+cardId+'" value="'+data1[0].title+'">';
+        content += '</div>';
+        content += '<div class="colorpick">';
+        content += '<label for="color">Farbe wählen:</label>';
+        content += '<label class="radio-inline">';
+        if(data1[0].color == "lightblue") {
+            content += '<input type="radio" name="color" checked="checked" value="lightblue"><%= image_tag("lightblue.PNG") %>';
+        } else {
+            content += '<input type="radio" name="color" value="lightblue"><%= image_tag("lightblue.PNG") %>';
+        }
+        content += '</label>';
+        content += '<label class="radio-inline">';
+        if(data1[0].color == "lightcoral") {
+            content += '<input type="radio" name="color" checked="checked" value="lightcoral"><%= image_tag("lightcoral.PNG") %>';
+        } else {
+            content += '<input type="radio" name="color" value="lightcoral"><%= image_tag("lightcoral.PNG") %>';
+        }
+        content += '</label>';
+        content += '<label class="radio-inline">';
+        if(data1[0].color == "lightsalmon") {
+            content += '<input type="radio" name="color" checked="checked" value="lightsalmon"><%= image_tag("lightsalmon.PNG") %>';
+        } else {
+            content += '<input type="radio" name="color" value="lightsalmon"><%= image_tag("lightsalmon.PNG") %>';
+        }
+        content += '</label><hr></div>';
+        content += '<div class="form-group">';
+        content += '<label for="prio'+cardId+'">Priorität:</label>';
+        content += '<select class="form-control" id="prio'+cardId+'">';
+        content += '<option></option>';
+        content += '<option value="3">gering</option>';
+        content += '<option value="2">mittel</option>';
+        content += '<option value="1">hoch</option>';
+        content += '</select>';
+        content += '</div>';
+        content += '<p><button type="submit" class="btn btn-default"';
+        content += 'onclick="updateCardOptions(\'change-form-'+cardId+estimationId+'\')">Aktualisieren</button></p>';
+        content += '</div>';
+        content += '<div id="menu1'+estimationId+'" class="tab-pane fade in active"><br>';
+        content += '<div class="form-group">';
+        content += '<label for="comment'+cardId+'">Kommentar: </label>';
+        content += '<input type="text" class="form-control" id="comment'+cardId+'" value="">';
+        content += '</div>';
+
+        content += '<div id="work-comments'+cardId+estimationId+'"><hr>';
+        content += '<div class="container-fluid" id="comment">';
+        content += '<table class="table"><thead>' +
+            '<tr><th>User</th><th>Kommentar</th><th>Datum</th></tr></thead><tbody id="table'+cardId+estimationId+'">';
+        for (var y = 0; y < data1[0]["estimation_rounds"][x]["work_comments"].length; y++) {
+            var local = data1[0]["estimation_rounds"][x]["work_comments"][y];
+            var date = new Date(local.updated_at);
+            var tag = date.getDate();
+            tag = (tag < 10) ? ("0" + tag) : tag;
+            var monat = date.getMonth();
+            monat += 1;
+            monat = (monat < 10) ? ("0" + monat) : monat;
+            var jahr = date.getFullYear();
+            var stunde = date.getHours();
+            var minute = date.getMinutes();
+            minute = (minute < 10) ? ("0" + minute) : minute;
+            var sekunden = date.getSeconds();
+            sekunden = (sekunden < 10) ? ("0" + sekunden) : sekunden;
+
+            var datum = "<p>Am: " + tag + "." + monat + "." + jahr + "</p><p>Um: " + stunde + ":" + minute + ":" + sekunden + "</p>";
+
+            content += '<tr><td>' + local.user_name + '</td><td>' + local.text + '</td><td>' + datum + '</td></tr>';
+        }
+        content += "</tbody></table></div>";
+        content += '<p><button type="submit" class="btn btn-default"';
+        content += 'onclick="updateComment(\'change-form-sprint-'+cardId+estimationId+'\')">Aktualisieren</button></p>';
+        content += '</div></div>';
+
+        content += '<div id="menu2'+estimationId+'" class="tab-pane fade">';
+        if(hasVoted) {
+            content += '<br>';
+            content += '<div id="already-voted">';
+        } else {
+            content += '<br>';
+            content += '<div id="already-voted" style="display:none">';
+        }
+        content += '<div class="alert alert-info">';
+        content += 'Sie haben bereits gewählt.<br>Sobald alle Teilnehmer gewählt haben, wird das Ergebnis hier angezeigt.';
+        content += '</div>';
+        content += '</div>';
+        if(!hasVoted){
+            content += '<div class="form-group" id="voting"><br>';
+            content += '<label for="sel'+cardId+'">Aufwandsschätzung in Tagen:</label>';
+            content += '<select class="form-control" id="sel'+cardId+'">';
+            content += '<option>0</option><option>1</option><option>2</option><option>3</option>';
+            content += '<option>5</option><option>8</option><option>13</option><option>20</option>';
+            content += '<option>40</option><option>100</option>';
+            content += '</select></div>';
+        }
+        content += '<div id="estimations'+cardId+estimationId+'">';
+        content += '<div class="container-fluid" id="aufwand">';
+
+        var showEstimations = false;
+        var estimationsDiv = $("#estimations" + cardId + estimationId);
+        if(userCount == estLength && sameDay) {
+            showEstimations = true;
+            var well = $('.well[data-card-id=' + cardId + ']');
+            well.first().prop("id", "draggable");
+        }
+        var nextRound = false;
+        if(userCount == estLength && !sameDay) {
+
+            showEstimations = true;
+            $.ajax({
+                type: "POST",
+                url: '/add_round/' + cardId +'/'+roundNumber,
+                dataType: 'json',
+                success: function (data4) {
+                    if(data4.round_created) {
+                        updateModal(this, cardId);
+                    }
+                }
+            });
+        }
+
+        if(showEstimations) {
+            content += '<table class="table"><thead>' +
+                '<tr><th>User</th><th>Aufwand</th><th>Datum</th></tr></thead><tbody>';
+            for (var z = 0; z < estLength; z++) {
+                local = data1[0]["estimation_rounds"][x]["estimated_works"][z];
+                date = new Date(local.updated_at);
+                tag = date.getDate();
+                tag = (tag < 10) ? ("0" + tag) : tag;
+                monat = date.getMonth();
+                monat += 1;
+                monat = (monat < 10) ? ("0" + monat) : monat;
+                jahr = date.getFullYear();
+                stunde = date.getHours();
+                minute = date.getMinutes();
+                minute = (minute < 10) ? ("0" + minute) : minute;
+                sekunden = date.getSeconds();
+                sekunden = (sekunden < 10) ? ("0" + sekunden) : sekunden;
+
+                datum = "<p>Am: " + tag + "." + monat + "." + jahr + "</p><p>Um: " + stunde + ":" + minute + ":" + sekunden + "</p>";
+
+                content += '<tr><td>' + local.user_name + '</td><td>' + local.estimated_days + ' Tage</td><td>' + datum + '</td></tr>';
+            }
+            content += "</tbody></table>";
+        }
+        content += '</div>';
+        content += '</div>';
+        if(!hasVoted) {
+            content += '<p><button type="submit" class="btn btn-default"';
+            content += 'onclick="estimate(\'change-form-sprint-'+cardId+estimationId+'\','+roundNumber+')" id="estimation-button">Abschicken</button></p>';
+        }
+        content += '</div>';
+
+        content += '</div></div></div></form>';
+        }
+
+
+        modal.find('.modal-body').append(content);
+        bindFormListener();
+    });
   }
 
-  function updateNewCardForm(boardId) {
+  function updateNewCardForm(boardId, boardName) {
     var form = $('#new-card-form');
     form.attr("data-board-id", boardId);
+    form.attr("data-board-name", boardName);
   }
 
-  function getCards(boardId) {
-
+  function getCards(boardId, boardName) {
     $.ajax({
       type: "GET",
       url: '/get_cards/'+boardId,
+        data: {sprint_id: <%= @current_sprint.id %>},
       success: function(data) {
         if(data != null) {
-          $("#cards" + boardId).children().remove();
+          if (boardName.trim() == "Product Backlog") {
+            $("#sortable").children().remove();
+          }
+          if (boardName.trim() != "Product Backlog") {
+            $("#cards" + boardId).children().remove();
+          }
           for (var x = 0; x < data.length; x++) {
 
             var content = "";
 
-            if (data[x].title == "Fertige Sprints") {
-              content += '<div class="well well shadow" style="background-color:' + data[x].color + '" data-card-id="' +
-                  data[x].id + '" data-board-id="' + boardId + '">' + data[x].title + '</div>';
+            if (boardName.trim() == "Product Backlog") {
+              content += '<li class="list-group-item" id="' + data[x].id + '">';
+              content += '<div class="well well shadow" style="background-color:' + data[x].color + '" id="' +
+                  data[x].html_id + '" data-card-id="' + data[x].id + '"';
+              content += 'data-toggle="modal" data-target="#cardModal"' +
+                  'onclick="updateModal(this,' + data[x].id + ',\'' + data[x].color + '\',\'' + data[x].title + '\',\'' + boardName.trim()+'\')">' +
+                  data[x].title+'';
+              content += '<div id="priodiv" style="margin: 0.2em 0 0.2em 1em; font-size: x-small">Priorität: '+data[x].priority+'</div></div>';
+              content += '</li>';
+              $("#sortable").append(content);
             } else {
               content += '<div class="well well shadow" style="background-color:' + data[x].color + '" id="' +
                           data[x].html_id + '" data-card-id="' + data[x].id + '"';
               content += 'data-toggle="modal" data-target="#cardModal"' +
-                          'onclick="updateModal(' + data[x].id + ',\'' + data[x].color + '\',\'' + data[x].title + '\')">' +
-                          data[x].title + '</div>';
+                          'onclick="updateModal(this,' + data[x].id + ',\'' + data[x].color + '\',\'' + data[x].title + '\',\'' + boardName.trim()+'\')">' +
+                          data[x].title+'';
+              content += '<div id="priodiv" style="margin: 0.2em 0 0.2em 1em; font-size: x-small">Priorität: '+data[x].priority+'</div></div>';
+              $("#cards" + boardId).append(content);
             }
-            $("#cards" + boardId).append(content);
+
           }
         }
         bindListener();
@@ -284,7 +600,10 @@
         if(data != null) {
           for (var x = 0; x < data.length; x++) {
 
-            var content = '<p>'+ data[x].username +'</p>';
+       //     var content = '<p>'+ data[x].username +'</p>';
+            var content = '<div class="col-sm-4">';
+                content += '<h5><span class="label label-info" style="margin-right: 1em">'+ data[x].username +'</span></h5>';
+                content += '</div>';
             $(content).appendTo("#user-list");
           }
         }
@@ -309,10 +628,42 @@
     });
   }
 
-
+  function bindFormListener(){
+    $("[id^=change-form]").submit( function (e) {
+        e.preventDefault();
+    });
+  }
   function bindListener() {
 
-    $( "[id^=draggable]" ).draggable({ revert: "invalid", helper: "clone", zIndex: 100 });
+    $("#sortable").sortable({
+      tolerance: 'pointer',
+      revert: true,
+        start: function (event, ui) {
+          $('[id=droppable]').addClass('dropzone');
+        },
+        stop: function (event, ui) {
+            $('[id=droppable]').removeClass('dropzone');
+        },
+        update: function (event, ui) {
+        var well = $(ui.item).children();
+        var ids = [];
+        var ind = [];
+        $.map($(this).find('li'), function(el) {
+          ids.push(el.id);
+          ind.push($(el).index());
+        });
+        $.ajax({
+           method: 'POST',
+           url: '/update_prio',
+           data: {ind: ind, ids: ids},
+           success: function () {
+           }
+        });
+        }
+    });
+    $("ul, li").disableSelection();
+
+    $( "[id^=draggable]" ).draggable({ /*connectToSortable: '#sortable',*/ zIndex: 100, revert: "invalid", helper: "clone"});
 
     $( "[id^=droppable]" ).droppable({
       classes: {
@@ -320,23 +671,34 @@
         "ui-droppable-hover": "ui-state-hover"
       },
       drop: function (event, ui) {
-        var cardId = ui.draggable.attr("data-card-id");
+          $('[id=droppable]').removeClass('dropzone');
+        var origin = $(ui.draggable.context.childNodes[0]);
+        var cardId = origin.attr("data-card-id");
+        if (typeof cardId == 'undefined'){
+            origin = ui.draggable;
+            cardId = origin.attr("data-card-id");
+        }
         var boardId = $(this).attr("data-board-id");
         var boardName = $(this).closest('.panel').children('.panel-heading').text().trim();
-        var oldBoardName = ui.draggable.closest('.panel').children('.panel-heading').text().trim();
-        if (oldBoardName == "Project Backlog" && boardName === "Aktueller Sprint") {
+        var oldBoardName = origin.closest('.panel').children('.panel-heading').text().trim();
+        var newDiv = origin;
+        if (oldBoardName == "Product Backlog" && boardName === "Aktueller Sprint") {
           var confirmed = confirm('Wirklich dem Sprint hinzufügen?');
           if (confirmed) {
             $.ajax({
+              method: 'POST',
               url: '/move_to_sprint/' + cardId + '/' + boardId,
               success: function () {
               }
             });
-            $(this).append(ui.draggable)
+            origin.closest('li').remove();
+            origin.remove();
+            origin.appendTo($(this));
+            bindListener();
           }
         }
-        if (boardName == 'Project Backlog' && oldBoardName == "Aktueller Sprint") {
-          var confirmed2 = confirm('Wirklich aus aktuellem Sprint löschen?');
+        if (boardName == 'Product Backlog' && oldBoardName == "Aktueller Sprint") {
+          var confirmed2 = confirm('Wirklich aus aktuellem Sprint löschen? Alle bisher erstellten Tasks werden ebenfalls gelöscht!');
           if (confirmed2) {
             $.ajax({
               method: 'POST',
@@ -344,11 +706,95 @@
               success: function () {
               }
             });
-            $(this).append(ui.draggable);
+            origin.remove();
+            var li = '<li class="list-group-item" id="'+cardId+'"></li>'
+            $('#sortable').append(li);
+            $('#'+cardId).append(newDiv);
+              bindListener();
           }
         }
       }
     })
   }
+
+/*  function estimateCard(formId, roundNumber) {
+      var form = $('#'+formId);
+      var roundId = form.attr("data-round-id");
+      var cardId = form.attr("data-card-id");
+      var aufwand = form.find("#sel"+cardId+" option:selected" ).text();
+      if(aufwand != 0) {
+          $.ajax({
+              type: "Post",
+              url: '/estimate/' + sprintCardId,
+              dataType: 'json',
+              data: {aufwand: aufwand, round_id: roundId},
+              success: function (data) {
+                  if (data != null) {
+                      var content = '<table class="table"><thead>' +
+                          '<tr><th>User</th><th>Aufwand</th><th>Datum</th></tr></thead><tbody>';
+
+                      for (var x = 0; x < data.length; x++) {
+                          var date = new Date(data[x].updated_at);
+                          var tag = date.getDate();
+                          tag = (tag < 10) ? ("0" + tag) : tag;
+                          var monat = date.getMonth();
+                          monat += 1;
+                          monat = (monat < 10) ? ("0" + monat) : monat;
+                          var jahr = date.getFullYear();
+                          var stunde = date.getHours();
+                          var minute = date.getMinutes();
+                          minute = (minute < 10) ? ("0" + minute) : minute;
+                          var sekunden = date.getSeconds();
+                          sekunden = (sekunden < 10) ? ("0" + sekunden) : sekunden;
+
+                          var datum = "<p>Am: " + tag + "." + monat + "." + jahr + "</p><p>Um: " + stunde + ":" + minute + ":" + sekunden + "</p>";
+
+                          content += '<tr><td>' + data[x].user_name + '</td><td>' + data[x].estimated_days + ' Tage</td><td>' + datum + '</td></tr>';
+                      }
+                      content += "</tbody></table>";
+
+                      form.find('#aufwand').append(content);
+
+                      var estimationsDiv = $("#estimations" + sprintCardId + roundId);
+                      if(estimationsDiv.attr("data-done") == true) {
+                          form.find('#estimation-button').css("display", "none");
+                      } else {
+                          if (data[0].agreement) {
+                              var well = $('.well[data-card-id=' + sprintCardId + ']');
+                              well.first().prop("id", "draggable");
+                              estimationsDiv.attr("data-done", true);
+                              form.find('#estimation-button').css("display", "none");
+                            /!*                $.ajax({
+                             type: "POST",
+                             url: '/move_to_planned/' + sprintCardId,
+                             dataType: 'json',
+                             success: function (data) {
+                             location.reload();
+                             }
+                             });*!/
+                          }
+                          if (data[0].agreement == false) {
+                              estimationsDiv.attr("data-done", true);
+                              form.find('#estimation-button').css("display", "none");
+                              form.find('#voting').css("display", "none");
+                              $.ajax({
+                                  type: "POST",
+                                  url: '/add_round/' + sprintCardId+'/'+roundNumber,
+                                  dataType: 'json',
+                                  success: function (data) {
+                                      updateModal(form, sprintCardId)
+                                  }
+                              });
+                          }
+                      }
+                  }
+                  form.find('#estimation-button').css("display", "none");
+                  form.find('#voting').css("display", "none");
+                  form.find('#already-voted').css("display", "inline");
+
+              }
+          });
+      }
+  }*/
 
 </script>

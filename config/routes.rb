@@ -29,7 +29,7 @@ Rails.application.routes.draw do
   get '/card_assets/:card_id', to: 'sprint_card#card_assets'
   get '/user_count/:project_id', to: 'project#user_count'
   get '/update_comments/:round_id', to: 'sprint_card#update_comments'
-  get '/estimate/:card_id', to: 'sprint_card#estimate'
+  post '/estimate/:card_id', to: 'sprint_card#estimate'
   get '/check_estimation_done/:card_id', to: 'sprint_card#check_estimation_done'
   post '/update_options/:card_id', to: 'sprint_card#update_options'
   post '/update_work_done/:card_id', to: 'sprint_card#update_work_done'

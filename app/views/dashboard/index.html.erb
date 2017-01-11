@@ -95,22 +95,14 @@
     </div>
     <div class="col-sm-6" style="margin-top: 1em;">
       <div class="well well shadow" style="background-color: burlywood">
-        <p>Aktueller Sprint</p>
-        <% sprint = @dashboard.sprints.find_by(active: true) %>
-        <% if !sprint.nil? %>
-          <%= line_chart Statistic.where(sprint_id: sprint.id).group_by_day(:created_at).sum(:work_left), xtitle: "Burndown Chart", ytitle: "Noch benötigte Personentage", label: "Personentage  übrig" %>
-          <button type="button" class="btn btn-default"
-                  onclick="renderCharts()" id="show-button" style="margin: 0.5em 0 0.5em 0">Mehr Grafiken anzeigen
+        <button type="button" class="btn btn-default"
+                  onclick="renderCharts()" id="show-button" style="margin: 0.5em 0 0.5em 0">Grafiken anzeigen
             <span class="glyphicon glyphicon-chevron-down"></span></button>
             <button type="button" class="btn btn-default"
-                    onclick="hideCharts()" style="display: none;margin: 0.5em 0 0.5em 0" id="hide-button">Weniger Grafiken anzeigen
+                    onclick="hideCharts()" style="display: none;margin: 0.5em 0 0.5em 0" id="hide-button">Grafiken ausblenden
               <span class="glyphicon glyphicon-chevron-up"></span></button>
           <div class="more-charts" style="display: none">
-
           </div>
-        <% else %>
-          <div>Burndown Chart und Statistiken können erst angezeigt werden, wenn alle Tasks im Sprint geplant sind.</div>
-        <% end %>
       </div>
     </div>
   </div>
@@ -123,15 +115,33 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Neue Aufgabe anlegen</h4>
+          <h4 class="modal-title">Neues Item anlegen</h4>
         </div>
         <div class="modal-body">
           <form id="new-card-form" action="/new_card" accept-charset="UTF-8" method="post">
             <input type="hidden" name="board-id" id="board-id" data-board-id="" data-board-name="">
-            <label for="title">Beschreibung:</label>
-            <textarea class="form-control" rows="4" id="title" style="resize: vertical"></textarea>
+            <div class="form-group">
+              <label for="title">Beschreibung:</label>
+              <textarea class="form-control" rows="4" id="title" style="resize: vertical"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="prio-new">Priorität:</label>
+              <select class="form-control" id="prio-new">
+                <option>gering</option>
+                <option>mittel</option>
+                <option>hoch</option>
+              </select>
+            </div>
+            <div class="checkbox">
+              <label><input type="checkbox" value="" id="is-user-story">Ist User Story</label>
+            </div>
+            <div class="form-group" id="user-story-cred">
+              <label for="criteria">Akzeptanzkriterien: </label>
+              <input type="text" class="form-control" id="criteria" style="margin-bottom: 0.5em">
+              <div class="btn btn-default" id="add-ciretia-button" onclick="addCriteria(this)"><span class="glyphicon glyphicon-plus"></span></div>
+              <div class="btn btn-default" id="add-ciretia-minus" onclick="removeCriteria()"><span class="glyphicon glyphicon-minus"></span></div>
+            </div>
             <br>
-            <br><br>
             <input type="submit" name="commit" value="Anlegen" class="btn btn-success" id="confirm-button" data-disable-with="Anlegen">
           </form>
 
@@ -140,33 +150,23 @@
     </div>
   </div>
   <div class="modal fade" id="cardModal" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="overflow-y: initial">
+
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
           <h4 class="modal-title">Karte anpassen</h4>
         </div>
-        <div class="modal-body">
-         <!-- <form id="change-form" data-card-id="">
-            <div class="form-group">
-              <label for="title">Beschreibung:</label>
-              <input type="text" class="form-control" id="title" value="">
-            </div>
-            <label for="color">Farbe wählen:</label>
-            <label class="radio-inline">
-                <input type="radio" name="color" value="lightblue" id="lightblue"><%= image_tag('lightblue.PNG') %>
-            </label>
-            <label class="radio-inline">
-                <input type="radio" name="color" value="lightcoral" id="lightcoral"><%= image_tag('lightcoral.PNG') %>
-            </label>
-            <label class="radio-inline">
-                <input type="radio" name="color" value="lightsalmon" id="lightsalmon"><%= image_tag('lightsalmon.PNG') %>
-            </label>
-            <p>
-              <button type="submit" class="btn btn-default">Fertig</button>
-            </p>
+        <div class="modal-body" style="height: 40em;overflow-y: auto;">
 
-          </form>-->
+          <ul class="nav nav-tabs" id="round-ul">
+
+          </ul>
+
+          <div class="tab-content" id="content">
+
+          </div>
+
         </div>
       </div>
 
@@ -176,6 +176,14 @@
 
 
 <script>
+
+  function addCriteria(element) {
+      $( '<input type="text" class="form-control" id="criteria" style="margin-bottom: 0.5em">' ).insertBefore(element);
+  }
+
+  function removeCriteria(element) {
+      $('[id=criteria]').last().remove();
+  }
 
   $(document).ready( function () {
     var panels = $('.panel.panel-default.get');
@@ -217,7 +225,7 @@
 
   });
 
-  $("#change-form").submit( function (e) {
+/*  $("#change-card-form").submit( function (e) {
     e.preventDefault();
     var form = $(this);
     var cardId = form.attr("data-card-id");
@@ -229,30 +237,43 @@
       url: '/update_card/'+cardId,
       data: { title: title, color: color },
       success: function(data, textStatus, xhr) {
-/*        var well = $('#draggable'+cardId);
+/!*        var well = $('#draggable'+cardId);
         well.css("background-color", color);
-        well.text(title);*/
+        well.text(title);*!/
+console.log('success');
         location.reload();
       }
     });
-  });
+  });*/
 
   $('#new-card-form').submit( function (e) {
     e.preventDefault();
     var boardId = $(this).attr("data-board-id");
     var boardName = $(this).attr("data-board-name");
     var title = $('#title').val();
+    var checked = $('#is-user-story').prop("checked");
+    var prio = $(this).find("#prio-new option:selected" ).val();
+    console.log(prio);
     $('#new-card-modal').modal('hide');
 
+    var criteria = $('[id=criteria]');
+    var crit = [];
+    for(var x = 0; x < criteria.length; x++) {
+/*        var item = {};*/
+        var item = $($('[id=criteria]')[x]).val();
+       crit.push(item);
+    };
+
     $.ajax({
-      type: "POST",
-      url: '/new_card',
-      data: { title: title, board_id: boardId},
-      success: function(data, textStatus, xhr) {
-        $('#new-card-form')[0].reset();
-        $('#confirm-button').prop('disabled', false)
-        getCards(boardId, boardName.trim());
-      }
+        type: "POST",
+        dataType: "json",
+        url: '/new_card',
+        data: { title: title, board_id: boardId, checked: checked, criteria: crit, priority: prio},
+        success: function(data, textStatus, xhr) {
+            $('#new-card-form')[0].reset();
+            $('#confirm-button').prop('disabled', false);
+            getCards(boardId, boardName.trim());
+        }
     });
   });
 
@@ -270,6 +291,14 @@
           }
       });
   }
+  function renderSb() {
+
+              Chartkick.charts["chart-1"].redraw();
+
+  }
+  function renderCardModal(){
+
+  }
   function hideCharts() {
       $('.more-charts').fadeToggle('slow');
       $('#hide-button').toggle();
@@ -281,31 +310,93 @@
       var color = form.find('input[type=radio]:checked').val();
       var title = form.find("input[id^=title]").val();
       var cardId = form.attr("data-card-id");
+      var credInputs = form.find('#user-story-cred').children('input');
+      var crit = [];
+      var ids = [];
+      for(var x = 0; x < credInputs.length; x++) {
+          var text = $($(credInputs)[x]).val();
+          var id = $($(credInputs)[x]).data('crit-id');
+          if(typeof id == "undefined") {
+              id = 0;
+          }
+          crit.push(text);
+          ids.push(id);
+      }
+      if(crit.length == 0) {
+          ids.push(0);
+          crit.push('');
+      }
       var boardTitle = form.attr("data-board-title");
       var prio = form.find("#prio"+cardId+" option:selected" ).val();
       var prioText = form.find("#prio"+cardId+" option:selected" ).text();
       $.ajax({
           method: 'POST',
+          dataType: "json",
           url: '/update_card_options/'+cardId,
-          data: {title: title, color: color, priority: prio},
+          data: {title: title, color: color, priority: prio, criteria_ids: ids, criteria: crit},
           success: function(data) {
               updateModal(form, cardId, color, title, boardTitle);
               var div = $('div[data-card-id='+cardId+']');
               div.css("background-color", color);
-              div.children('.title').text(title);
+              div.children().first().text(title);
               if(prio != ""){
                   div.children('#priodiv').text("Priorität: "+prioText);
               }
           }
       });
   }
+  function updateCardComment(formId) {
+      var form = $('#'+formId);
+      var roundId = form.attr("data-round-id");
+      var sprintCardId = form.attr("data-card-id");
+      var text = form.find("input[id^=comment]").val();
+      $.ajax({
+          method: 'POST',
+          url: '/update_card_comments/'+roundId,
+          data: {text: text, username: "<%= current_user.username %>"},
+          success: function(data) {
+
+              var content = '';
+              for (var y = 0; y < data.length; y++) {
+                  var local = data[y];
+                  var date = new Date(local.updated_at);
+                  var tag = date.getDate();
+                  tag = (tag < 10) ? ("0" + tag) : tag;
+                  var monat = date.getMonth();
+                  monat += 1;
+                  monat = (monat < 10) ? ("0" + monat) : monat;
+                  var jahr = date.getFullYear();
+                  var stunde = date.getHours();
+                  var minute = date.getMinutes();
+                  minute = (minute < 10) ? ("0" + minute) : minute;
+                  var sekunden = date.getSeconds();
+                  sekunden = (sekunden < 10) ? ("0" + sekunden) : sekunden;
+
+                  var datum = "<p>Am: " + tag + "." + monat + "." + jahr + "</p><p>Um: " + stunde + ":" + minute + ":" + sekunden + "</p>";
+
+                  content += '<tr><td>' + local.user_name + '</td><td>' + local.text + '</td><td>' + datum + '</td></tr>';
+              }
+              form.find("input[id^=comment]").val('');
+              form.find('[id^=table]').children().remove();
+              form.find('[id^=table]').append(content);
+          }
+      });
+  }
+  function deleteCard(cardId) {
+      var confirmed = confirm('Task wirklich löschen?');
+      if(confirmed){
+          $.ajax({
+              method: 'DELETE',
+              url: '/delete_card/'+cardId,
+              success: function(data) {
+                  $('#cardModal').modal('hide');
+                  $('[data-card-id='+cardId+']').remove()
+              }
+          });
+      }
+  }
 
   function updateModal(caller, cardId, color, title, boardTitle) {
-    var form = $('#change-form');
-    form.attr("data-card-id", cardId);
-    form.find('#'+color).prop('checked', true);
-    form.find('#title').prop('value', title);
-
     var req1 = $.ajax({
         type: "GET",
         url: '/assets/' + cardId,
@@ -321,9 +412,276 @@
         }
     });
     $.when(req1, req2).done(function(data1, data2){
+
         var userCount = data2[0].user_count;
+        console.log('user count '+userCount);
         var modal = $('#cardModal');
-        modal.find('.modal-body').children().remove();
+        modal.find('#round-ul').children().remove();
+        modal.find('#content').children().remove();
+        modal.find('#delete-card-button').remove();
+        var roundCount = data1[0]["estimation_rounds"].length;
+        console.log('round count ' +roundCount );
+        console.log($('cardModal'));
+        for (var x = 0; x < roundCount; x++) {
+            var roundNumber = data1[0]["estimation_rounds"][x].round_number;
+            console.log('round number ' +roundNumber);
+            var estimationId = data1[0]["estimation_rounds"][x].id;
+            var estLength = data1[0]["estimation_rounds"][x]["estimated_works"].length;
+            var work = data1[0]["estimation_rounds"][x]["estimated_works"];
+            var day = data1[0]["estimation_rounds"][x]["estimated_works"][0];
+            if(typeof day === 'undefined') {
+                day = 999;
+            } else {
+                day = day.estimated_days
+            }
+            var hasVoted = false;
+            var sameDay = false;
+            if(day != 999) {
+                sameDay = true;
+                if(typeof work !== 'undefined') {
+                    for(var z = 0; z < work.length; z++) {
+                        if(day != data1[0]["estimation_rounds"][x]["estimated_works"][z].estimated_days) {
+                            sameDay = false;
+                        }
+                        var name = "<%= current_user.username %>";
+                        if(name == data1[0]["estimation_rounds"][x]["estimated_works"][z].user_name) {
+                            hasVoted = true;
+                        }
+                    }
+                }
+            }
+
+            console.log('Runde: '+x + ' hast voted: ' + hasVoted);
+            console.log('same day ' + sameDay);
+            if(x == 0) {
+                var content = '<li class="active">';
+            } else {
+                var content = '<li>';
+            }
+            content += '<a data-toggle="tab" href="#change-card-form-'+cardId+estimationId+'">';
+            content += 'Runde '+data1[0]["estimation_rounds"][x].round_number+'</a>';
+            content += '</li>';
+            console.log(content);
+            modal.find('#round-ul').append(content);
+            if(<%= current_user.product_owner? %>) {
+                content = '<button type="button" class="btn btn-danger" id="delete-card-button" style="float:right" onclick="deleteCard('+cardId+')">';
+                content += 'Item löschen';
+                content += '</button>';
+                modal.find('.modal-header').append(content);
+            }
+
+            content = '<form id="change-card-form-'+cardId+estimationId+'"';
+            content += ' data-card-id="'+cardId+'" data-board-title="'+boardTitle+'"';
+            if(x == 0){
+                content += 'class="tab-pane active" data-round-id="'+estimationId+'"';
+            } else {
+                content += 'class="tab-pane fade" data-round-id="'+estimationId+'"';
+            }
+            content += ' data-round-number="'+data1[0]["estimation_rounds"][x].round_number+'">';
+            content += '<div class="" id="round'+estimationId+'">';
+            content += '<div class="tabbable">';
+            content += '<ul class="nav nav-tabs">';
+            content += '<li <%= current_user.product_owner? ? "" : "style=display:none"%>>';
+            content += '<a data-toggle="tab" href="#home'+estimationId+'">Optionen</a>';
+            content += '</li>';
+            content += '<li class="active">';
+            content += '<a data-toggle="tab" href="#menu1'+estimationId+'">Diskussion</a>';
+            content += '</li>';
+            content += '<li <%= current_user.scrum_team? ? "" : "style=display:none"%>>';
+            content += '<a data-toggle="tab" href="#menu2'+estimationId+'">Aufwand</a>';
+            content += '</li>';
+
+            content += '</ul>';
+            content += '<div class="tab-content">';
+            content += '<div id="home'+estimationId+'" class="tab-pane fade">';
+            content += '<div class="form-group"><br>';
+            content += '<label for="title'+cardId+'">Beschreibung:</label>';
+            content += '<input type="text" class="form-control" id="title'+cardId+'" value="'+data1[0].title+'">';
+            content += '</div>';
+            content += '<div class="colorpick">';
+            content += '<label for="color">Farbe wählen:</label>';
+            content += '<label class="radio-inline">';
+            if(data1[0].color == "lightblue") {
+                content += '<input type="radio" name="color" checked="checked" value="lightblue"><%= image_tag("lightblue.PNG") %>';
+            } else {
+                content += '<input type="radio" name="color" value="lightblue"><%= image_tag("lightblue.PNG") %>';
+            }
+            content += '</label>';
+            content += '<label class="radio-inline">';
+            if(data1[0].color == "lightcoral") {
+                content += '<input type="radio" name="color" checked="checked" value="lightcoral"><%= image_tag("lightcoral.PNG") %>';
+            } else {
+                content += '<input type="radio" name="color" value="lightcoral"><%= image_tag("lightcoral.PNG") %>';
+            }
+            content += '</label>';
+            content += '<label class="radio-inline">';
+            if(data1[0].color == "lightsalmon") {
+                content += '<input type="radio" name="color" checked="checked" value="lightsalmon"><%= image_tag("lightsalmon.PNG") %>';
+            } else {
+                content += '<input type="radio" name="color" value="lightsalmon"><%= image_tag("lightsalmon.PNG") %>';
+            }
+            content += '</label><hr></div>';
+            content += '<div class="form-group">';
+            content += '<label for="prio'+cardId+'">Priorität:</label>';
+            content += '<select class="form-control" id="prio'+cardId+'">';
+            content += '<option></option>';
+            content += '<option>gering</option>';
+            content += '<option>mittel</option>';
+            content += '<option>hoch</option>';
+            content += '</select>';
+            content += '</div>';
+            var crit = data1[x]["acceptance_criteriums"];
+            content += '<h6><span class="label label-default" onclick="$(this).parent().siblings(\'#crit-div\').fadeToggle(\'slow\');' +
+                '$(this).parent().next(\'h6\').children(\'span\').toggle();$(this).toggle();" style="cursor:cell">' +
+                '<span class="glyphicon glyphicon-chevron-down"></span> Kriterien</span></h6>';
+            content += '<h6><span class="label label-default" onclick="$(this).parent().siblings(\'#crit-div\').fadeToggle(\'slow\');' +
+                '$(this).parent().prev(\'h6\').children(\'span\').toggle();$(this).toggle();" style="cursor:cell;display:none">' +
+                '<span class="glyphicon glyphicon-chevron-up"></span> Kriterien</span></h6>';
+            content += '<div id="crit-div" style="display:none">';
+            content += '<div class="form-group" id="user-story-cred">';
+            content += '<label for="criteria">Akzeptanzkriterien: </label>';
+            if(typeof crit != "undefined"){
+                for (var y = 0; y < crit.length; y++) {
+                    content += '<input type="text" class="form-control" id="criteria" data-crit-id="' + crit[y].id + '"' +
+                        'style="margin-bottom: 0.5em" value="' + crit[y].text + '">'
+                }
+            }
+            content += '<div class="btn btn-default" id="add-criteria-button" onclick="addCriteria(this)"><span class="glyphicon glyphicon-plus"></span></div>';
+            content += '<div class="btn btn-default" id="add-criteria-minus" onclick="removeCriteria()"><span class="glyphicon glyphicon-minus"></span></div>';
+            content += ' </div>';
+            content += '</div>';
+            content += '<p><button type="submit" class="btn btn-default"';
+            content += 'onclick="updateCardOptions(\'change-card-form-'+cardId+estimationId+'\')">Aktualisieren</button></p>';
+            content += '</div>';
+            content += '<div id="menu1'+estimationId+'" class="tab-pane fade in active"><br>';
+            content += '<div class="form-group">';
+            content += '<label for="comment'+cardId+'">Kommentar: </label>';
+            content += '<input type="text" class="form-control" id="comment'+cardId+'" value="">';
+            content += '</div>';
+
+            content += '<div id="work-comments'+cardId+estimationId+'"><hr>';
+            content += '<div class="container-fluid" id="comment">';
+            content += '<table class="table"><thead>' +
+                '<tr><th>User</th><th>Kommentar</th><th>Datum</th></tr></thead><tbody id="table'+cardId+estimationId+'">';
+            for (var y = 0; y < data1[0]["estimation_rounds"][x]["work_comments"].length; y++) {
+                var local = data1[0]["estimation_rounds"][x]["work_comments"][y];
+                var date = new Date(local.updated_at);
+                var tag = date.getDate();
+                tag = (tag < 10) ? ("0" + tag) : tag;
+                var monat = date.getMonth();
+                monat += 1;
+                monat = (monat < 10) ? ("0" + monat) : monat;
+                var jahr = date.getFullYear();
+                var stunde = date.getHours();
+                var minute = date.getMinutes();
+                minute = (minute < 10) ? ("0" + minute) : minute;
+                var sekunden = date.getSeconds();
+                sekunden = (sekunden < 10) ? ("0" + sekunden) : sekunden;
+
+                var datum = "<p>Am: " + tag + "." + monat + "." + jahr + "</p><p>Um: " + stunde + ":" + minute + ":" + sekunden + "</p>";
+
+                content += '<tr><td>' + local.user_name + '</td><td>' + local.text + '</td><td>' + datum + '</td></tr>';
+            }
+            content += "</tbody></table></div>";
+            content += '<p><button type="submit" class="btn btn-default"';
+            content += 'onclick="updateCardComment(\'change-card-form-'+cardId+estimationId+'\')">Aktualisieren</button></p>';
+            content += '</div></div>';
+
+            content += '<div id="menu2'+estimationId+'" class="tab-pane fade">';
+            if(hasVoted) {
+                content += '<br>';
+                content += '<div id="already-voted">';
+            } else {
+                content += '<br>';
+                content += '<div id="already-voted" style="display:none">';
+            }
+            content += '<div class="alert alert-info">';
+            content += 'Sie haben bereits gewählt.<br>Sobald alle Teilnehmer gewählt haben, wird das Ergebnis hier angezeigt.';
+            content += '</div>';
+            content += '</div>';
+            if(!hasVoted){
+                content += '<div class="form-group" id="voting"><br>';
+                content += '<label for="sel">Aufwandsschätzung in Tagen:</label>';
+                content += '<select class="form-control" id="sel">';
+                content += '<option>0</option><option>1</option><option>2</option><option>3</option>';
+                content += '<option>5</option><option>8</option><option>13</option><option>20</option>';
+                content += '<option>40</option><option>100</option>';
+                content += '</select></div>';
+            }
+            content += '<div id="estimations'+cardId+estimationId+'">';
+            content += '<div class="container-fluid" id="aufwand">';
+
+            var showEstimations = false;
+            var estimationsDiv = $("#estimations" + cardId + estimationId);
+            if(userCount == estLength && sameDay) {
+                showEstimations = true;
+                var well = $('.well[data-card-id=' + cardId + ']');
+                well.first().prop("id", "draggable");
+            }
+            var nextRound = false;
+            if(userCount == estLength && !sameDay) {
+
+                showEstimations = true;
+                $.ajax({
+                    type: "POST",
+                    url: '/add_round/' + cardId +'/'+roundNumber,
+                    dataType: 'json',
+                    success: function (data4) {
+                        if(data4.round_created) {
+                            updateModal(this, cardId);
+                        }
+                    }
+                });
+            }
+
+            if(showEstimations) {
+                content += '<table class="table"><thead>' +
+                    '<tr><th>User</th><th>Aufwand</th><th>Datum</th></tr></thead><tbody>';
+                for (var z = 0; z < estLength; z++) {
+                    local = data1[0]["estimation_rounds"][x]["estimated_works"][z];
+                    date = new Date(local.updated_at);
+                    tag = date.getDate();
+                    tag = (tag < 10) ? ("0" + tag) : tag;
+                    monat = date.getMonth();
+                    monat += 1;
+                    monat = (monat < 10) ? ("0" + monat) : monat;
+                    jahr = date.getFullYear();
+                    stunde = date.getHours();
+                    minute = date.getMinutes();
+                    minute = (minute < 10) ? ("0" + minute) : minute;
+                    sekunden = date.getSeconds();
+                    sekunden = (sekunden < 10) ? ("0" + sekunden) : sekunden;
+
+                    datum = "<p>Am: " + tag + "." + monat + "." + jahr + "</p><p>Um: " + stunde + ":" + minute + ":" + sekunden + "</p>";
+
+                    content += '<tr><td>' + local.user_name + '</td><td>' + local.estimated_days + ' Tage</td><td>' + datum + '</td></tr>';
+                }
+                content += "</tbody></table>";
+            }
+            content += '</div>';
+            content += '</div>';
+            if(!hasVoted) {
+                content += '<p><button type="submit" class="btn btn-default"';
+                content += 'onclick="estimateCard(\'change-card-form-'+cardId+estimationId+'\','+roundNumber+','+cardId+')" id="estimation-button">Abschicken</button></p>';
+            }
+            content += '</div>';
+            content += '</div></div></div></form>';
+
+
+            modal.find('#content').append(content);
+
+
+        }
+        bindFormListener();
+
+
+
+
+
+        /*var userCount = data2[0].user_count;
+        var modal = $('#cardModal');
+        modal.find('#round-ul').children().remove();
+        modal.find('#content').children().remove();
         var roundCount = data1[0]["estimation_rounds"].length;
         for (var x = 0; x < roundCount; x++) {
             var roundNumber = data1[0]["estimation_rounds"][x].round_number;
@@ -345,7 +703,7 @@
                         if (day != data1[0]["estimation_rounds"][x]["estimated_works"][z].estimated_days) {
                             sameDay = false;
                         }
-                        var name = "<%= current_user.username %>";
+                        var name = "<#%= current_user.username %>";
                         if (name == data1[0]["estimation_rounds"][x]["estimated_works"][z].user_name) {
                             hasVoted = true;
                         }
@@ -353,8 +711,17 @@
                 }
             }
 
-        var content = '';
-        content = '<form id="change-form-'+cardId+estimationId+'"';
+        if(x == 0) {
+            var content = '<li class="active">';
+        } else {
+            var content = '<li>';
+        }
+        content += '<a data-toggle="tab" href="#change-card-form-'+cardId+estimationId+'">';
+        content += 'Runde '+data1[0]["estimation_rounds"][x].round_number+'</a>';
+        content += '</li>';
+        modal.find('#round-ul').append(content);
+
+        content = '<form id="change-card-form-'+cardId+estimationId+'"';
         content += ' data-card-id="'+cardId+'" data-board-title="'+boardTitle+'"';
         if(x == 0){
             content += 'class="tab-pane active" data-round-id="'+estimationId+'"';
@@ -365,13 +732,13 @@
         content += '<div class="" id="round'+estimationId+'">';
         content += '<div class="tabbable">';
         content += '<ul class="nav nav-tabs">';
-        content += '<li <%= current_user.scrum_team? ? "" : "style=display:none"%>>';
+        content += '<li <#%= current_user.product_owner? ? "" : "style=display:none"%>>';
         content += '<a data-toggle="tab" href="#home'+estimationId+'">Optionen</a>';
         content += '</li>';
         content += '<li class="active">';
         content += '<a data-toggle="tab" href="#menu1'+estimationId+'">Diskussion</a>';
         content += '</li>';
-        content += '<li <%= current_user.scrum_team? ? "" : "style=display:none"%>>';
+        content += '<li <#%= current_user.scrum_team? ? "" : "style=display:none"%>>';
         content += '<a data-toggle="tab" href="#menu2'+estimationId+'">Aufwand</a>';
         content += '</li>';
         content += '</ul>';
@@ -386,36 +753,56 @@
         content += '<label for="color">Farbe wählen:</label>';
         content += '<label class="radio-inline">';
         if(data1[0].color == "lightblue") {
-            content += '<input type="radio" name="color" checked="checked" value="lightblue"><%= image_tag("lightblue.PNG") %>';
+            content += '<input type="radio" name="color" checked="checked" value="lightblue"><#%= image_tag("lightblue.PNG") %>';
         } else {
-            content += '<input type="radio" name="color" value="lightblue"><%= image_tag("lightblue.PNG") %>';
+            content += '<input type="radio" name="color" value="lightblue"><#%= image_tag("lightblue.PNG") %>';
         }
         content += '</label>';
         content += '<label class="radio-inline">';
         if(data1[0].color == "lightcoral") {
-            content += '<input type="radio" name="color" checked="checked" value="lightcoral"><%= image_tag("lightcoral.PNG") %>';
+            content += '<input type="radio" name="color" checked="checked" value="lightcoral"><#%= image_tag("lightcoral.PNG") %>';
         } else {
-            content += '<input type="radio" name="color" value="lightcoral"><%= image_tag("lightcoral.PNG") %>';
+            content += '<input type="radio" name="color" value="lightcoral"><#%= image_tag("lightcoral.PNG") %>';
         }
         content += '</label>';
         content += '<label class="radio-inline">';
         if(data1[0].color == "lightsalmon") {
-            content += '<input type="radio" name="color" checked="checked" value="lightsalmon"><%= image_tag("lightsalmon.PNG") %>';
+            content += '<input type="radio" name="color" checked="checked" value="lightsalmon"><#%= image_tag("lightsalmon.PNG") %>';
         } else {
-            content += '<input type="radio" name="color" value="lightsalmon"><%= image_tag("lightsalmon.PNG") %>';
+            content += '<input type="radio" name="color" value="lightsalmon"><#%= image_tag("lightsalmon.PNG") %>';
         }
         content += '</label><hr></div>';
         content += '<div class="form-group">';
         content += '<label for="prio'+cardId+'">Priorität:</label>';
         content += '<select class="form-control" id="prio'+cardId+'">';
         content += '<option></option>';
-        content += '<option value="3">gering</option>';
-        content += '<option value="2">mittel</option>';
-        content += '<option value="1">hoch</option>';
+        content += '<option>gering</option>';
+        content += '<option>mittel</option>';
+        content += '<option>hoch</option>';
         content += '</select>';
         content += '</div>';
+        var crit = data1[x]["acceptance_criteriums"];
+        content += '<h6><span class="label label-default" onclick="$(this).parent().siblings(\'#crit-div\').fadeToggle(\'slow\');' +
+            '$(this).parent().next(\'h6\').children(\'span\').toggle();$(this).toggle();" style="cursor:cell">' +
+            '<span class="glyphicon glyphicon-chevron-down"></span> Kriterien</span></h6>';
+        content += '<h6><span class="label label-default" onclick="$(this).parent().siblings(\'#crit-div\').fadeToggle(\'slow\');' +
+            '$(this).parent().prev(\'h6\').children(\'span\').toggle();$(this).toggle();" style="cursor:cell;display:none">' +
+            '<span class="glyphicon glyphicon-chevron-up"></span> Kriterien</span></h6>';
+        content += '<div id="crit-div" style="display:none">';
+        content += '<div class="form-group" id="user-story-cred">';
+        content += '<label for="criteria">Akzeptanzkriterien: </label>';
+        if(typeof crit != "undefined"){
+            for (var y = 0; y < crit.length; y++) {
+                content += '<input type="text" class="form-control" id="criteria" data-crit-id="' + crit[y].id + '"' +
+                    'style="margin-bottom: 0.5em" value="' + crit[y].text + '">'
+            }
+        }
+        content += '<div class="btn btn-default" id="add-criteria-button" onclick="addCriteria(this)"><span class="glyphicon glyphicon-plus"></span></div>';
+        content += '<div class="btn btn-default" id="add-criteria-minus" onclick="removeCriteria()"><span class="glyphicon glyphicon-minus"></span></div>';
+        content += ' </div>';
+        content += '</div>';
         content += '<p><button type="submit" class="btn btn-default"';
-        content += 'onclick="updateCardOptions(\'change-form-'+cardId+estimationId+'\')">Aktualisieren</button></p>';
+        content += 'onclick="updateCardOptions(\'change-card-form-'+cardId+estimationId+'\')">Aktualisieren</button></p>';
         content += '</div>';
         content += '<div id="menu1'+estimationId+'" class="tab-pane fade in active"><br>';
         content += '<div class="form-group">';
@@ -444,14 +831,15 @@
 
             var datum = "<p>Am: " + tag + "." + monat + "." + jahr + "</p><p>Um: " + stunde + ":" + minute + ":" + sekunden + "</p>";
 
-            content += '<tr><td>' + local.user_name + '</td><td>' + local.text + '</td><td>' + datum + '</td></tr>';
+            content += '<tr><td style="font-size:smaller">' + local.user_name + '</td><td>' + local.text + '</td><td style="font-size:x-small">' + datum + '</td></tr>';
         }
         content += "</tbody></table></div>";
         content += '<p><button type="submit" class="btn btn-default"';
-        content += 'onclick="updateComment(\'change-form-sprint-'+cardId+estimationId+'\')">Aktualisieren</button></p>';
+        content += 'onclick="updateCardComment(\'change-card-form-'+cardId+estimationId+'\')">Aktualisieren</button></p>';
         content += '</div></div>';
 
         content += '<div id="menu2'+estimationId+'" class="tab-pane fade">';
+
         if(hasVoted) {
             content += '<br>';
             content += '<div id="already-voted">';
@@ -479,8 +867,6 @@
         var estimationsDiv = $("#estimations" + cardId + estimationId);
         if(userCount == estLength && sameDay) {
             showEstimations = true;
-            var well = $('.well[data-card-id=' + cardId + ']');
-            well.first().prop("id", "draggable");
         }
         var nextRound = false;
         if(userCount == estLength && !sameDay) {
@@ -488,11 +874,11 @@
             showEstimations = true;
             $.ajax({
                 type: "POST",
-                url: '/add_round/' + cardId +'/'+roundNumber,
+                url: '/add_card_round/' + cardId +'/'+roundNumber,
                 dataType: 'json',
                 success: function (data4) {
                     if(data4.round_created) {
-                        updateModal(this, cardId);
+                        updateModal(this, cardId, color, title, boardTitle);
                     }
                 }
             });
@@ -526,7 +912,9 @@
         content += '</div>';
         if(!hasVoted) {
             content += '<p><button type="submit" class="btn btn-default"';
-            content += 'onclick="estimate(\'change-form-sprint-'+cardId+estimationId+'\','+roundNumber+')" id="estimation-button">Abschicken</button></p>';
+            content += 'onclick="estimateCard(\'change-card-form-'+cardId+estimationId+'\','+roundNumber+','+ cardId +',\''
+                + color +'\',\''+ title +'\',\''+ boardTitle +'\')" id="estimation-button">Abschicken</button></p>';
+
         }
         content += '</div>';
 
@@ -535,7 +923,7 @@
 
 
         modal.find('.modal-body').append(content);
-        bindFormListener();
+        bindFormListener();*/
     });
   }
 
@@ -562,25 +950,42 @@
 
             var content = "";
 
-            if (boardName.trim() == "Product Backlog") {
-              content += '<li class="list-group-item" id="' + data[x].id + '">';
-              content += '<div class="well well shadow" style="background-color:' + data[x].color + '" id="' +
-                  data[x].html_id + '" data-card-id="' + data[x].id + '"';
-              content += 'data-toggle="modal" data-target="#cardModal"' +
-                  'onclick="updateModal(this,' + data[x].id + ',\'' + data[x].color + '\',\'' + data[x].title + '\',\'' + boardName.trim()+'\')">' +
-                  data[x].title+'';
-              content += '<div id="priodiv" style="margin: 0.2em 0 0.2em 1em; font-size: x-small">Priorität: '+data[x].priority+'</div></div>';
-              content += '</li>';
-              $("#sortable").append(content);
-            } else {
-              content += '<div class="well well shadow" style="background-color:' + data[x].color + '" id="' +
-                          data[x].html_id + '" data-card-id="' + data[x].id + '"';
-              content += 'data-toggle="modal" data-target="#cardModal"' +
-                          'onclick="updateModal(this,' + data[x].id + ',\'' + data[x].color + '\',\'' + data[x].title + '\',\'' + boardName.trim()+'\')">' +
-                          data[x].title+'';
-              content += '<div id="priodiv" style="margin: 0.2em 0 0.2em 1em; font-size: x-small">Priorität: '+data[x].priority+'</div></div>';
-              $("#cards" + boardId).append(content);
+
+            content += '<li class="list-group-item" data-card-id="' + data[x].id + '">';
+            if(data[x].is_user_story){
+                content += '<h5><span class="label label-primary shadow2" style="float:left;cursor:default;" onclick="updateModal(this,' +
+                    data[x].id + ',\'' + data[x].color + '\',\'' + data[x].title + '\',\'' + boardName.trim()+'\')"data-toggle="modal" data-target="#cardModal">' +
+                    '<span class="glyphicon glyphicon-user"></span> User Story</span></h5>';
             }
+            content += '<h5><span class="label label-info shadow2" style="float:right;cursor:pointer;" onclick="updateModal(this,' +
+                data[x].id + ',\'' + data[x].color + '\',\'' + data[x].title + '\',\'' + boardName.trim()+'\')"data-toggle="modal" data-target="#cardModal">' +
+                '<span class="glyphicon glyphicon-cog"></span> Optionen</span></h5>';
+            content += '<div class="well well shadow" style="background-color:' + data[x].color + ';cursor:move" id="' +
+                data[x].html_id + '" data-card-id="' + data[x].id + '">';
+            content += '<div class="well well-sm" style="margin: 0.2em 0 0 0; font-size: x-small; background-color: antiquewhite">'+data[x].title+'</div>';
+            var crit = data[x]["acceptance_criteriums"];
+            if(crit.length != 0) {
+                content += '<h6><span class="label label-default" onclick="$(this).parent().siblings(\'#crit-div\').fadeToggle(\'slow\');' +
+                    '$(this).parent().next(\'h6\').children(\'span\').toggle();$(this).toggle();" style="cursor:cell">' +
+                    '<span class="glyphicon glyphicon-chevron-down"></span> Kriterien</span></h6>';
+                content += '<h6><span class="label label-default" onclick="$(this).parent().siblings(\'#crit-div\').fadeToggle(\'slow\');' +
+                    '$(this).parent().prev(\'h6\').children(\'span\').toggle();$(this).toggle();" style="cursor:cell;display:none">' +
+                    '<span class="glyphicon glyphicon-chevron-up"></span> Kriterien</span></h6>';
+                content += '<div id="crit-div" style="display:none">';
+                for (var y = 0; y < crit.length; y++) {
+                    content += '<div class="well well-sm" style="margin: 0.2em 0 0 0; font-size: x-small">' + crit[y].text + '</div>';
+                }
+                content += '</div>';
+            }
+
+            content += '<div id="priodiv" style="margin: 0.2em 0 0 0; font-size: x-small">Priorität: '+data[x].priority + '</div>';
+            content += '<span class="badge" style="float:right;background-color: firebrick">'+data[x].work_to_do+'</span>';
+            content += '</li>';
+          if (boardName.trim() == "Product Backlog") {
+            $("#sortable").append(content);
+          } else {
+            $("#cards" + boardId).append(content);
+          }
 
           }
         }
@@ -629,11 +1034,12 @@
   }
 
   function bindFormListener(){
-    $("[id^=change-form]").submit( function (e) {
+    $("[id^=change-card-form]").submit( function (e) {
         e.preventDefault();
     });
   }
   function bindListener() {
+
 
     $("#sortable").sortable({
       tolerance: 'pointer',
@@ -717,19 +1123,23 @@
     })
   }
 
-/*  function estimateCard(formId, roundNumber) {
+  function estimateCard(formId, roundNumber, cardId, color, title, boardTitle) {
+      console.log('estimate');
       var form = $('#'+formId);
+      console.log(form);
       var roundId = form.attr("data-round-id");
-      var cardId = form.attr("data-card-id");
-      var aufwand = form.find("#sel"+cardId+" option:selected" ).text();
+      console.log(roundId);
+      var aufwand = form.find("#sel option:selected" ).text();
+      console.log(aufwand);
       if(aufwand != 0) {
           $.ajax({
               type: "Post",
-              url: '/estimate/' + sprintCardId,
+              url: '/estimate_card/' + cardId,
               dataType: 'json',
               data: {aufwand: aufwand, round_id: roundId},
               success: function (data) {
-                  if (data != null) {
+                  updateModal(this, cardId, color, title, boardTitle);
+                  /*if (data != null) {
                       var content = '<table class="table"><thead>' +
                           '<tr><th>User</th><th>Aufwand</th><th>Datum</th></tr></thead><tbody>';
 
@@ -760,18 +1170,7 @@
                           form.find('#estimation-button').css("display", "none");
                       } else {
                           if (data[0].agreement) {
-                              var well = $('.well[data-card-id=' + sprintCardId + ']');
-                              well.first().prop("id", "draggable");
-                              estimationsDiv.attr("data-done", true);
                               form.find('#estimation-button').css("display", "none");
-                            /!*                $.ajax({
-                             type: "POST",
-                             url: '/move_to_planned/' + sprintCardId,
-                             dataType: 'json',
-                             success: function (data) {
-                             location.reload();
-                             }
-                             });*!/
                           }
                           if (data[0].agreement == false) {
                               estimationsDiv.attr("data-done", true);
@@ -791,10 +1190,10 @@
                   form.find('#estimation-button').css("display", "none");
                   form.find('#voting').css("display", "none");
                   form.find('#already-voted').css("display", "inline");
-
+*/
               }
           });
       }
-  }*/
+  }
 
 </script>

@@ -1,12 +1,71 @@
-<% line_chart @orig, xtitle: "Burndown Chart", ytitle: "Noch benötigte Personentage", label: "Personentage  übrig" %>
-<%= line_chart [
-                   {name: "Personentage gesamt", data: @first},
-                   {name: "Personentage erledigt", data: @second},
-                   {name: "Personentage übrig", data: @third}
-               ], legend: "bottom" %>
-<%= pie_chart({"Erledigt" => @ready[:done], "Noch zu erledigen" => @ready[:left]},donut: true) %>
-<%= bar_chart [
-                  {name: "Work Done", data: @fourth},
-                  {name: "Work to do", data: @six}
-              ] %>
-<%= bar_chart @seven, xtitle: "Anzahl Tasks übernommen" %>
+<% sprint = @dashboard.sprints.find_by(active: true) %>
+<% if !sprint.nil? %>
+  <ul class="nav nav-pills">
+    <li class="active"><a data-toggle="pill" href="#chart-pb" onclick="setTimeout(
+        function()
+            {
+                Chartkick.charts['chart-1'].redraw()
+                }, 200);">Product Burndown</a></li>
+    <li><a data-toggle="pill" href="#chart-sb" onclick="setTimeout(
+        function()
+            {
+                Chartkick.charts['chart-2'].redraw()
+                }, 200);">Sprint Burndown</a></li>
+    <li><a data-toggle="pill" href="#chart-eb" onclick="setTimeout(
+        function()
+            {
+                Chartkick.charts['chart-3'].redraw()
+                }, 200);">Break Even</a></li>
+    <li><a data-toggle="pill" href="#chart-done" onclick="setTimeout(
+        function()
+            {
+                Chartkick.charts['chart-4'].redraw()
+                }, 200);">Aktueller Sprint erledigt</a></li>
+    <li><a data-toggle="pill" href="#chart-taken-done" onclick="setTimeout(
+        function()
+            {
+                Chartkick.charts['chart-5'].redraw()
+                }, 200);">Aktueller Sprint Performance</a></li>
+    <li><a data-toggle="pill" href="#chart-taken" onclick="setTimeout(
+        function()
+            {
+                Chartkick.charts['chart-6'].redraw()
+                }, 200);">Aktueller Sprint "Tasks"</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div id="chart-pb" class="tab-pane fade in active">
+      <%= line_chart Statistic.where(dashboard_id: @dashboard.id).group_by_day(:created_at).sum(:work_left),
+                     xtitle: "Burndown Chart", ytitle: "Noch benötigte Personentage", label: "Personentage  übrig" %>
+    </div>
+    <div id="chart-sb" class="tab-pane fade" onclick="Chartkick.charts['chart-1'].redraw()">
+      <%= line_chart Statistic.where(sprint_id: sprint.id).group_by_day(:created_at).sum(:work_left),
+                     xtitle: "Burndown Chart", ytitle: "Noch benötigte Personentage", label: "Personentage  übrig" %>
+    </div>
+    <div id="chart-eb" class="tab-pane fade">
+      <%= line_chart [
+                         {name: "Personentage gesamt", data: @first},
+                         {name: "Personentage erledigt", data: @second},
+                         {name: "Personentage übrig", data: @third}
+                     ], legend: "bottom" %>
+    </div>
+    <div id="chart-done" class="tab-pane fade">
+      <%= pie_chart({"Erledigt" => @ready[:done], "Noch zu erledigen" => @ready[:left]},donut: true) %>
+    </div>
+    <div id="chart-taken-done" class="tab-pane fade">
+      <%= bar_chart [
+                        {name: "Work Done", data: @fourth},
+                        {name: "Work to do", data: @six}
+                    ] %>
+    </div>
+    <div id="chart-taken" class="tab-pane fade">
+      <%= bar_chart @seven, xtitle: "Anzahl Tasks übernommen" %>
+    </div>
+  </div>
+
+<% else %>
+    <div>Burndown Chart und Statistiken können erst angezeigt werden, wenn alle Tasks im Sprint geplant sind.</div>
+<% end %>
+
+
+

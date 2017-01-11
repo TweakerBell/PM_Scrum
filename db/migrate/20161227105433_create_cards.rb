@@ -7,9 +7,12 @@ class CreateCards < ActiveRecord::Migration[5.0]
       t.integer :board_id
       t.string :color
       t.integer :sprint_id
-      t.integer :priority
+      t.integer :position
       t.string :html_id
       t.integer :work_to_do
+      t.boolean :is_user_story
+      t.string :priority
+      t.boolean :done
 
       t.timestamps
     end

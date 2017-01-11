@@ -15,10 +15,33 @@
          <%  @sprint.cards.each do |card| %>
             <tr>
               <td>
-                <div class="well well shadow" style="background-color:<%= card.color %>"  data-card-id="<%= card.id %>"
-                     data-toggle="modal" data-target="#cardModal"
-                     onclick="updateNewSprintCardModal(<%= card.id %>, <%=@sprint.id%>)">
-                  <%= card.title %>
+                <div class="well well shadow" style="background-color:<%= card.color %>"  data-card-id="<%= card.id %>">
+                  <h5>
+                    <span class="label label-info shadow2" style="float:right;cursor:pointer;margin-top: -2em"
+                          data-toggle="modal" data-target="#cardModal"
+                          onclick="updateNewSprintCardModal(<%= card.id %>, <%=@sprint.id%>)">
+                    <span class="glyphicon glyphicon-cog"></span> Optionen</span>
+                  </h5>
+                  <div class="well well-sm" style="margin: 0.2em 0 0 0; font-size: x-small; background-color: antiquewhite">
+                    <%= card.title %>
+                  </div>
+                  <h6>
+                    <span class="label label-default" onclick="$(this).parent().siblings('#crit-div').fadeToggle('slow');
+                    $(this).parent().next('h6').children('span').toggle();$(this).toggle();" style="cursor:cell">
+                    <span class="glyphicon glyphicon-chevron-down"></span> Kriterien</span>
+                  </h6>
+                  <h6>
+                    <span class="label label-default" onclick="$(this).parent().siblings('#crit-div').fadeToggle('slow');
+                    $(this).parent().prev('h6').children('span').toggle();$(this).toggle();" style="cursor:cell;display:none">
+                    <span class="glyphicon glyphicon-chevron-up"></span> Kriterien</span>
+                  </h6>
+                  <div id="crit-div" style="display:none">
+                    <% card.acceptance_criteriums.each do |crit| %>
+                      <div class="well well-sm" style="margin: 0.2em 0 0 0; font-size: x-small"><%=	 crit.text %></div>
+                    <% end %>
+                  </div>
+                    <div id="priodiv" style="margin: 0.2em 0 0 0; font-size: x-small">Priorität: <%= card.priority %></div>
+                    <span class="badge" style="float:right;background-color: firebrick"><%= card.work_to_do %></span>
                 </div>
               </td>
               <td data-board-name="Planned">

@@ -18,7 +18,7 @@ project = Project.new(title: "Produkt 1")
 project.build_dashboard
 project.dashboard.boards.build(title: "Product Backlog")
 project.dashboard.boards.build(title: "Aktueller Sprint")
-project.dashboard.sprints.build(active: true, started: false, finished: false)
+project.dashboard.sprints.build(active: true, started: false, finished: false, sprint_number: 1)
 project.dashboard.sprints.last.sprint_boards.build(title: "Sprint Backlog")
 sprint_b = project.dashboard.sprints.last.sprint_boards.build(title: "Planned")
 project.dashboard.sprints.last.sprint_boards.build(title: "In Work")
@@ -37,20 +37,20 @@ c1.estimation_rounds.create(active: true, round_number: 1)
 c2.estimation_rounds.create(active: true, round_number: 1)
 c3.estimation_rounds.create(active: true, round_number: 1)
 sc1 = SprintCard.create(title: "Task 1",sprint_board_id: sprint_b.id, color: "lightcoral",
-                  card_id: c1.id, work_done: 0, released: false, priority: 1, sprint_id: 1 )
+                  card_id: c1.id, work_done: 0, released: false, position: 1, sprint_id: 1 )
 sc1.estimation_rounds.create(round_number: 1, active: true)
 sc2 = SprintCard.create(title: "Task 2",sprint_board_id: sprint_b.id, color: "lightcoral",
-                  card_id: c1.id, work_done: 0, released: false, priority: 1, sprint_id: 1 )
+                  card_id: c1.id, work_done: 0, released: false, position: 1, sprint_id: 1 )
 sc2.estimation_rounds.create(round_number: 1, active: true)
 sc3 = SprintCard.create(title: "Task 3",sprint_board_id: sprint_b.id, color: "lightcoral",
-                  card_id: c2.id, work_done: 0, released: false, priority: 1, sprint_id: 1 )
+                  card_id: c2.id, work_done: 0, released: false, position: 1, sprint_id: 1 )
 sc3.estimation_rounds.create(round_number: 1, active: true)
 sc4 = SprintCard.create(title: "Task 4",sprint_board_id: sprint_b.id, color: "lightcoral",
-                  card_id: c2.id, work_done: 0, released: false, priority: 1, sprint_id: 1 )
+                  card_id: c2.id, work_done: 0, released: false, position: 1, sprint_id: 1 )
 sc4.estimation_rounds.create(round_number: 1, active: true)
 sc5 = SprintCard.create(title: "Task 5",sprint_board_id: sprint_b.id, color: "lightcoral",
-                  card_id: c3.id, work_done: 0, released: false, priority: 1, sprint_id: 1 )
+                  card_id: c3.id, work_done: 0, released: false, position: 1, sprint_id: 1 )
 sc5.estimation_rounds.create(round_number: 1, active: true)
 sc6 = SprintCard.create(title: "Task 6",sprint_board_id: sprint_b.id, color: "lightcoral",
-                  card_id: c3.id, work_done: 0, released: false, priority: 1, sprint_id: 1 )
+                  card_id: c3.id, work_done: 0, released: false, position: 1, sprint_id: 1 )
 sc6.estimation_rounds.create(round_number: 1, active: true)

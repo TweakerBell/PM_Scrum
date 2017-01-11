@@ -28,8 +28,22 @@ class SprintCardController < ApplicationController
     sprint_card = SprintCard.find(params[:cardId])
     sprint = sprint_card.sprint_board.sprint
     sprint_board = sprint.sprint_boards.find_by(title: 'Done')
-    sprint_card.update(sprint_board_id: sprint_board.id, html_id: '', label: 'done')
+    sprint_card.update(sprint_board_id: sprint_board.id, html_id: '', label: 'done', done: true)
 
+    left_sprint_cards = sprint_card.card.sprint_cards.where(done: false).last
+    if left_sprint_cards.nil?
+      sprint_card.card.update(done: true)
+      dashboard_id = sprint.dashboard.id
+
+      today = Statistic.where(dashboard_id: dashboard_id, created_at: DateTime.now.midnight..DateTime.now.end_of_day).first
+      last_stat = Statistic.where(dashboard_id: dashboard_id).last
+      if today.nil?
+        Statistic.create(dashboard_id: dashboard_id, work_total: last_stat.work_total.to_i,
+                         work_left: last_stat.work_left.to_i-sprint_card.card.work_to_do.to_i)
+      else
+        today.update(work_left: last_stat.work_left.to_i-sprint_card.card.work_to_do.to_i)
+      end
+    end
     all_card_count = 0
     sprint_card.sprint_board.sprint.sprint_boards.each do |f|
       all_card_count += f.sprint_cards.count
@@ -57,7 +71,7 @@ class SprintCardController < ApplicationController
 
     n = params[:ind].length
     n.times do |f|
-      Card.find(params[:ids][f]).update(priority: params[:ind][f])
+      Card.find(params[:ids][f]).update(position: params[:ind][f])
     end
 
   end

@@ -10,7 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170109133731) do
+ActiveRecord::Schema.define(version: 20170110142141) do
+
+  create_table "acceptance_criteria", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "card_id"
+    t.string   "text"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "boards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
@@ -26,9 +33,12 @@ ActiveRecord::Schema.define(version: 20170109133731) do
     t.integer  "board_id"
     t.string   "color"
     t.integer  "sprint_id"
-    t.integer  "priority"
+    t.integer  "position"
     t.string   "html_id"
     t.integer  "work_to_do"
+    t.boolean  "is_user_story"
+    t.string   "priority"
+    t.boolean  "done"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
   end
@@ -105,6 +115,7 @@ ActiveRecord::Schema.define(version: 20170109133731) do
     t.integer  "matching_card_id"
     t.string   "html_id"
     t.integer  "sprint_id"
+    t.boolean  "done"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
   end
@@ -133,8 +144,9 @@ ActiveRecord::Schema.define(version: 20170109133731) do
     t.integer  "work_done"
     t.integer  "work_left"
     t.integer  "sprint_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.integer  "dashboard_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

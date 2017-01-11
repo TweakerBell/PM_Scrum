@@ -20,6 +20,7 @@ class CreateSprintCards < ActiveRecord::Migration[5.0]
       t.integer :matching_card_id
       t.string :html_id
       t.integer :sprint_id
+      t.boolean :done
 
       t.timestamps
     end

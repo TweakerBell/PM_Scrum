@@ -5,6 +5,7 @@ class CreateStatistics < ActiveRecord::Migration[5.0]
       t.integer :work_done
       t.integer :work_left
       t.integer :sprint_id
+      t.integer :dashboard_id
 
       t.timestamps
     end

@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a8a33e48-94ed-4b94-a202-89498d228f65" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/roadmap_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/roadmap_controller.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/sprint_card_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/sprint_card_controller.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/dashboard/_roadmap.html.erb" afterPath="$PROJECT_DIR$/app/views/dashboard/_roadmap.html.erb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/dashboard/index.html.erb" afterPath="$PROJECT_DIR$/app/views/dashboard/index.html.erb" />
     </list>
     <ignored path="PM_Scrum.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -45,46 +45,57 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="roadmap_controller.rb" pinned="false" current-in-tab="true">
+      <file leaf-file-name="roadmap_controller.rb" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/controllers/roadmap_controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="250">
+            <state relative-caret-position="663">
               <caret line="39" column="0" lean-forward="false" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.html.erb" pinned="false" current-in-tab="false">
+      <file leaf-file-name="index.html.erb" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/views/dashboard/index.html.erb">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="309">
-              <caret line="958" column="3" lean-forward="false" selection-start-line="958" selection-start-column="3" selection-end-line="958" selection-end-column="3" />
+            <state relative-caret-position="1770">
+              <caret line="212" column="12" lean-forward="false" selection-start-line="212" selection-start-column="8" selection-end-line="212" selection-end-column="12" />
               <folding>
-                <marker date="1486582622049" expanded="true" signature="9322:9342" ph="..." />
-                <marker date="1486582622049" expanded="true" signature="19932:19943" ph="..." />
-                <marker date="1486582622049" expanded="true" signature="24004:24015" ph="..." />
-                <marker date="1486582622049" expanded="true" signature="24355:24379" ph="..." />
-                <marker date="1486582622049" expanded="true" signature="24529:24541" ph="..." />
-                <marker date="1486582622049" expanded="true" signature="24950:24970" ph="..." />
-                <marker date="1486582622049" expanded="true" signature="28015:28027" ph="..." />
-                <marker date="1486582622049" expanded="true" signature="32699:32725" ph="..." />
-                <marker date="1486582622049" expanded="true" signature="33102:33108" ph="..." />
-                <marker date="1486582622049" expanded="true" signature="33102:33113" ph="..." />
-                <marker date="1486582622049" expanded="true" signature="33102:33129" ph="..." />
-                <marker date="1486582622049" expanded="true" signature="33468:33485" ph="..." />
-                <marker date="1486582622049" expanded="true" signature="33468:33518" ph="..." />
-                <marker date="1486582622049" expanded="true" signature="33659:33730" ph="..." />
-                <marker date="1486582622049" expanded="true" signature="34096:34107" ph="..." />
-                <marker date="1486582622049" expanded="true" signature="34459:34470" ph="..." />
-                <marker date="1486582622049" expanded="true" signature="34459:34483" ph="..." />
-                <marker date="1486582622049" expanded="true" signature="34641:34653" ph="..." />
-                <marker date="1486582622049" expanded="true" signature="34779:34817" ph="..." />
-                <marker date="1486582622049" expanded="true" signature="34779:34818" ph="..." />
-                <marker date="1486582622049" expanded="true" signature="34968:35007" ph="..." />
-                <marker date="1486582622049" expanded="true" signature="35102:35141" ph="..." />
-                <marker date="1486582622049" expanded="true" signature="35932:35949" ph="..." />
+                <element signature="n#style#0;n#textarea#0;n#div#0;n#form#0;n#div#1;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+                <marker date="1486585495869" expanded="true" signature="8424:8444" ph="..." />
+                <marker date="1486585495869" expanded="true" signature="18364:18375" ph="..." />
+                <marker date="1486585495869" expanded="true" signature="22436:22447" ph="..." />
+                <marker date="1486585495869" expanded="true" signature="22787:22811" ph="..." />
+                <marker date="1486585495869" expanded="true" signature="22961:22973" ph="..." />
+                <marker date="1486585495869" expanded="true" signature="23382:23402" ph="..." />
+                <marker date="1486585495869" expanded="true" signature="26447:26459" ph="..." />
+                <marker date="1486585495869" expanded="true" signature="31131:31157" ph="..." />
+                <marker date="1486585495869" expanded="true" signature="31534:31540" ph="..." />
+                <marker date="1486585495869" expanded="true" signature="31534:31545" ph="..." />
+                <marker date="1486585495869" expanded="true" signature="31534:31561" ph="..." />
+                <marker date="1486585495869" expanded="true" signature="31900:31917" ph="..." />
+                <marker date="1486585495869" expanded="true" signature="31900:31950" ph="..." />
+                <marker date="1486585495869" expanded="true" signature="32091:32162" ph="..." />
+                <marker date="1486585495869" expanded="true" signature="32528:32539" ph="..." />
+                <marker date="1486585495869" expanded="true" signature="32891:32902" ph="..." />
+                <marker date="1486585495869" expanded="true" signature="32891:32915" ph="..." />
+                <marker date="1486585495869" expanded="true" signature="33073:33085" ph="..." />
+                <marker date="1486585495869" expanded="true" signature="33211:33249" ph="..." />
+                <marker date="1486585495869" expanded="true" signature="33211:33250" ph="..." />
+                <marker date="1486585495869" expanded="true" signature="33400:33439" ph="..." />
+                <marker date="1486585495869" expanded="true" signature="33534:33573" ph="..." />
+                <marker date="1486585495869" expanded="true" signature="34364:34381" ph="..." />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sprint_card_controller.rb" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/controllers/sprint_card_controller.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="221">
+              <caret line="175" column="0" lean-forward="false" selection-start-line="175" selection-start-column="0" selection-end-line="175" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -103,7 +114,7 @@
         <entry file="file://$PROJECT_DIR$/app/views/dashboard/_roadmap.html.erb">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="224">
-              <caret line="153" column="64" lean-forward="false" selection-start-line="153" selection-start-column="64" selection-end-line="153" selection-end-column="64" />
+              <caret line="33" column="22" lean-forward="false" selection-start-line="33" selection-start-column="22" selection-end-line="33" selection-end-column="22" />
               <folding>
                 <element signature="n#style#0;n#th#0;n#tr#0;n#thead#0;n#table#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#th#1;n#tr#0;n#thead#0;n#table#0;n#!!top" expanded="true" />
@@ -124,24 +135,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="schema.rb" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/db/schema.rb">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="391">
-              <caret line="106" column="5" lean-forward="false" selection-start-line="106" selection-start-column="5" selection-end-line="106" selection-end-column="5" />
-              <folding>
-                <marker date="1486424134390" expanded="true" signature="4070:4077" ph="do ... end" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>übern</find>
-      <find>priorit</find>
       <find>include</find>
       <find>{}</find>
       <find>priority</find>
@@ -170,6 +167,8 @@
       <find>retro</find>
       <find>partial</find>
       <find>render</find>
+      <find>confirm-button</find>
+      <find>sel1</find>
     </findStrings>
     <replaceStrings>
       <replace>'</replace>
@@ -218,7 +217,6 @@
         <option value="$PROJECT_DIR$/app/views/dashboard/_charts.html.erb" />
         <option value="$PROJECT_DIR$/app/controllers/card_controller.rb" />
         <option value="$PROJECT_DIR$/app/views/project/_index.html.erb" />
-        <option value="$PROJECT_DIR$/app/controllers/sprint_card_controller.rb" />
         <option value="$PROJECT_DIR$/app/controllers/project_controller.rb" />
         <option value="$PROJECT_DIR$/app/views/sprint/index.html.erb" />
         <option value="$PROJECT_DIR$/app/views/project/_start.html.erb" />
@@ -232,10 +230,11 @@
         <option value="$PROJECT_DIR$/db/migrate/20170206221029_create_roadmap_rows.rb" />
         <option value="$PROJECT_DIR$/db/migrate/20170206213254_create_roadmap_items.rb" />
         <option value="$PROJECT_DIR$/app/models/roadmap_item.rb" />
-        <option value="$PROJECT_DIR$/app/views/dashboard/index.html.erb" />
         <option value="$PROJECT_DIR$/config/routes.rb" />
-        <option value="$PROJECT_DIR$/app/views/dashboard/_roadmap.html.erb" />
         <option value="$PROJECT_DIR$/app/controllers/roadmap_controller.rb" />
+        <option value="$PROJECT_DIR$/app/views/dashboard/_roadmap.html.erb" />
+        <option value="$PROJECT_DIR$/app/views/dashboard/index.html.erb" />
+        <option value="$PROJECT_DIR$/app/controllers/sprint_card_controller.rb" />
       </list>
     </option>
   </component>
@@ -285,194 +284,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="PM_Scrum" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PM_Scrum" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PM_Scrum" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="db" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PM_Scrum" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PM_Scrum" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="db" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="migrate" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PM_Scrum" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PM_Scrum" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="views" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PM_Scrum" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PM_Scrum" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="views" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="project" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PM_Scrum" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PM_Scrum" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="views" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="layouts" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PM_Scrum" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PM_Scrum" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="views" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="dashboard" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PM_Scrum" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PM_Scrum" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PM_Scrum" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PM_Scrum" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="controllers" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PM_Scrum" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PM_Scrum" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="assets" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="stylesheets" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PM_Scrum" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PM_Scrum" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="assets" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -921,12 +732,12 @@
       <workItem from="1485599263516" duration="26000" />
       <workItem from="1486066619826" duration="3244000" />
       <workItem from="1486410071835" duration="11868000" />
-      <workItem from="1486569373861" duration="5963000" />
+      <workItem from="1486569373861" duration="7886000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="437831000" />
+    <option name="totallyTimeSpent" value="439754000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="0" />
@@ -991,7 +802,7 @@
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="58" />
+      <option name="time" value="60" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="RailsRunConfigurationType">
@@ -1158,13 +969,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/db/seeds.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="20" column="95" lean-forward="false" selection-start-line="20" selection-start-column="95" selection-end-line="20" selection-end-column="95" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/controllers/sprint_controller.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
@@ -1217,14 +1021,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
           <caret line="104" column="0" lean-forward="false" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/controllers/sprint_card_controller.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="90" lean-forward="false" selection-start-line="7" selection-start-column="90" selection-end-line="7" selection-end-column="90" />
           <folding />
         </state>
       </provider>
@@ -1314,38 +1110,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/views/dashboard/index.html.erb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="309">
-          <caret line="958" column="3" lean-forward="false" selection-start-line="958" selection-start-column="3" selection-end-line="958" selection-end-column="3" />
-          <folding>
-            <marker date="1486582622049" expanded="true" signature="9322:9342" ph="..." />
-            <marker date="1486582622049" expanded="true" signature="19932:19943" ph="..." />
-            <marker date="1486582622049" expanded="true" signature="24004:24015" ph="..." />
-            <marker date="1486582622049" expanded="true" signature="24355:24379" ph="..." />
-            <marker date="1486582622049" expanded="true" signature="24529:24541" ph="..." />
-            <marker date="1486582622049" expanded="true" signature="24950:24970" ph="..." />
-            <marker date="1486582622049" expanded="true" signature="28015:28027" ph="..." />
-            <marker date="1486582622049" expanded="true" signature="32699:32725" ph="..." />
-            <marker date="1486582622049" expanded="true" signature="33102:33108" ph="..." />
-            <marker date="1486582622049" expanded="true" signature="33102:33113" ph="..." />
-            <marker date="1486582622049" expanded="true" signature="33102:33129" ph="..." />
-            <marker date="1486582622049" expanded="true" signature="33468:33485" ph="..." />
-            <marker date="1486582622049" expanded="true" signature="33468:33518" ph="..." />
-            <marker date="1486582622049" expanded="true" signature="33659:33730" ph="..." />
-            <marker date="1486582622049" expanded="true" signature="34096:34107" ph="..." />
-            <marker date="1486582622049" expanded="true" signature="34459:34470" ph="..." />
-            <marker date="1486582622049" expanded="true" signature="34459:34483" ph="..." />
-            <marker date="1486582622049" expanded="true" signature="34641:34653" ph="..." />
-            <marker date="1486582622049" expanded="true" signature="34779:34817" ph="..." />
-            <marker date="1486582622049" expanded="true" signature="34779:34818" ph="..." />
-            <marker date="1486582622049" expanded="true" signature="34968:35007" ph="..." />
-            <marker date="1486582622049" expanded="true" signature="35102:35141" ph="..." />
-            <marker date="1486582622049" expanded="true" signature="35932:35949" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/views/layouts/application.html.erb">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
@@ -1354,10 +1118,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://G:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/activesupport-5.0.1/lib/active_support/callbacks.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-200">
+          <caret line="126" column="0" lean-forward="false" selection-start-line="126" selection-start-column="0" selection-end-line="126" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/controllers/roadmap_controller.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="663">
+          <caret line="39" column="0" lean-forward="false" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/views/dashboard/_roadmap.html.erb">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="224">
-          <caret line="153" column="64" lean-forward="false" selection-start-line="153" selection-start-column="64" selection-end-line="153" selection-end-column="64" />
+          <caret line="33" column="22" lean-forward="false" selection-start-line="33" selection-start-column="22" selection-end-line="33" selection-end-column="22" />
           <folding>
             <element signature="n#style#0;n#th#0;n#tr#0;n#thead#0;n#table#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#th#1;n#tr#0;n#thead#0;n#table#0;n#!!top" expanded="true" />
@@ -1377,19 +1157,52 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://G:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/activesupport-5.0.1/lib/active_support/callbacks.rb">
+    <entry file="file://$PROJECT_DIR$/db/seeds.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-200">
-          <caret line="126" column="0" lean-forward="false" selection-start-line="126" selection-start-column="0" selection-end-line="126" selection-end-column="0" />
+        <state relative-caret-position="340">
+          <caret line="20" column="95" lean-forward="false" selection-start-line="20" selection-start-column="95" selection-end-line="20" selection-end-column="95" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/controllers/roadmap_controller.rb">
+    <entry file="file://$PROJECT_DIR$/app/controllers/sprint_card_controller.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
-          <caret line="39" column="0" lean-forward="false" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+        <state relative-caret-position="221">
+          <caret line="175" column="0" lean-forward="false" selection-start-line="175" selection-start-column="0" selection-end-line="175" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/dashboard/index.html.erb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1770">
+          <caret line="212" column="12" lean-forward="false" selection-start-line="212" selection-start-column="8" selection-end-line="212" selection-end-column="12" />
+          <folding>
+            <element signature="n#style#0;n#textarea#0;n#div#0;n#form#0;n#div#1;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <marker date="1486585495869" expanded="true" signature="8424:8444" ph="..." />
+            <marker date="1486585495869" expanded="true" signature="18364:18375" ph="..." />
+            <marker date="1486585495869" expanded="true" signature="22436:22447" ph="..." />
+            <marker date="1486585495869" expanded="true" signature="22787:22811" ph="..." />
+            <marker date="1486585495869" expanded="true" signature="22961:22973" ph="..." />
+            <marker date="1486585495869" expanded="true" signature="23382:23402" ph="..." />
+            <marker date="1486585495869" expanded="true" signature="26447:26459" ph="..." />
+            <marker date="1486585495869" expanded="true" signature="31131:31157" ph="..." />
+            <marker date="1486585495869" expanded="true" signature="31534:31540" ph="..." />
+            <marker date="1486585495869" expanded="true" signature="31534:31545" ph="..." />
+            <marker date="1486585495869" expanded="true" signature="31534:31561" ph="..." />
+            <marker date="1486585495869" expanded="true" signature="31900:31917" ph="..." />
+            <marker date="1486585495869" expanded="true" signature="31900:31950" ph="..." />
+            <marker date="1486585495869" expanded="true" signature="32091:32162" ph="..." />
+            <marker date="1486585495869" expanded="true" signature="32528:32539" ph="..." />
+            <marker date="1486585495869" expanded="true" signature="32891:32902" ph="..." />
+            <marker date="1486585495869" expanded="true" signature="32891:32915" ph="..." />
+            <marker date="1486585495869" expanded="true" signature="33073:33085" ph="..." />
+            <marker date="1486585495869" expanded="true" signature="33211:33249" ph="..." />
+            <marker date="1486585495869" expanded="true" signature="33211:33250" ph="..." />
+            <marker date="1486585495869" expanded="true" signature="33400:33439" ph="..." />
+            <marker date="1486585495869" expanded="true" signature="33534:33573" ph="..." />
+            <marker date="1486585495869" expanded="true" signature="34364:34381" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>

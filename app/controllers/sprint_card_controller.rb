@@ -171,7 +171,7 @@ class SprintCardController < ApplicationController
     round = EstimationRound.find(params[:round_id])
     estimation = round.estimated_works.find_by(user_id: current_user.id)
     estimation.nil? ? round.estimated_works.create(user_id: current_user.id, user_name: current_user.username, estimated_days: params[:aufwand]) : ""
-    user_count = sprint_card.sprint_board.sprint.dashboard.project.users.where( role: "scrum_team").count
+    user_count = sprint_card.sprint_board.sprint.dashboard.project.users.where(role: "scrum_team").count
 
     if user_count == round.estimated_works.count
 

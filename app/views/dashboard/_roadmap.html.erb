@@ -27,9 +27,11 @@
             <% rm.roadmap_items.each do |rmi| %>
                   <div class="col-sm-3">
                     <div class="well well-sm shadow" style="background-color: <%= rmi.is_user_story ? 'cornflowerblue' : 'indianred' %>">
+                      <% if current_user.product_owner? %>
                       <p style="float:right">
                         <span class="	glyphicon glyphicon-remove" style="cursor: pointer; color:red" onclick="deleteItem(<%= rmi.id %>)"></span>
                       </p>
+                      <% end %>
                       <p>
                         <%= rmi.title %>
                       </p>

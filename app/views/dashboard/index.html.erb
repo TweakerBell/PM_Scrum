@@ -1,58 +1,17 @@
 <div id ="dashboard-wrapper">
 
   <ul class="nav nav-tabs">
-    <li class="active"><a data-toggle="tab" href="#raodmap">Roadmap</a></li>
-    <li><a data-toggle="tab" href="#project">Projekt</a></li>
+    <li><a data-toggle="tab" href="#raodmap">Roadmap</a></li>
+    <li class="active"><a data-toggle="tab" href="#project">Projekt</a></li>
   </ul>
 
   <div class="tab-content">
-    <div id="raodmap" class="tab-pane fade in active">
-<!--      <h3>Daten</h3>
-      <div class="row" id="col">
-        <div class="col-sm-3">
-          Anzahl Backlog-Items
-        </div>
-        <div class="col-sm-9">
-
-        </div>
-      </div>
-      <div class="row" id="col">
-        <div class="col-sm-3">
-          Fertige Backlog-Items
-        </div>
-        <div class="col-sm-9">
-
-        </div>
-      </div>
-      <div class="row" id="col">
-        <div class="col-sm-3">
-          Fertigstellungsgrad
-        </div>
-        <div class="col-sm-9">
-
-        </div>
-      </div>
-      <div class="row" id="col">
-        <div class="col-sm-3">
-          Anzahl Sprint
-        </div>
-        <div class="col-sm-9">
-
-        </div>
-      </div>
-      <div class="row" id="col">
-        <div class="col-sm-3">
-          Durchschnittlich pro Sprint geleistete Personentage
-        </div>
-        <div class="col-sm-9">
-
-        </div>
-      </div>-->
+    <div id="raodmap" class="tab-pane fade">
       <div class="container" id="roadmap-container">
 
       </div>
     </div>
-    <div id="project" class="tab-pane fade">
+    <div id="project" class="tab-pane fade in active">
       <div class="row">
         <div class="col-sm-6" style="margin-top: 1em;">
           <div class="panel panel-primary">
@@ -177,7 +136,7 @@
             <input type="hidden" name="board-id" id="board-id" data-board-id="" data-board-name="">
             <div class="form-group">
               <label for="title">Beschreibung:</label>
-              <textarea class="form-control" rows="4" id="title" style="resize: vertical" required></textarea>
+              <textarea class="form-control" rows="4" id="new-title" style="resize: vertical" required></textarea>
             </div>
             <div class="form-group">
               <label for="prio-new">Priorität:</label>
@@ -281,41 +240,20 @@
 
   });
 
-/*  $("#change-card-form").submit( function (e) {
-    e.preventDefault();
-    var form = $(this);
-    var cardId = form.attr("data-card-id");
-    var color = form.find('input[type=radio]:checked').val();
-    var title = form.find("input[id^=title]").val();
-    $('#cardModal').modal('hide');
-    $.ajax({
-      type: "POST",
-      url: '/update_card/'+cardId,
-      data: { title: title, color: color },
-      success: function(data, textStatus, xhr) {
-/!*        var well = $('#draggable'+cardId);
-        well.css("background-color", color);
-        well.text(title);*!/
-console.log('success');
-        location.reload();
-      }
-    });
-  });*/
 
   $('#new-card-form').submit( function (e) {
     e.preventDefault();
     var boardId = $(this).attr("data-board-id");
     var boardName = $(this).attr("data-board-name");
-    var title = $('#title').val();
+    var title = $('#new-title').val();
     var checked = $('#is-user-story').prop("checked");
     var prio = $(this).find("#prio-new option:selected" ).val();
-    console.log(prio);
+    console.log(title);
     $('#new-card-modal').modal('hide');
 
     var criteria = $('[id=criteria]');
     var crit = [];
     for(var x = 0; x < criteria.length; x++) {
-/*        var item = {};*/
         var item = $($('[id=criteria]')[x]).val();
        crit.push(item);
     };

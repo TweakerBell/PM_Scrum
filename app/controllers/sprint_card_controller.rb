@@ -58,7 +58,7 @@ class SprintCardController < ApplicationController
       sprint.update(finished: true, active:false)
       new_sprint = sprint.dashboard.sprints.create(active: true, finished:false, started:false)
       new_sprint.sprint_boards.build(title: "Sprint Backlog")
-      new_sprint.sprint_boards.build(title: "Planned")
+      new_sprint.sprint_boards.build(title: "Planning")
       new_sprint.sprint_boards.build(title: "In Work")
       new_sprint.sprint_boards.build(title: "Code Review")
       new_sprint.sprint_boards.build(title: "Done")

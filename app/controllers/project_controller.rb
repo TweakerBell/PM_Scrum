@@ -34,7 +34,7 @@ class ProjectController < ApplicationController
     project.dashboard.boards.build(title: "Aktueller Sprint")
     project.dashboard.sprints.build(active: true, started: false, finished: false)
     project.dashboard.sprints.last.sprint_boards.build(title: "Sprint Backlog")
-    project.dashboard.sprints.last.sprint_boards.build(title: "Planned")
+    project.dashboard.sprints.last.sprint_boards.build(title: "Planning")
     project.dashboard.sprints.last.sprint_boards.build(title: "In Work")
     project.dashboard.sprints.last.sprint_boards.build(title: "Code Review")
     project.dashboard.sprints.last.sprint_boards.build(title: "Done")

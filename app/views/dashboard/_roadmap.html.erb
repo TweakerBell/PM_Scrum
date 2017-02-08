@@ -1,0 +1,118 @@
+<h2>Roadmap</h2>
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th style="width: 8%">Sprint-Nr</th>
+    <th style="width: 92%">Items</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% roadmap_rows.each do |rm| %>
+  <tr>
+    <% if rm.is_milestone %>
+        <td class="text-center" style="background-color:lightyellow; border-right: solid 1px"></td>
+        <td class="text-center" style="background-color:lightyellow; width:100%"> <%= rm.title %></td>
+    <% else %>
+          <td class="text-center" style="border-right: solid 1px">
+            <%= rm.sprint_nr %>
+          </td>
+          <td>
+            <div class="row">
+            <% rm.roadmap_items.each do |rmi| %>
+                  <div class="col-sm-3">
+                    <div class="well well-sm" style="background-color: <%= rmi.is_user_story ? 'cornflowerblue' : 'indianred' %>"><%= rmi.title %></div>
+                  </div>
+            <% end %>
+            </div>
+            <div class="col-sm-3">
+              <% if current_user.product_owner? %>
+              <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#addModal">
+                <span class="glyphicon glyphicon-plus" onclick="$('#row-id').val(<%= rm.id %>)"></span>
+              </button>
+              <% end %>
+            </div>
+          </td>
+    <% end %>
+  </tr>
+  <% end %>
+  <tr>
+    <td>
+    </td>
+    <td>
+      <% if current_user.product_owner? %>
+      <div class="row">
+        <div class="col-sm-2">
+          <button type="button" class="btn btn-default btn-sm" onClick="addRow(false, <%= dashboard_id %>)">Zeile hinzufügen</button>
+        </div>
+        <div class="col-sm-4">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Milestone hinzufügen" id="milestone-title">
+            <div class="input-group-btn">
+              <button class="btn btn-default" type="button" onClick="addRow(true, <%= dashboard_id %>)">
+                <i class="glyphicon glyphicon-floppy-disk" style="color:green"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% end %>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<div id="addModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Item hinzufügen</h4>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="row-id" value="" id="row-id">
+        <label class="radio-inline"><input type="radio" name="optradio" id="story" checked>User Story</label>
+        <label class="radio-inline"><input type="radio" name="optradio" id="feature">Feature</label>
+        <div class="form-group">
+          <label for="usr">Titel:</label>
+          <input type="text" class="form-control" id="title">
+        </div>
+        <button type="button" class="btn btn-default" id="save-btn" data-row-id="" onclick="addItem()">Speichern</button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function addRow(milestone, dashboardId){
+      var title = $('#milestone-title').val()
+      $.ajax({
+          type: "POST",
+          url: '/add_row',
+          data: {id: dashboardId, milestone: milestone, title: title},
+          success: function(data) {
+              renderRoadmap();
+          }
+      });
+  }
+  function addItem() {
+      $('#addModal').modal('hide');
+      var isStory = $('#story').prop('checked');
+      var isFeature = $('#feature').prop('checked');
+      var title = $('#title').val();
+      $('#title').val('');
+      var rowId = $('#row-id').val();
+      $.ajax({
+          type: "POST",
+          url: '/add_roadmap_item',
+          data: {row_id: rowId, title: title, is_story: isStory, is_feature: isFeature},
+          success: function(data) {
+              renderRoadmap();
+          }
+      });
+  }
+</script>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170110142141) do
+ActiveRecord::Schema.define(version: 20170206221029) do
 
   create_table "acceptance_criteria", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "card_id"
@@ -86,6 +86,32 @@ ActiveRecord::Schema.define(version: 20170110142141) do
     t.integer "user_id"
     t.index ["project_id"], name: "index_projects_users_on_project_id", using: :btree
     t.index ["user_id"], name: "index_projects_users_on_user_id", using: :btree
+  end
+
+  create_table "roadmap_items", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.boolean  "is_user_story"
+    t.boolean  "is_feature"
+    t.integer  "roadmap_row_id"
+    t.string   "title"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  create_table "roadmap_rows", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "sprint_nr"
+    t.boolean  "is_milestone"
+    t.string   "title"
+    t.integer  "dashboard_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  create_table "roadmaps", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "sprint_nr"
+    t.boolean  "is_milestone"
+    t.integer  "dashboard_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "sprint_boards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

@@ -128,7 +128,6 @@ class CardController < ApplicationController
       end
 
 
-
       today = Statistic.where(dashboard_id: dashboard.id, created_at: DateTime.now.midnight..DateTime.now.end_of_day).first
       if today.nil?
         last = Statistic.where(dashboard_id: dashboard.id).last

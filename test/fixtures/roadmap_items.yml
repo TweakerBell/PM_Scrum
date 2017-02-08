@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  is_user_story: false
+  is_fearue: false
+  roadmap_id: 1
+  title: MyString
+
+two:
+  is_user_story: false
+  is_fearue: false
+  roadmap_id: 1
+  title: MyString

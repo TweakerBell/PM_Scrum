@@ -3,4 +3,5 @@ class Dashboard < ApplicationRecord
   has_many :boards
   has_many :sprints
   has_many :statistics
+  has_many :roadmap_rows
 end

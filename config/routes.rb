@@ -49,4 +49,7 @@ Rails.application.routes.draw do
   get '/assets/:card_id', to: 'card#assets'
   post '/update_card_options/:card_id', to: 'card#update_card_options'
   get '/render_sb', to: 'dashboard#render_sb'
+  get '/render_roadmap', to: 'roadmap#render_roadmap'
+  post '/add_row', to: 'roadmap#add_row'
+  post '/add_roadmap_item', to: 'roadmap#add_roadmap_item'
 end

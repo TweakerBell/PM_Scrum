@@ -1,4 +1,5 @@
 <div class="container-fluid">
+  <%= link_to 'Zurück zur Übersicht', :back %>
   <% if @sprint.finished %>
       <%= render partial: 'finished', locals: {sprint: @sprint} %>
   <% end %>
@@ -44,11 +45,11 @@
                     <span class="badge" style="float:right;background-color: firebrick"><%= card.work_to_do %></span>
                 </div>
               </td>
-              <td data-board-name="Planned">
+              <td data-board-name="Planning">
                 <div class="row">
 
                 <%  card.sprint_cards.each do |sprint_card| %>
-                    <%	 if sprint_card.sprint_board.title == "Planned" %>
+                    <%	 if sprint_card.sprint_board.title == "Planning" %>
                           <%= render partial: 'sprint_card', locals: {sprint_card: sprint_card} %>
                     <%	 end %>
                 <%  end %>
@@ -547,7 +548,7 @@
           content += '<li <%= current_user.scrum_team? ? "" : "style=display:none"%>>';
           content += '<a data-toggle="tab" href="#menu2'+estimationId+'">Aufwand</a>';
           content += '</li>';
-          if(data1[0].username == null && sameDay && roundCount-1 == x && boardTitle == "Planned" && estLength == userCount) {
+          if(data1[0].username == null && sameDay && roundCount-1 == x && boardTitle == "Planning" && estLength == userCount) {
             content += '<li>';
             content += '<a data-toggle="tab" href="#menu5'+estimationId+'">Übernehmen</a>';
             content += '</li>';
@@ -733,7 +734,7 @@
             content += 'onclick="updateWorkDone(\'change-form-sprint-'+sprintCardId+estimationId+'\')">Aktualisieren</button></p>';
             content += '</div></div>';
           }
-          if(data1[0].username == null && sameDay && roundCount-1 == x && boardTitle == "Planned") {
+          if(data1[0].username == null && sameDay && roundCount-1 == x && boardTitle == "Planning") {
             content += '<div id="menu5'+estimationId+'" class="tab-pane fade"><br>';
             content += '<p><button type="submit" class="btn btn-danger"';
             content += 'onclick="registerForCard(\'change-form-sprint-'+sprintCardId+estimationId+'\')">Übernehmen</button></p>';

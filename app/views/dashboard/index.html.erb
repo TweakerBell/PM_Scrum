@@ -1,113 +1,168 @@
 <div id ="dashboard-wrapper">
-  <div class="row">
-    <div class="col-sm-6" style="margin-top: 1em;">
-      <div class="panel panel-primary">
-        <div class="panel-heading">
-          <h3>Projekt: <%= @dashboard.project.title %>
-            <div style="float: right">
-              <% if current_user.product_owner? %>
-              <%=	 link_to destroy_project_path(@dashboard.project.id), method: :delete, data: {confirm: 'Projekt wirklich löschen?'} do %>
-                  <span class="glyphicon glyphicon-remove" style="color:red"></span>
-              <% end %>
-              <% end %>
-            </div>
-          </h3>
-        </div>
-        <div class="panel-body">
-          <div class="row">
-            <% if current_user.product_owner? %>
-              <div class="col-sm-5">
-                <form id="add-user-form" data-project-id="<%=@dashboard.project.id%>">
-                  <div class="form-group">
-                    <label for="sel1">Nutzer wählen:</label>
-                    <select class="form-control" id="sel1">
-                    </select>
-                  </div>
-                  <button type="submit" class="btn btn-default">Hinzufügen</button>
-                </form>
-              </div>
-              <div class="col-sm-7">
-                <strong>Projektteilnehmer</strong>
-                <div class="row container-fluid" id="user-list">
 
-                </div>
-              </div>
-            <% end %>
-          </div>
+  <ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#raodmap">Roadmap</a></li>
+    <li><a data-toggle="tab" href="#project">Projekt</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div id="raodmap" class="tab-pane fade in active">
+<!--      <h3>Daten</h3>
+      <div class="row" id="col">
+        <div class="col-sm-3">
+          Anzahl Backlog-Items
+        </div>
+        <div class="col-sm-9">
+
         </div>
       </div>
-      <div class="container-fluid">
-        <div class="row">
-          <%  @dashboard.boards.each do |board| %>
-              <div class="col-sm-4" style="margin-top: 2em">
-                <div class="panel panel-default get shadow2" data-value="<%= board.id %>">
-
-                  <div class="panel-heading"><%= board.title %>
-                  </div>
-
-                  <div class="panel-body" style="min-height: 8em" id="droppable"
-                       data-board-id="<%=board.id%>">
-                    <div id="cards<%= board.id %>">
-                      <% if board.title.strip == "Product Backlog" %>
-                          <ul class="list-group" id="sortable">
-                          </ul>
-                      <% end %>
-                    </div>
-                  </div>
-
-                  <% if board.title == "Product Backlog" %>
-                      <% if current_user.product_owner? %>
-                      <div class="panel-footer" style="text-align: center">
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#new-card-modal"
-                                onclick="updateNewCardForm(<%= board.id %>, '<%= board.title %>')">
-                          Neues Item anlegen
-                        </button>
-                      </div>
-                      <% end %>
-                  <% else %>
-                      <div class="panel-footer" style="text-align: center">
-                        <div>
-                          <%=	 link_to 'Zum Sprint', sprint_path(@dashboard.sprints.find_by(active: true).id), class:'btn btn-primary'  %>
-                        </div>
-                      </div>
-                  <% end %>
-                </div>
-              </div>
-          <% end %>
-          <div class="col-sm-4" style="margin-top: 2em">
-            <div class="panel panel-default shadow2" data-value="">
-              <div class="panel-heading">Sprint Archiv
-              </div>
-              <div class="panel-body" style="min-height: 8em">
-                <%	@done_sprints.each do |done_sprint|  %>
-                    <%=	 link_to sprint_path(@dashboard.sprints.find_by(active: false).id) do %>
-                    <div class="well well shadow" style="background-color: lightseagreen; color:whitesmoke">
-                      Sprint<br>
-                      Start: <%=  done_sprint.created_at.strftime("%d.%m.%Y")	%>
-                    </div>
-                    <% end %>
-                <%  end %>
-              </div>
-            </div>
-          </div>
+      <div class="row" id="col">
+        <div class="col-sm-3">
+          Fertige Backlog-Items
         </div>
+        <div class="col-sm-9">
+
+        </div>
+      </div>
+      <div class="row" id="col">
+        <div class="col-sm-3">
+          Fertigstellungsgrad
+        </div>
+        <div class="col-sm-9">
+
+        </div>
+      </div>
+      <div class="row" id="col">
+        <div class="col-sm-3">
+          Anzahl Sprint
+        </div>
+        <div class="col-sm-9">
+
+        </div>
+      </div>
+      <div class="row" id="col">
+        <div class="col-sm-3">
+          Durchschnittlich pro Sprint geleistete Personentage
+        </div>
+        <div class="col-sm-9">
+
+        </div>
+      </div>-->
+      <div class="container" id="roadmap-container">
+
       </div>
     </div>
-    <div class="col-sm-6" style="margin-top: 1em;">
-      <div class="well well shadow" style="background-color: burlywood">
-        <button type="button" class="btn btn-default"
-                  onclick="renderCharts()" id="show-button" style="margin: 0.5em 0 0.5em 0">Grafiken anzeigen
-            <span class="glyphicon glyphicon-chevron-down"></span></button>
+    <div id="project" class="tab-pane fade">
+      <div class="row">
+        <div class="col-sm-6" style="margin-top: 1em;">
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <h3>Projekt: <%= @dashboard.project.title %>
+                <div style="float: right">
+                  <% if current_user.product_owner? %>
+                      <%=	 link_to destroy_project_path(@dashboard.project.id), method: :delete, data: {confirm: 'Projekt wirklich löschen?'} do %>
+                          <span class="glyphicon glyphicon-remove" style="color:red"></span>
+                      <% end %>
+                  <% end %>
+                </div>
+              </h3>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <% if current_user.product_owner? %>
+                    <div class="col-sm-5">
+                      <form id="add-user-form" data-project-id="<%=@dashboard.project.id%>">
+                        <div class="form-group">
+                          <label for="sel1">Nutzer wählen:</label>
+                          <select class="form-control" id="sel1">
+                          </select>
+                        </div>
+                        <button type="submit" class="btn btn-default">Hinzufügen</button>
+                      </form>
+                    </div>
+                    <div class="col-sm-7">
+                      <strong>Projektteilnehmer</strong>
+                      <div class="row container-fluid" id="user-list">
+
+                      </div>
+                    </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <div class="container-fluid">
+            <div class="row">
+              <%  @dashboard.boards.each do |board| %>
+                  <div class="col-sm-4" style="margin-top: 2em">
+                    <div class="panel panel-default get shadow2" data-value="<%= board.id %>">
+
+                      <div class="panel-heading"><%= board.title %>
+                      </div>
+
+                      <div class="panel-body" style="min-height: 8em" id="droppable"
+                           data-board-id="<%=board.id%>">
+                        <div id="cards<%= board.id %>">
+                          <% if board.title.strip == "Product Backlog" %>
+                              <ul class="list-group" id="sortable">
+                              </ul>
+                          <% end %>
+                        </div>
+                      </div>
+
+                      <% if board.title == "Product Backlog" %>
+                          <% if current_user.product_owner? %>
+                              <div class="panel-footer" style="text-align: center">
+                                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#new-card-modal"
+                                        onclick="updateNewCardForm(<%= board.id %>, '<%= board.title %>')">
+                                  Neues Item anlegen
+                                </button>
+                              </div>
+                          <% end %>
+                      <% else %>
+                          <div class="panel-footer" style="text-align: center">
+                            <div>
+                              <%=	 link_to 'Zum Sprint', sprint_path(@dashboard.sprints.find_by(active: true).id), class:'btn btn-primary'  %>
+                            </div>
+                          </div>
+                      <% end %>
+                    </div>
+                  </div>
+              <% end %>
+              <div class="col-sm-4" style="margin-top: 2em">
+                <div class="panel panel-default shadow2" data-value="">
+                  <div class="panel-heading">Sprint Archiv
+                  </div>
+                  <div class="panel-body" style="min-height: 8em">
+                    <%	@done_sprints.each do |done_sprint|  %>
+                        <%=	 link_to sprint_path(@dashboard.sprints.find_by(active: false).id) do %>
+                            <div class="well well shadow" style="background-color: lightseagreen; color:whitesmoke">
+                              Sprint<br>
+                              Start: <%=  done_sprint.created_at.strftime("%d.%m.%Y")	%>
+                            </div>
+                        <% end %>
+                    <%  end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6" style="margin-top: 1em;">
+          <div class="well well shadow" style="background-color: whitesmoke">
+            <button type="button" class="btn btn-default"
+                    onclick="renderCharts()" id="show-button" style="margin: 0.5em 0 0.5em 0">Grafiken anzeigen
+              <span class="glyphicon glyphicon-chevron-down"></span></button>
             <button type="button" class="btn btn-default"
                     onclick="hideCharts()" style="display: none;margin: 0.5em 0 0.5em 0" id="hide-button">Grafiken ausblenden
               <span class="glyphicon glyphicon-chevron-up"></span></button>
-          <div class="more-charts" style="display: none">
+            <div class="more-charts" style="display: none">
+            </div>
           </div>
+        </div>
       </div>
     </div>
+
   </div>
-
-
 
 
   <div class="modal fade" id="new-card-modal" role="dialog">
@@ -122,11 +177,11 @@
             <input type="hidden" name="board-id" id="board-id" data-board-id="" data-board-name="">
             <div class="form-group">
               <label for="title">Beschreibung:</label>
-              <textarea class="form-control" rows="4" id="title" style="resize: vertical"></textarea>
+              <textarea class="form-control" rows="4" id="title" style="resize: vertical" required></textarea>
             </div>
             <div class="form-group">
               <label for="prio-new">Priorität:</label>
-              <select class="form-control" id="prio-new">
+              <select class="form-control" id="prio-new" required>
                 <option>gering</option>
                 <option>mittel</option>
                 <option>hoch</option>
@@ -201,6 +256,7 @@
       $("[id^=change-form]").submit( function (e) {
           e.preventDefault();
       });
+      renderRoadmap();
   });
 
   $("#add-user-form").submit( function (e) {
@@ -291,12 +347,21 @@ console.log('success');
           }
       });
   }
+  function renderRoadmap() {
+      $.ajax({
+          type: "GET",
+          url: '/render_roadmap',
+          data: {id: <%= @dashboard.id %>},
+          success: function(data) {
+              var container = $('#roadmap-container');
+              container.children().remove();
+              container.append(data);
+          }
+      });
+  }
   function renderSb() {
 
               Chartkick.charts["chart-1"].redraw();
-
-  }
-  function renderCardModal(){
 
   }
   function hideCharts() {
@@ -673,257 +738,6 @@ console.log('success');
 
         }
         bindFormListener();
-
-
-
-
-
-        /*var userCount = data2[0].user_count;
-        var modal = $('#cardModal');
-        modal.find('#round-ul').children().remove();
-        modal.find('#content').children().remove();
-        var roundCount = data1[0]["estimation_rounds"].length;
-        for (var x = 0; x < roundCount; x++) {
-            var roundNumber = data1[0]["estimation_rounds"][x].round_number;
-            var estimationId = data1[0]["estimation_rounds"][x].id;
-            var estLength = data1[0]["estimation_rounds"][x]["estimated_works"].length;
-            var work = data1[0]["estimation_rounds"][x]["estimated_works"];
-            var day = data1[0]["estimation_rounds"][x]["estimated_works"][0];
-            if (typeof day === 'undefined') {
-                day = 999;
-            } else {
-                day = day.estimated_days
-            }
-            var hasVoted = false;
-            var sameDay = false;
-            if (day != 999) {
-                sameDay = true;
-                if (typeof work !== 'undefined') {
-                    for (var z = 0; z < work.length; z++) {
-                        if (day != data1[0]["estimation_rounds"][x]["estimated_works"][z].estimated_days) {
-                            sameDay = false;
-                        }
-                        var name = "<#%= current_user.username %>";
-                        if (name == data1[0]["estimation_rounds"][x]["estimated_works"][z].user_name) {
-                            hasVoted = true;
-                        }
-                    }
-                }
-            }
-
-        if(x == 0) {
-            var content = '<li class="active">';
-        } else {
-            var content = '<li>';
-        }
-        content += '<a data-toggle="tab" href="#change-card-form-'+cardId+estimationId+'">';
-        content += 'Runde '+data1[0]["estimation_rounds"][x].round_number+'</a>';
-        content += '</li>';
-        modal.find('#round-ul').append(content);
-
-        content = '<form id="change-card-form-'+cardId+estimationId+'"';
-        content += ' data-card-id="'+cardId+'" data-board-title="'+boardTitle+'"';
-        if(x == 0){
-            content += 'class="tab-pane active" data-round-id="'+estimationId+'"';
-        } else {
-            content += 'class="tab-pane fade" data-round-id="'+estimationId+'"';
-        }
-        content += ' data-round-number="'+data1[0]["estimation_rounds"][x].round_number+'">';
-        content += '<div class="" id="round'+estimationId+'">';
-        content += '<div class="tabbable">';
-        content += '<ul class="nav nav-tabs">';
-        content += '<li <#%= current_user.product_owner? ? "" : "style=display:none"%>>';
-        content += '<a data-toggle="tab" href="#home'+estimationId+'">Optionen</a>';
-        content += '</li>';
-        content += '<li class="active">';
-        content += '<a data-toggle="tab" href="#menu1'+estimationId+'">Diskussion</a>';
-        content += '</li>';
-        content += '<li <#%= current_user.scrum_team? ? "" : "style=display:none"%>>';
-        content += '<a data-toggle="tab" href="#menu2'+estimationId+'">Aufwand</a>';
-        content += '</li>';
-        content += '</ul>';
-
-        content += '<div class="tab-content">';
-        content += '<div id="home'+estimationId+'" class="tab-pane fade">';
-        content += '<div class="form-group"><br>';
-        content += '<label for="title'+cardId+'">Beschreibung:</label>';
-        content += '<input type="text" class="form-control" id="title'+cardId+'" value="'+data1[0].title+'">';
-        content += '</div>';
-        content += '<div class="colorpick">';
-        content += '<label for="color">Farbe wählen:</label>';
-        content += '<label class="radio-inline">';
-        if(data1[0].color == "lightblue") {
-            content += '<input type="radio" name="color" checked="checked" value="lightblue"><#%= image_tag("lightblue.PNG") %>';
-        } else {
-            content += '<input type="radio" name="color" value="lightblue"><#%= image_tag("lightblue.PNG") %>';
-        }
-        content += '</label>';
-        content += '<label class="radio-inline">';
-        if(data1[0].color == "lightcoral") {
-            content += '<input type="radio" name="color" checked="checked" value="lightcoral"><#%= image_tag("lightcoral.PNG") %>';
-        } else {
-            content += '<input type="radio" name="color" value="lightcoral"><#%= image_tag("lightcoral.PNG") %>';
-        }
-        content += '</label>';
-        content += '<label class="radio-inline">';
-        if(data1[0].color == "lightsalmon") {
-            content += '<input type="radio" name="color" checked="checked" value="lightsalmon"><#%= image_tag("lightsalmon.PNG") %>';
-        } else {
-            content += '<input type="radio" name="color" value="lightsalmon"><#%= image_tag("lightsalmon.PNG") %>';
-        }
-        content += '</label><hr></div>';
-        content += '<div class="form-group">';
-        content += '<label for="prio'+cardId+'">Priorität:</label>';
-        content += '<select class="form-control" id="prio'+cardId+'">';
-        content += '<option></option>';
-        content += '<option>gering</option>';
-        content += '<option>mittel</option>';
-        content += '<option>hoch</option>';
-        content += '</select>';
-        content += '</div>';
-        var crit = data1[x]["acceptance_criteriums"];
-        content += '<h6><span class="label label-default" onclick="$(this).parent().siblings(\'#crit-div\').fadeToggle(\'slow\');' +
-            '$(this).parent().next(\'h6\').children(\'span\').toggle();$(this).toggle();" style="cursor:cell">' +
-            '<span class="glyphicon glyphicon-chevron-down"></span> Kriterien</span></h6>';
-        content += '<h6><span class="label label-default" onclick="$(this).parent().siblings(\'#crit-div\').fadeToggle(\'slow\');' +
-            '$(this).parent().prev(\'h6\').children(\'span\').toggle();$(this).toggle();" style="cursor:cell;display:none">' +
-            '<span class="glyphicon glyphicon-chevron-up"></span> Kriterien</span></h6>';
-        content += '<div id="crit-div" style="display:none">';
-        content += '<div class="form-group" id="user-story-cred">';
-        content += '<label for="criteria">Akzeptanzkriterien: </label>';
-        if(typeof crit != "undefined"){
-            for (var y = 0; y < crit.length; y++) {
-                content += '<input type="text" class="form-control" id="criteria" data-crit-id="' + crit[y].id + '"' +
-                    'style="margin-bottom: 0.5em" value="' + crit[y].text + '">'
-            }
-        }
-        content += '<div class="btn btn-default" id="add-criteria-button" onclick="addCriteria(this)"><span class="glyphicon glyphicon-plus"></span></div>';
-        content += '<div class="btn btn-default" id="add-criteria-minus" onclick="removeCriteria()"><span class="glyphicon glyphicon-minus"></span></div>';
-        content += ' </div>';
-        content += '</div>';
-        content += '<p><button type="submit" class="btn btn-default"';
-        content += 'onclick="updateCardOptions(\'change-card-form-'+cardId+estimationId+'\')">Aktualisieren</button></p>';
-        content += '</div>';
-        content += '<div id="menu1'+estimationId+'" class="tab-pane fade in active"><br>';
-        content += '<div class="form-group">';
-        content += '<label for="comment'+cardId+'">Kommentar: </label>';
-        content += '<input type="text" class="form-control" id="comment'+cardId+'" value="">';
-        content += '</div>';
-
-        content += '<div id="work-comments'+cardId+estimationId+'"><hr>';
-        content += '<div class="container-fluid" id="comment">';
-        content += '<table class="table"><thead>' +
-            '<tr><th>User</th><th>Kommentar</th><th>Datum</th></tr></thead><tbody id="table'+cardId+estimationId+'">';
-        for (var y = 0; y < data1[0]["estimation_rounds"][x]["work_comments"].length; y++) {
-            var local = data1[0]["estimation_rounds"][x]["work_comments"][y];
-            var date = new Date(local.updated_at);
-            var tag = date.getDate();
-            tag = (tag < 10) ? ("0" + tag) : tag;
-            var monat = date.getMonth();
-            monat += 1;
-            monat = (monat < 10) ? ("0" + monat) : monat;
-            var jahr = date.getFullYear();
-            var stunde = date.getHours();
-            var minute = date.getMinutes();
-            minute = (minute < 10) ? ("0" + minute) : minute;
-            var sekunden = date.getSeconds();
-            sekunden = (sekunden < 10) ? ("0" + sekunden) : sekunden;
-
-            var datum = "<p>Am: " + tag + "." + monat + "." + jahr + "</p><p>Um: " + stunde + ":" + minute + ":" + sekunden + "</p>";
-
-            content += '<tr><td style="font-size:smaller">' + local.user_name + '</td><td>' + local.text + '</td><td style="font-size:x-small">' + datum + '</td></tr>';
-        }
-        content += "</tbody></table></div>";
-        content += '<p><button type="submit" class="btn btn-default"';
-        content += 'onclick="updateCardComment(\'change-card-form-'+cardId+estimationId+'\')">Aktualisieren</button></p>';
-        content += '</div></div>';
-
-        content += '<div id="menu2'+estimationId+'" class="tab-pane fade">';
-
-        if(hasVoted) {
-            content += '<br>';
-            content += '<div id="already-voted">';
-        } else {
-            content += '<br>';
-            content += '<div id="already-voted" style="display:none">';
-        }
-        content += '<div class="alert alert-info">';
-        content += 'Sie haben bereits gewählt.<br>Sobald alle Teilnehmer gewählt haben, wird das Ergebnis hier angezeigt.';
-        content += '</div>';
-        content += '</div>';
-        if(!hasVoted){
-            content += '<div class="form-group" id="voting"><br>';
-            content += '<label for="sel'+cardId+'">Aufwandsschätzung in Tagen:</label>';
-            content += '<select class="form-control" id="sel'+cardId+'">';
-            content += '<option>0</option><option>1</option><option>2</option><option>3</option>';
-            content += '<option>5</option><option>8</option><option>13</option><option>20</option>';
-            content += '<option>40</option><option>100</option>';
-            content += '</select></div>';
-        }
-        content += '<div id="estimations'+cardId+estimationId+'">';
-        content += '<div class="container-fluid" id="aufwand">';
-
-        var showEstimations = false;
-        var estimationsDiv = $("#estimations" + cardId + estimationId);
-        if(userCount == estLength && sameDay) {
-            showEstimations = true;
-        }
-        var nextRound = false;
-        if(userCount == estLength && !sameDay) {
-
-            showEstimations = true;
-            $.ajax({
-                type: "POST",
-                url: '/add_card_round/' + cardId +'/'+roundNumber,
-                dataType: 'json',
-                success: function (data4) {
-                    if(data4.round_created) {
-                        updateModal(this, cardId, color, title, boardTitle);
-                    }
-                }
-            });
-        }
-
-        if(showEstimations) {
-            content += '<table class="table"><thead>' +
-                '<tr><th>User</th><th>Aufwand</th><th>Datum</th></tr></thead><tbody>';
-            for (var z = 0; z < estLength; z++) {
-                local = data1[0]["estimation_rounds"][x]["estimated_works"][z];
-                date = new Date(local.updated_at);
-                tag = date.getDate();
-                tag = (tag < 10) ? ("0" + tag) : tag;
-                monat = date.getMonth();
-                monat += 1;
-                monat = (monat < 10) ? ("0" + monat) : monat;
-                jahr = date.getFullYear();
-                stunde = date.getHours();
-                minute = date.getMinutes();
-                minute = (minute < 10) ? ("0" + minute) : minute;
-                sekunden = date.getSeconds();
-                sekunden = (sekunden < 10) ? ("0" + sekunden) : sekunden;
-
-                datum = "<p>Am: " + tag + "." + monat + "." + jahr + "</p><p>Um: " + stunde + ":" + minute + ":" + sekunden + "</p>";
-
-                content += '<tr><td>' + local.user_name + '</td><td>' + local.estimated_days + ' Tage</td><td>' + datum + '</td></tr>';
-            }
-            content += "</tbody></table>";
-        }
-        content += '</div>';
-        content += '</div>';
-        if(!hasVoted) {
-            content += '<p><button type="submit" class="btn btn-default"';
-            content += 'onclick="estimateCard(\'change-card-form-'+cardId+estimationId+'\','+roundNumber+','+ cardId +',\''
-                + color +'\',\''+ title +'\',\''+ boardTitle +'\')" id="estimation-button">Abschicken</button></p>';
-
-        }
-        content += '</div>';
-
-        content += '</div></div></div></form>';
-        }
-
-
-        modal.find('.modal-body').append(content);
-        bindFormListener();*/
     });
   }
 
@@ -1139,58 +953,6 @@ console.log('success');
               data: {aufwand: aufwand, round_id: roundId},
               success: function (data) {
                   updateModal(this, cardId, color, title, boardTitle);
-                  /*if (data != null) {
-                      var content = '<table class="table"><thead>' +
-                          '<tr><th>User</th><th>Aufwand</th><th>Datum</th></tr></thead><tbody>';
-
-                      for (var x = 0; x < data.length; x++) {
-                          var date = new Date(data[x].updated_at);
-                          var tag = date.getDate();
-                          tag = (tag < 10) ? ("0" + tag) : tag;
-                          var monat = date.getMonth();
-                          monat += 1;
-                          monat = (monat < 10) ? ("0" + monat) : monat;
-                          var jahr = date.getFullYear();
-                          var stunde = date.getHours();
-                          var minute = date.getMinutes();
-                          minute = (minute < 10) ? ("0" + minute) : minute;
-                          var sekunden = date.getSeconds();
-                          sekunden = (sekunden < 10) ? ("0" + sekunden) : sekunden;
-
-                          var datum = "<p>Am: " + tag + "." + monat + "." + jahr + "</p><p>Um: " + stunde + ":" + minute + ":" + sekunden + "</p>";
-
-                          content += '<tr><td>' + data[x].user_name + '</td><td>' + data[x].estimated_days + ' Tage</td><td>' + datum + '</td></tr>';
-                      }
-                      content += "</tbody></table>";
-
-                      form.find('#aufwand').append(content);
-
-                      var estimationsDiv = $("#estimations" + sprintCardId + roundId);
-                      if(estimationsDiv.attr("data-done") == true) {
-                          form.find('#estimation-button').css("display", "none");
-                      } else {
-                          if (data[0].agreement) {
-                              form.find('#estimation-button').css("display", "none");
-                          }
-                          if (data[0].agreement == false) {
-                              estimationsDiv.attr("data-done", true);
-                              form.find('#estimation-button').css("display", "none");
-                              form.find('#voting').css("display", "none");
-                              $.ajax({
-                                  type: "POST",
-                                  url: '/add_round/' + sprintCardId+'/'+roundNumber,
-                                  dataType: 'json',
-                                  success: function (data) {
-                                      updateModal(form, sprintCardId)
-                                  }
-                              });
-                          }
-                      }
-                  }
-                  form.find('#estimation-button').css("display", "none");
-                  form.find('#voting').css("display", "none");
-                  form.find('#already-voted').css("display", "inline");
-*/
               }
           });
       }

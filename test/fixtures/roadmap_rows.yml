@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  sprint_nr: 1
+  is_milestone: false
+  title: MyString
+
+two:
+  sprint_nr: 1
+  is_milestone: false
+  title: MyString

@@ -7,7 +7,7 @@ class RoadmapController < ApplicationController
 
   def add_row
     dashboard = Dashboard.find(params[:id])
-    last_roadmap = dashboard.roadmap_rows.where(sprint_nr: !nil).last
+    last_roadmap = dashboard.roadmap_rows.where.not(sprint_nr: nil).last
     if last_roadmap.nil?
       params[:milestone] == 'true' ?
           dashboard.roadmap_rows.create(is_milestone: true, title: params[:title]) :
@@ -24,5 +24,14 @@ class RoadmapController < ApplicationController
   def add_roadmap_item
     row = RoadmapRow.find(params[:row_id])
     row.roadmap_items.create(title: params[:title], is_user_story: params[:is_story] , is_feature: params[:is_feature])
+  end
+
+  def delete_roadmap_item
+    item = RoadmapItem.find(params[:id])
+    item.destroy
+  end
+  def delete_roadmap_row
+    row = RoadmapRow.find(params[:id])
+    row.destroy
   end
 end

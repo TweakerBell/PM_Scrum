@@ -2,8 +2,9 @@
 <table class="table table-striped">
   <thead>
   <tr>
-    <th style="width: 8%">Sprint-Nr</th>
-    <th style="width: 92%">Items</th>
+    <th style="width: 8%" class="text-center">Sprint-Nr</th>
+    <th style="width: 84%" class="text-center">Items</th>
+    <th style="width: 8%" class="text-center">Löschen</th>
   </tr>
   </thead>
   <tbody>
@@ -11,7 +12,12 @@
   <tr>
     <% if rm.is_milestone %>
         <td class="text-center" style="background-color:lightyellow; border-right: solid 1px"></td>
-        <td class="text-center" style="background-color:lightyellow; width:100%"> <%= rm.title %></td>
+        <td class="text-center" style="background-color:lightyellow"> <%= rm.title %></td>
+        <td class="text-center" style="background-color:lightyellow; border-left: solid 1px">
+          <% if current_user.product_owner? %>
+          <span class="	glyphicon glyphicon-remove" style="cursor: pointer; color:red" onclick="deleteRow(<%= rm.id %>)"></span>
+          <% end %>
+        </td>
     <% else %>
           <td class="text-center" style="border-right: solid 1px">
             <%= rm.sprint_nr %>
@@ -20,17 +26,29 @@
             <div class="row">
             <% rm.roadmap_items.each do |rmi| %>
                   <div class="col-sm-3">
-                    <div class="well well-sm" style="background-color: <%= rmi.is_user_story ? 'cornflowerblue' : 'indianred' %>"><%= rmi.title %></div>
+                    <div class="well well-sm" style="background-color: <%= rmi.is_user_story ? 'cornflowerblue' : 'indianred' %>">
+                      <p style="float:right">
+                        <span class="	glyphicon glyphicon-remove" style="cursor: pointer; color:red" onclick="deleteItem(<%= rmi.id %>)"></span>
+                      </p>
+                      <p>
+                        <%= rmi.title %>
+                      </p>
+                    </div>
                   </div>
             <% end %>
             </div>
             <div class="col-sm-3">
               <% if current_user.product_owner? %>
-              <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#addModal">
-                <span class="glyphicon glyphicon-plus" onclick="$('#row-id').val(<%= rm.id %>)"></span>
+              <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#addModal" onclick="$('#row-id').val('<%= rm.id %>')">
+                <span class="glyphicon glyphicon-plus" style="color:blue"></span>
               </button>
               <% end %>
             </div>
+          </td>
+          <td style="border-left: solid 1px;" class="text-center">
+            <% if current_user.product_owner? %>
+                <span class="	glyphicon glyphicon-remove" style="cursor: pointer; color:red" onclick="deleteRow(<%= rm.id %>)"></span>
+            <% end %>
           </td>
     <% end %>
   </tr>
@@ -77,7 +95,7 @@
           <label for="usr">Titel:</label>
           <input type="text" class="form-control" id="title">
         </div>
-        <button type="button" class="btn btn-default" id="save-btn" data-row-id="" onclick="addItem()">Speichern</button>
+        <button type="button" class="btn btn-default" id="save-btn" data-row-id="" onclick="addItem()" data-dismiss="modal">Speichern</button>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
@@ -88,31 +106,56 @@
 </div>
 
 <script>
-  function addRow(milestone, dashboardId){
-      var title = $('#milestone-title').val()
-      $.ajax({
-          type: "POST",
-          url: '/add_row',
-          data: {id: dashboardId, milestone: milestone, title: title},
-          success: function(data) {
-              renderRoadmap();
-          }
-      });
-  }
-  function addItem() {
-      $('#addModal').modal('hide');
-      var isStory = $('#story').prop('checked');
-      var isFeature = $('#feature').prop('checked');
-      var title = $('#title').val();
-      $('#title').val('');
-      var rowId = $('#row-id').val();
-      $.ajax({
-          type: "POST",
-          url: '/add_roadmap_item',
-          data: {row_id: rowId, title: title, is_story: isStory, is_feature: isFeature},
-          success: function(data) {
-              renderRoadmap();
-          }
-      });
-  }
+    function addRow(milestone, dashboardId){
+        var title = $('#milestone-title').val()
+        $.ajax({
+            type: "POST",
+            url: '/add_row',
+            data: {id: dashboardId, milestone: milestone, title: title},
+            success: function(data) {
+                renderRoadmap();
+            }
+        });
+    }
+    function addItem() {
+        var isStory = $('#story').prop('checked');
+        var isFeature = $('#feature').prop('checked');
+        var title = $('#title').val();
+        $('#title').val('');
+        var rowId = $('#row-id').val();
+        $.ajax({
+            type: "POST",
+            url: '/add_roadmap_item',
+            data: {row_id: rowId, title: title, is_story: isStory, is_feature: isFeature},
+            success: function(data) {
+                renderRoadmap();
+            }
+        });
+    }
+    function deleteItem(itemId){
+        var confirmed = confirm('Item wirklich löschen?');
+        if(confirmed) {
+            $.ajax({
+                type: "DELETE",
+                url: '/delete_roadmap_item',
+                data: {id: itemId},
+                success: function() {
+                    renderRoadmap();
+                }
+            });
+        }
+    }
+    function deleteRow(rowId){
+        var confirmed = confirm('Zeile wirklich löschen?');
+        if(confirmed) {
+            $.ajax({
+                type: "DELETE",
+                url: '/delete_roadmap_row',
+                data: {id: rowId},
+                success: function() {
+                    renderRoadmap();
+                }
+            });
+        }
+    }
 </script>

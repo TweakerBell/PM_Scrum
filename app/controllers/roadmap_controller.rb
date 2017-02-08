@@ -31,7 +31,18 @@ class RoadmapController < ApplicationController
     item.destroy
   end
   def delete_roadmap_row
-    row = RoadmapRow.find(params[:id])
-    row.destroy
+    rows = Dashboard.find(params[:dashboard_id]).roadmap_rows
+    to_destroy = RoadmapRow.find(params[:id])
+    if to_destroy.is_milestone
+    to_destroy.destroy
+    else
+      rows.each do |row|
+        if row.id > to_destroy.id
+          row.update(sprint_nr: (row.sprint_nr.to_i - 1))
+        end
+      end
+      to_destroy.destroy
+    end
+
   end
 end

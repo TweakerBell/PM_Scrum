@@ -26,7 +26,7 @@
             <div class="row">
             <% rm.roadmap_items.each do |rmi| %>
                   <div class="col-sm-3">
-                    <div class="well well-sm" style="background-color: <%= rmi.is_user_story ? 'cornflowerblue' : 'indianred' %>">
+                    <div class="well well-sm shadow" style="background-color: <%= rmi.is_user_story ? 'cornflowerblue' : 'indianred' %>">
                       <p style="float:right">
                         <span class="	glyphicon glyphicon-remove" style="cursor: pointer; color:red" onclick="deleteItem(<%= rmi.id %>)"></span>
                       </p>
@@ -39,7 +39,7 @@
             </div>
             <div class="col-sm-3">
               <% if current_user.product_owner? %>
-              <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#addModal" onclick="$('#row-id').val('<%= rm.id %>')">
+              <button type="button" class="btn btn-default btn-sm shadow" data-toggle="modal" data-target="#addModal" onclick="$('#row-id').val('<%= rm.id %>')">
                 <span class="glyphicon glyphicon-plus" style="color:blue"></span>
               </button>
               <% end %>
@@ -60,13 +60,13 @@
       <% if current_user.product_owner? %>
       <div class="row">
         <div class="col-sm-2">
-          <button type="button" class="btn btn-default btn-sm" onClick="addRow(false, <%= dashboard_id %>)">Zeile hinzufügen</button>
+          <button type="button" class="btn btn-default btn-sm shadow" onClick="addRow(false, <%= dashboard_id %>)">Zeile hinzufügen</button>
         </div>
         <div class="col-sm-4">
           <div class="input-group">
-            <input type="text" class="form-control" placeholder="Milestone hinzufügen" id="milestone-title">
+            <input type="text" class="form-control shadow" placeholder="Milestone hinzufügen" id="milestone-title">
             <div class="input-group-btn">
-              <button class="btn btn-default" type="button" onClick="addRow(true, <%= dashboard_id %>)">
+              <button class="btn btn-default shadow" type="button" onClick="addRow(true, <%= dashboard_id %>)">
                 <i class="glyphicon glyphicon-floppy-disk" style="color:green"></i>
               </button>
             </div>
@@ -151,7 +151,7 @@
             $.ajax({
                 type: "DELETE",
                 url: '/delete_roadmap_row',
-                data: {id: rowId},
+                data: {id: rowId, dashboard_id: <%= dashboard_id %>},
                 success: function() {
                     renderRoadmap();
                 }

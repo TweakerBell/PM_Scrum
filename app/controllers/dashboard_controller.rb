@@ -8,7 +8,7 @@ class DashboardController < ApplicationController
     @ready = {left: left, done: done}
     @done_sprints = @dashboard.sprints.where(active:false)
     @current_sprint = @dashboard.sprints.find_by(active:true)
-
+    @archiv = Card.where(done: true)
   end
 
   def change_board

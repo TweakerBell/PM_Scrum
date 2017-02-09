@@ -101,6 +101,41 @@
             <div class="more-charts" style="display: none">
             </div>
           </div>
+          <div>
+            <div class="well well shadow" style="background-color: whitesmoke">
+              <button type="button" class="btn btn-default"
+                      onclick="$('#archiv').fadeToggle('slow')" id="show-button" style="margin: 0.5em 0 0.5em 0">Backlog Archiv
+                <span class="glyphicon glyphicon-chevron-down"></span></button>
+              <button type="button" class="btn btn-default"
+                      onclick="hideCharts()" style="display: none;margin: 0.5em 0 0.5em 0" id="hide-button">Backlog Archiv
+                <span class="glyphicon glyphicon-chevron-up"></span></button>
+
+              <div id="archiv" style="display:none">
+                <div class="container-fluid text-center" style="font-size: smaller">
+                  <table class="table table-striped">
+                    <thead>
+                    <tr>
+                      <th style="width:30%" class="text-center">Beschreibung</th>
+                      <th style="width:15%" class="text-center">Geschätzter Aufwand</th>
+                      <th style="width:15%" class="text-center">Tatsächlicher Aufwand</th>
+                      <th style="width:30%" class="text-center">Erledigt am:</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% @archiv.each do |archiv| %>
+                    <tr>
+                      <td><%= archiv.title %></td>
+                      <td><%= archiv.work_to_do %></td>
+                      <td><%= archiv.sprint_cards.sum(:work_done) %></td>
+                      <td><%= archiv.updated_at.strftime(" %d.%m.%Y") %></td>
+                    </tr>
+                    <% end %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -481,11 +481,14 @@
         }
       });
       $.when(req1, req2).done(function(data1, data2){
-          console.log('---------');
+/*          console.log('---------');
           console.log(data1);
-          console.log(data1[0].estimation_rounds);
-          console.log(data1[0]['estimation_rounds']);
-          console.log('---------');
+          console.log(data1[0].estimation_rounds);*/
+          data1[0].estimation_rounds.sort(function(a,b){
+              return a['round_number']-b['round_number'];
+              });
+/*          console.log(data1[0]['estimation_rounds']);
+          console.log('---------');*/
 
         var userCount = data2[0].user_count;
         var modal = $('#sprintCardModal'+sprintCardId);

@@ -50,6 +50,8 @@ Rails.application.routes.draw do
   post '/update_card_options/:card_id', to: 'card#update_card_options'
   get '/render_sb', to: 'dashboard#render_sb'
   get '/render_roadmap', to: 'roadmap#render_roadmap'
+  get '/render_participants', to: 'dashboard#render_participants'
+  delete '/remove_user', to: 'dashboard#remove_user'
   post '/add_row', to: 'roadmap#add_row'
   post '/add_roadmap_item', to: 'roadmap#add_roadmap_item'
   delete '/delete_roadmap_item', to: 'roadmap#delete_roadmap_item'

@@ -1,0 +1,73 @@
+<% if current_user.product_owner? %>
+<div class="container text-center">
+  <h2>Teilnehmer hinzufügen</h2>
+  <form id="add-user-form" data-project-id="<%=@dashboard.project.id%>">
+    <div class="form-group">
+      <label for="sel1">Nutzer wählen:</label>
+      <select class="form-control" id="sel1" style="width:50%;margin-left: 25%">
+        <% @available_users.each do |av_user| %>
+            <option value='<%= av_user.id %>'><%= av_user.username %> (<%= av_user.role %>)</option>
+        <% end %>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-default">Hinzufügen</button>
+  </form>
+</div>
+<hr>
+<% end %>
+<div class="container text-center">
+  <h2>Aktuelle Teilnehmer</h2>
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th class="text-center">Name</th>
+      <th class="text-center">Rolle</th>
+      <th class="text-center">Aus Projekt entfernen</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @users.order(:role).each do |user| %>
+    <tr>
+      <td><%= user.username %></td>
+      <td><%= user.role %></td>
+      <td>
+        <% if current_user.product_owner? %>
+        <span class="	glyphicon glyphicon-remove" style="cursor: pointer; color:red" onclick="removeUser(<%= user.id %>)"></span>
+        <% end %>
+      </td>
+    </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  function removeUser(userId) {
+      $.ajax({
+          type: "DELETE",
+          url: '/remove_user',
+          data: { user_id: userId, project_id: <%=@dashboard.project.id%> },
+          success: function() {
+              renderParticipants();
+          }
+      });
+  }
+  $("#add-user-form").submit( function (e) {
+      e.preventDefault();
+      var form = $(this);
+      var projectId = form.attr('data-project-id');
+      var userId = form.find('#sel1').val();
+
+      if(userId != null) {
+          $.ajax({
+              type: "POST",
+              url: '/add_user/'+projectId+'/'+userId,
+              data: { },
+              success: function() {
+                  renderParticipants();
+              }
+          });
+      }
+
+  });
+</script>

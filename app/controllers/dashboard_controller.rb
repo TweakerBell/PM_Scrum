@@ -52,4 +52,16 @@ class DashboardController < ApplicationController
     render partial: 'sprint_burndown'
   end
 
+  def render_participants
+    @dashboard = Dashboard.find(params[:id])
+    @users = @dashboard.project.users
+    @available_users = User.all - @users
+    roadmap_rows = @dashboard.roadmap_rows
+    render partial: 'participant', locals: {roadmap_rows: roadmap_rows, dashboard_id: params[:id]}
+  end
+  def remove_user
+    user = User.find(params[:user_id])
+    project = Project.find(params[:project_id])
+    project.users.delete(user)
+  end
 end

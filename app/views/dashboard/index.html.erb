@@ -1,12 +1,13 @@
 <div id ="dashboard-wrapper">
 
   <ul class="nav nav-tabs">
-    <li><a data-toggle="tab" href="#raodmap">Roadmap</a></li>
+    <li><a data-toggle="tab" href="#roadmap">Roadmap</a></li>
     <li class="active"><a data-toggle="tab" href="#project">Projekt</a></li>
+    <li><a data-toggle="tab" href="#participant">Projektteilnehmer</a></li>
   </ul>
 
   <div class="tab-content">
-    <div id="raodmap" class="tab-pane fade">
+    <div id="roadmap" class="tab-pane fade">
       <div class="container" id="roadmap-container">
 
       </div>
@@ -28,24 +29,7 @@
             </div>
             <div class="panel-body">
               <div class="row">
-                <% if current_user.product_owner? %>
-                    <div class="col-sm-5">
-                      <form id="add-user-form" data-project-id="<%=@dashboard.project.id%>">
-                        <div class="form-group">
-                          <label for="sel1">Nutzer wählen:</label>
-                          <select class="form-control" id="sel1">
-                          </select>
-                        </div>
-                        <button type="submit" class="btn btn-default">Hinzufügen</button>
-                      </form>
-                    </div>
-                    <div class="col-sm-7">
-                      <strong>Projektteilnehmer</strong>
-                      <div class="row container-fluid" id="user-list">
 
-                      </div>
-                    </div>
-                <% end %>
               </div>
             </div>
           </div>
@@ -120,7 +104,11 @@
         </div>
       </div>
     </div>
+    <div id="participant" class="tab-pane fade">
+      <div class="container" id="participant-container">
 
+      </div>
+    </div>
   </div>
 
 
@@ -208,35 +196,12 @@
       boardName = $(boardName).find('.panel-heading').text();
       getCards(boardId, boardName);
     }
-    $('#user-list').children().remove();
-    getUsers(<%=	 @dashboard.project.id %>);
-    $('#sel1').children().remove();
-    getAvailableUsers(<%=	 @dashboard.project.id %>);
+      renderRoadmap();
+      renderParticipants();
       $("[id^=change-form]").submit( function (e) {
           e.preventDefault();
       });
-      renderRoadmap();
-  });
 
-  $("#add-user-form").submit( function (e) {
-    e.preventDefault();
-    var form = $(this);
-    var projectId = form.attr('data-project-id');
-    var userId = form.find('#sel1').val();
-
-    if(userId != null) {
-      $.ajax({
-        type: "POST",
-        url: '/add_user/'+projectId+'/'+userId,
-        data: { },
-        success: function(data, textStatus, xhr) {
-          $('#user-list').children().remove();
-          getUsers(<%=	 @dashboard.project.id %>);
-          $('#sel1').children().remove();
-          getAvailableUsers(<%=	 @dashboard.project.id %>);
-        }
-      });
-    }
 
   });
 
@@ -294,6 +259,19 @@
               var container = $('#roadmap-container');
               container.children().remove();
               container.append(data);
+          }
+      });
+  }
+  function renderParticipants() {
+      $.ajax({
+          type: "GET",
+          url: '/render_participants',
+          data: {id: <%= @dashboard.id %>},
+          success: function(data) {
+              var container = $('#participant-container');
+              container.children().remove();
+              container.append(data);
+
           }
       });
   }
@@ -748,7 +726,7 @@
   function removeCards(boardId) {
     $('#cards'+boardId).children().remove()
   }
-  function getUsers(projectId) {
+ /* function getUsers(projectId) {
 
     $.ajax({
       type: "GET",
@@ -766,9 +744,9 @@
         }
       }
     });
-  }
+  }*/
 
-  function getAvailableUsers(projectId) {
+  /*function getAvailableUsers(projectId) {
 
     $.ajax({
       type: "GET",
@@ -783,7 +761,7 @@
         }
       }
     });
-  }
+  }*/
 
   function bindFormListener(){
     $("[id^=change-card-form]").submit( function (e) {

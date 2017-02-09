@@ -6,9 +6,11 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Karte anpassen</h4>
+        <% if current_user.scrum_team? && (current_user.id == f.user_id || f.user_id.nil?) %>
         <button type="button" class="btn btn-danger" style="float:right" onclick="deleteSprintCard(<%= f.id %>)">
           Task löschen
         </button>
+        <% end %>
       </div>
       <div class="modal-body" style="height: 40em;overflow-y: auto;">
 

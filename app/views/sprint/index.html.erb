@@ -464,7 +464,6 @@
 
   function updateModal(caller, sprintCardId) {
     var boardTitle = $(caller).attr('data-board-title');
-    console.log('Titel: '+boardTitle);
     if(true) {
 
       var req1 = $.ajax({
@@ -487,7 +486,6 @@
         modal.find('#round-ul'+sprintCardId).children().remove();
         modal.find('#content'+sprintCardId).children().remove();
         var roundCount = data1[0]["estimation_rounds"].length;
-        console.log('round count ' +roundCount );
         for (var x = 0; x < roundCount; x++) {
           var roundNumber = data1[0]["estimation_rounds"][x].round_number;
           var estimationId = data1[0]["estimation_rounds"][x].id;
@@ -516,7 +514,6 @@
               }
           }
 
-          console.log('Runde: '+x + ' hast voted: ' + hasVoted);
           if(x == 0) {
             var content = '<li class="active">';
           } else {
@@ -548,7 +545,20 @@
           content += '<li <%= current_user.scrum_team? ? "" : "style=display:none"%>>';
           content += '<a data-toggle="tab" href="#menu2'+estimationId+'">Aufwand</a>';
           content += '</li>';
-          if(data1[0].username == null && sameDay && roundCount-1 == x && boardTitle == "Planning" && estLength == userCount) {
+          console.log('Name ' + data1[0].username);
+          console.log('same day ' + sameDay);
+            console.log('round count ' +roundCount);
+            console.log('round count minus 1 ' +(roundCount-1));
+            console.log(x);
+            console.log('board title ' +boardTitle);
+            console.log('est length ' + estLength);
+            console.log('user count ' + userCount);
+            console.log('------------------');
+
+          if(data1[0].username == null && sameDay && (roundCount-1) == x && boardTitle == "Planning" && estLength == userCount) {
+              console.log('*********');
+              console.log('if = true');
+              console.log('*********');
             content += '<li>';
             content += '<a data-toggle="tab" href="#menu5'+estimationId+'">Übernehmen</a>';
             content += '</li>';

@@ -147,8 +147,7 @@ class SprintCardController < ApplicationController
 
   def card_assets
     sprint_card = SprintCard.find(params[:card_id])
-    asset = sprint_card.to_json(include: [:change_requests, estimation_rounds: {include: [:work_comments, :estimated_works] }])
-    puts asset
+    asset = sprint_card.to_json(include: [:change_requests, estimation_rounds: {include: [:work_comments, :estimated_works] }, order: :id ])
     render json: asset
   end
 

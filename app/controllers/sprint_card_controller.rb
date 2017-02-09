@@ -30,7 +30,7 @@ class SprintCardController < ApplicationController
     sprint_board = sprint.sprint_boards.find_by(title: 'Done')
     sprint_card.update(sprint_board_id: sprint_board.id, html_id: '', label: 'done', done: true)
 
-    left_sprint_cards = sprint_card.card.sprint_cards.where(done: false).last
+    left_sprint_cards = sprint_card.card.sprint_cards.where(done: nil).last
     if left_sprint_cards.nil?
       sprint_card.card.update(done: true)
       dashboard_id = sprint.dashboard.id

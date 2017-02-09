@@ -1,5 +1,10 @@
 <div class="container-fluid">
-  <%= link_to 'Zurück zur Übersicht', :back %>
+  <%= link_to 'Zurück zum Dashboard', dashboard_path(@sprint.dashboard.id) %>
+  <% if current_user.scrum_master? %>
+  <p>
+    <button type="button" class="btn btn-danger" onclick="endSprint(<%= @sprint.id %>)">Sprint beenden</button>
+  </p>
+  <% end %>
   <% if @sprint.finished %>
       <%= render partial: 'finished', locals: {sprint: @sprint} %>
   <% end %>
@@ -127,6 +132,20 @@
   </div>
 </div>
 <script>
+
+  function endSprint(sprintID) {
+      var confirmed = confirm('Sprint wirklich beenden? Nicht fertige Items werden in den nächsten Sprint übertragen!')
+      if(confirmed) {
+          $.ajax({
+              method: 'POST',
+              url: '/end_sprint/',
+              data: {sprint_id: sprintID},
+              success: function() {
+                  location.reload();
+              }
+          });
+      }
+  }
 
   function updateNewSprintCardModal(cardId, sprintId) {
     var form = $('#create-sprint-card');
@@ -312,14 +331,6 @@
                 well.first().prop("id", "draggable");
                 estimationsDiv.attr("data-done", true);
                 form.find('#estimation-button').css("display", "none");
-/*                $.ajax({
-                  type: "POST",
-                  url: '/move_to_planned/' + sprintCardId,
-                  dataType: 'json',
-                  success: function (data) {
-                    location.reload();
-                  }
-                });*/
               }
               if (data[0].agreement == false) {
                 estimationsDiv.attr("data-done", true);

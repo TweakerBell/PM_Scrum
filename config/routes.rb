@@ -56,4 +56,5 @@ Rails.application.routes.draw do
   post '/add_roadmap_item', to: 'roadmap#add_roadmap_item'
   delete '/delete_roadmap_item', to: 'roadmap#delete_roadmap_item'
   delete '/delete_roadmap_row', to: 'roadmap#delete_roadmap_row'
+  post '/end_sprint', to: 'sprint#end_sprint'
 end

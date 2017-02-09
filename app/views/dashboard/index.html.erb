@@ -77,7 +77,7 @@
                   </div>
                   <div class="panel-body" style="min-height: 8em">
                     <%	@done_sprints.each do |done_sprint|  %>
-                        <%=	 link_to sprint_path(@dashboard.sprints.find_by(active: false).id) do %>
+                        <%=	 link_to sprint_path(done_sprint.id) do %>
                             <div class="well well shadow" style="background-color: lightseagreen; color:whitesmoke">
                               Sprint<br>
                               Start: <%=  done_sprint.created_at.strftime("%d.%m.%Y")	%>

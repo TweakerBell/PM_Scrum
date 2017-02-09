@@ -481,6 +481,12 @@
         }
       });
       $.when(req1, req2).done(function(data1, data2){
+          console.log('---------');
+          console.log(data1);
+          console.log(data1[0].estimation_rounds);
+          console.log(data1[0]['estimation_rounds']);
+          console.log('---------');
+
         var userCount = data2[0].user_count;
         var modal = $('#sprintCardModal'+sprintCardId);
         modal.find('#round-ul'+sprintCardId).children().remove();
@@ -545,7 +551,7 @@
           content += '<li <%= current_user.scrum_team? ? "" : "style=display:none"%>>';
           content += '<a data-toggle="tab" href="#menu2'+estimationId+'">Aufwand</a>';
           content += '</li>';
-          console.log('Name ' + data1[0].username);
+/*          console.log('Name ' + data1[0].username);
           console.log('same day ' + sameDay);
             console.log('round count ' +roundCount);
             console.log('round count minus 1 ' +(roundCount-1));
@@ -553,12 +559,12 @@
             console.log('board title ' +boardTitle);
             console.log('est length ' + estLength);
             console.log('user count ' + userCount);
-            console.log('------------------');
+            console.log('------------------');*/
 
           if(data1[0].username == null && sameDay && (roundCount-1) == x && boardTitle == "Planning" && estLength == userCount) {
-              console.log('*********');
+/*              console.log('*********');
               console.log('if = true');
-              console.log('*********');
+              console.log('*********');*/
             content += '<li>';
             content += '<a data-toggle="tab" href="#menu5'+estimationId+'">Übernehmen</a>';
             content += '</li>';

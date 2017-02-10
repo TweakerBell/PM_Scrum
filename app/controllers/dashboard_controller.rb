@@ -31,9 +31,20 @@ class DashboardController < ApplicationController
   end
 
   def render_charts
-    @dashboard = Dashboard.find_by(project_id: params[:id])
-    to_do = SprintCard.sum(:work_to_do)
-    done = SprintCard.sum(:work_done)
+    @dashboard = Dashboard.find(params[:id])
+    to_do = 0
+    done = 0
+    @dashboard.sprints.where(active: true).each do |s|
+      s.sprint_boards.each do |sb|
+        to_do += sb.sprint_cards.sum(:work_to_do)
+      end
+    end
+    @dashboard.sprints.where(active: true).each do |s|
+      s.sprint_boards.each do |sb|
+        done += sb.sprint_cards.sum(:work_done)
+      end
+    end
+
     left = to_do - done
     @ready = {left: left, done: done}
     sprint = @dashboard.sprints.find_by(active: true)

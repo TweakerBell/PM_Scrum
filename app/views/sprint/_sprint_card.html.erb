@@ -31,7 +31,7 @@
             User: <%= sprint_card.username.nil? ? 'Unassigned' : sprint_card.username %>
           </div>
           <div style="; border-bottom: 2px solid whitesmoke"></div>
-          <div class="progress" style="margin: 0.2em 0.2em 0.2em 0.2em">
+          <div class="progress" style="margin: 0.2em 0.2em 0.2em 0.2em; font-size:small">
             <% done = (sprint_card.work_done.to_f / sprint_card.work_to_do)*100 %>
             <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="<%= done %>"
                  aria-valuemin="0" aria-valuemax="100" style="width:<%= done %>%" id="progressbar<#%= f.id %>">

@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <%= link_to 'Zurück zum Dashboard', dashboard_path(@sprint.dashboard.id) %>
-  <% if current_user.scrum_master? %>
+  <% if current_user.scrum_master? && !@sprint.finished %>
   <p>
     <button type="button" class="btn btn-danger" onclick="endSprint(<%= @sprint.id %>)">Sprint beenden</button>
   </p>

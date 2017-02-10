@@ -1,5 +1,5 @@
 <div class="col-sm-6">
-  <div class="sprintcard shadow ui-widget-content" style="background-color: <%= sprint_card.color %>"
+  <div class="sprintcard shadow ui-widget-content" style="background-color: <%= sprint_card.color %>; word-wrap:break-word"
        data-sprint-card-id="<%=sprint_card.id%>" <%= current_user.username == sprint_card.username ? "id=#{sprint_card.html_id}" :"" %>
        data-board-title="<%= sprint_card.sprint_board.title%>"
        data-toggle="modal" data-target="#sprintCardModal<%= sprint_card.id %>"
